@@ -1,9 +1,9 @@
-import { LitElement, html, css, customElement } from 'web_modules/lit-element.js';
-import { classMap } from 'web_modules/lit-html/directives/class-map.js';
-import 'web_modules/@material/mwc-checkbox.js';
-import 'web_modules/@material/mwc-drawer.js';
-import 'web_modules/@material/mwc-icon-button.js';
-import 'web_modules/foldable-device-configurator.js';
+import { LitElement, html, css, customElement } from './web_modules/lit-element.js';
+import { classMap } from './web_modules/lit-html/directives/class-map.js';
+import './web_modules/@material/mwc-checkbox.js';
+import './web_modules/@material/mwc-drawer.js';
+import './web_modules/@material/mwc-icon-button.js';
+import './web_modules/foldable-device-configurator.js';
 
 class MaterialSpinner extends LitElement {
   static styles = css`
