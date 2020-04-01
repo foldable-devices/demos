@@ -1,9 +1,14 @@
-import { LitElement, html, css, customElement } from './web_modules/lit-element.js';
+import { LitElement, html, css as litCSS, customElement } from './web_modules/lit-element.js';
 import { classMap } from './web_modules/lit-html/directives/class-map.js';
 import './web_modules/@material/mwc-checkbox.js';
 import './web_modules/@material/mwc-drawer.js';
 import './web_modules/@material/mwc-icon-button.js';
-import './web_modules/foldable-device-configurator.js';
+import { adjustCSS, observe } from "./web_modules/spanning-css-polyfill.js";
+
+const css = (strings, ...values) => {
+  const string = adjustCSS("main-application", strings[0]);
+  return litCSS([string], ...values);
+};
 
 class MaterialSpinner extends LitElement {
   static styles = css`
@@ -171,7 +176,7 @@ export class MainApplication extends LitElement {
 
     .content {
       display: flex;
-      flex-direction: var(--flex-layout);
+      flex-direction: row;
     }
 
     .fullview-container.hidden {
@@ -251,8 +256,8 @@ export class MainApplication extends LitElement {
     }
 
     .gallery {
-      width: var(--span-1-width, 100vw);
-      height: var(--span-1-height, 100vh);
+      width: 100vw;
+      height: 100vh;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       grid-template-rows: repeat(auto-fit, 1fr);
@@ -288,8 +293,8 @@ export class MainApplication extends LitElement {
     }
 
     .detail-container {
-      height: var(--span-2-height, 0vh);
-      width: var(--span-2-width, 0vw);
+      height: 0vh;
+      width: 0vw;
       background-color: black;
       color: white;
       overflow: hidden;
@@ -298,7 +303,6 @@ export class MainApplication extends LitElement {
     .stripes {
       height: 250px;
       width: 200px;
-
       background-size: 40px 40px;
     }
 
@@ -311,8 +315,8 @@ export class MainApplication extends LitElement {
     }
 
     .fold {
-      height: var(--fold-height, 0);
-      width: var(--fold-width, 0);
+      height: 0;
+      width: 0;
     }
 
     .detail {
@@ -363,19 +367,21 @@ export class MainApplication extends LitElement {
       margin-left: 12px;
     }
 
-    /* These rules do not work with the polyfill */
     @media (spanning: single-fold-vertical) {
       .gallery {
         width: env(fold-left);
         height: 100vh;
       }
+
       .fold {
         height: env(fold-height);
         width: env(fold-width);
       }
-      :host {
+
+      .content {
         flex-direction: row;
       }
+
       .detail-container {
         height: 100vh;
         width: calc(100vw - env(fold-left) - env(fold-width));
@@ -385,17 +391,20 @@ export class MainApplication extends LitElement {
     @media (spanning: single-fold-horizontal) {
       .gallery {
         width: 100vw;
-        height: calc(100vh - env(fold-top) - env(fold-height));
+        height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
       }
+
       .fold {
         height: env(fold-height);
         width: env(fold-width);
       }
-      :host {
+
+      .content {
         flex-direction: column-reverse;
       }
+
       .detail-container {
-        height: env(fold-top);
+        height: var(--zenbook-span2-height, env(fold-top));
         width: 100vw;
       }
     }
@@ -405,21 +414,27 @@ export class MainApplication extends LitElement {
         width: 100vw;
         height: 100vh;
       }
+
       .fold {
         height: 0;
         width: 0;
       }
-      :host {
+
+      .content {
         flex-direction: row;
       }
+
       .detail-container {
         height: 0vh;
         width: 0vw;
       }
+
+      /* This is only temporary for the Neo emulator, otherwise background blur is awfully slow */
       .fullview-container {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
         background: rgb(0, 0, 0, 0.5);
+        height: 100vh;
       }
     }
   `;
@@ -436,8 +451,12 @@ export class MainApplication extends LitElement {
   _drawer;
   _spinner;
   _styleCheckbox;
+  _fold;
+  _gallery;
+  _fullview_container;
 
   firstUpdated() {
+    this._gallery = this.shadowRoot.querySelector('.gallery');
     this._full_img = this.shadowRoot.querySelector('#full-img');
     this._detail_img = this.shadowRoot.querySelector('detail-img');
     this._detail_container = this.shadowRoot.querySelector('.detail-container');
@@ -445,13 +464,20 @@ export class MainApplication extends LitElement {
     this._detail_select = this.shadowRoot.querySelector('.detail-select');
     this._spinner = this.shadowRoot.querySelector('mwc-circular-progress');
     this._drawer = this.shadowRoot.querySelector('#drawer');
+    this._fold = this.shadowRoot.querySelector('.fold');
     this._styleCheckbox = this.shadowRoot.querySelector('mwc-checkbox');
     this._styleCheckbox.addEventListener('change', this._styleChanged);
+    this._fullview_container = this.shadowRoot.querySelector('.fullview-container');
   }
 
   constructor() {
     super();
     this._full_view_container_classes = { hidden: true };
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    observe(this);
   }
 
   _openDrawer() {
@@ -460,26 +486,23 @@ export class MainApplication extends LitElement {
 
   _styleChanged = (event) => {
     if (this._styleCheckbox.checked) {
-      let fullview = this.shadowRoot.querySelector('.fullview-container');
-      fullview.style.height = '100vh';
+      this._fullview_container.style.height = '100vh';
+      this._detail_container.style.display = 'flex';
+      this._fold.style.display = 'flex';
     } else {
-      let height = window.getComputedStyle(this.shadowRoot.host).getPropertyValue('--span-1-height');
-      let fullview = this.shadowRoot.querySelector('.fullview-container');
-      fullview.style.height = height;
-      this.shadowRoot.host.style.setProperty('--span-1-width', '100vw');
-      this.shadowRoot.host.style.setProperty('--span-1-height', '100vh');
-      this.shadowRoot.host.style.setProperty('--fold-width', '0');
-      this.shadowRoot.host.style.setProperty('--fold-height', '0');
-      this.shadowRoot.host.style.setProperty('--span-2-width', '0vw');
-      this.shadowRoot.host.style.setProperty('--span-2-height', '0vh');
+      let height = window.getComputedStyle(this._gallery).getPropertyValue('height');
+      this._fullview_container.style.height = height;
+      this._detail_container.style.display = 'none';
+      this._fold.style.display = 'none';
+      this._gallery.style.height = '100vh';
+      this._gallery.style.width = '100vw';
     }
   }
 
   _openPicture(e) {
     const source_image = e.currentTarget.children[1].currentSrc;
     const path = source_image.replace('-l', '');
-
-    if (window.getComputedStyle(this._detail_container).width != '0px') {
+    if (window.getComputedStyle(this._detail_container).width != '0px' && this._styleCheckbox.checked) {
       this._detail_select.style.display = 'none';
       this._detail.style.visibility = 'visible';
       if (this._detail_img.src === path)
@@ -610,7 +633,6 @@ export class MainApplication extends LitElement {
           </div>
         </div>
       </mwc-drawer>
-      <foldable-device-configurator></foldable-device-configurator>
     `;
   }
 }
