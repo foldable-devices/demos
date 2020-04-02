@@ -6,7 +6,7 @@ import './web_modules/@material/mwc-icon-button.js';
 import { adjustCSS, observe } from "./web_modules/spanning-css-polyfill.js";
 
 const css = (strings, ...values) => {
-  const string = adjustCSS("main-application", strings[0]);
+  const string = adjustCSS(strings[0], "main-application");
   return litCSS([string], ...values);
 };
 
@@ -350,6 +350,10 @@ export class MainApplication extends LitElement {
 
     mwc-checkbox {
       --mdc-theme-secondary: black;
+    }
+
+    mwc-icon-button {
+      z-index: 999;
     }
 
     .menu-icon {
