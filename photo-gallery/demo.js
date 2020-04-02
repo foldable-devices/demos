@@ -353,7 +353,11 @@ export class MainApplication extends LitElement {
     }
 
     mwc-icon-button {
-      z-index: 999;
+      z-index: 2;
+    }
+
+    mwc-drawer {
+      z-index: 3;
     }
 
     .menu-icon {
