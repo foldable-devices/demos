@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "A simple photo gallery that shows how you can support foldable devices.",
   "main": "demo.js",
-  "module": "demo.js",
   "snowpack": {
     "webDependencies": [
       "foldable-device-configurator",
@@ -23,7 +22,7 @@
   },
   "scripts": {
     "start": "es-dev-server --node-resolve --watch --open index.html --port 8081",
-    "build": "rimraf web_modules && snowpack --optimize",
+    "build": "rimraf web_modules && workbox generateSW workbox-config.js && snowpack --optimize",
     "regen-package-lock": "rimraf node_modules && rimraf package-lock.json; npm install"
   },
   "dependencies": {
@@ -41,10 +40,10 @@
     "@material/mwc-icon-button": "^0.13.0",
     "rollup": "^1.32.1",
     "snowpack": "^1.6.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "workbox-cli": "^5.1.2"
   },
   "keywords": [],
-  "type": "module",
   "license": "BSD-3-Clause",
   "author": {
     "name": "Alexis Menard",

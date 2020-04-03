@@ -476,6 +476,14 @@ export class MainApplication extends LitElement {
     this._styleCheckbox = this.shadowRoot.querySelector('mwc-checkbox');
     this._styleCheckbox.addEventListener('change', this._styleChanged);
     this._fullview_container = this.shadowRoot.querySelector('.fullview-container');
+
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
   }
 
   constructor() {
