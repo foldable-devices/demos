@@ -568,7 +568,7 @@ export class MainApplication extends LitElement {
   render() {
     const images = [
       { name: "images/air-balloon-l", alt: "This is a beautiful picture of an air balloon in the sky." },
-      { name: "images/asia-l", alt: "This photo depicts a women on a boat somewhere in Asia." },
+      { name: "images/asia-l", alt: "This photo depicts a woman on a boat somewhere in Asia." },
       { name: "images/china-l", alt: "Architecture in China, a tower of a building." },
       { name: "images/church-l", alt: "A black church in the middle of nowhere." },
       { name: "images/city-l", alt: "A modern city somewhere in Asia." },
