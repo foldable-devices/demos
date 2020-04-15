@@ -30,8 +30,11 @@
   },
   "devDependencies": {
     "es-dev-server": "^1.44.0",
-    "snowpack": "^1.6.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-lit": "1.2.0",
+    "babel-eslint": "10.1.0",
     "rimraf": "^3.0.2",
+    "snowpack": "^1.6.0",
     "workbox-cli": "^5.1.2"
   },
   "keywords": [],

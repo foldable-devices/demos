@@ -1,12 +1,16 @@
-import { LitElement, html, css as litCSS, customElement } from '../web_modules/lit-element.js';
-import { classMap } from '../web_modules/lit-html/directives/class-map.js';
+import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
 import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
-import { PlayerGrid } from "./player-grid.js";
+import "./player-grid.js";
+import "./enemy-grid.js";
+import "./infoxbox.js";
+import "./dialogbox.js";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
   return litCSS([string], ...values);
 };
+
+const alphabeticalCells = ['', 'A', 'B', 'C', 'D' ,'E', 'F', 'G', 'H', 'I', 'J'];
 
 export class MainApplication extends LitElement {
   static styles = css`
@@ -113,31 +117,64 @@ export class MainApplication extends LitElement {
       .content {
         flex-direction: row;
       }
+
+      .blocked {
+        pointer-events:none;
+      }
     }
   `;
 
   firstUpdated() {
+    this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
+    this._playerGrid = this.shadowRoot.querySelector('#player-grid');
+    this._infobox = this.shadowRoot.querySelector('#infobox');
+    this._dialogbox = this.shadowRoot.querySelector('#dialogbox');
   }
 
   constructor() {
     super();
+    this._round = 1;
   }
 
   connectedCallback() {
     super.connectedCallback();
     observe(this);
   }
+
+  playerPlayed() {
+    this._enemyGrid.classList.add('blocked');
+    this._playerGrid.enemyShootRandomly();
+  }
+
+  enemyPlayed(event) {
+    this._enemyGrid.classList.remove('blocked');
+    this._infobox.showMessage("Your enemy played at " + alphabeticalCells[event.detail.x] + ' ' + event.detail.y);
+    this._round++;
+  }
+
+  playerWin() {
+    this._enemyGrid.classList.add('blocked');
+    this._dialogbox.showMessage('You won!');
+  }
+
+  playerLost() {
+    this._enemyGrid.classList.add('blocked');
+    this._dialogbox.showMessage('You lost!');
+  }
+
   render() {
     return html`
       <div class="content">
         <div class="enemy-fleet">
-          <player-grid></player-grid>
+          <enemy-grid id="enemy-grid" @player-played=${this.playerPlayed} @game-over=${this.playerWin}></enemy-grid>
         </div>
         <div class="fold angled stripes"></div>
         <div class="fleet">
-          <player-grid></player-grid>
+          <player-grid id="player-grid" @player-played=${this.enemyPlayed} @game-over=${this.playerLost}></player-grid>
         </div>
       </div>
+      <info-box id="infobox"></info-box>
+      <dialog-box id="dialogbox"></dialog-box>
     `;
   }
 }

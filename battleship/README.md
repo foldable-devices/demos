@@ -55,3 +55,6 @@ This will update the `web_modules` directory which can be committed to the repos
     - License: Public Domain
     - Source: OpenGameArt.org, [link](https://opengameart.org/content/the-battle-for-wesnoth-water-animation)
     - Credit: Zookeeper and Zabin
+- Ships
+    - License : Shutterstock Standard which grants "Unlimited web distribution"
+    - Copyright is transfered to Alexis Menard.
