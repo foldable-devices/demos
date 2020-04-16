@@ -25,7 +25,7 @@
   "dependencies": {
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2",
-    "foldable-device-configurator": "^1.0.10",
+    "foldable-device-configurator": "^1.0.11",
     "spanning-css-polyfill": "^1.0.12"
   },
   "devDependencies": {
