@@ -34,6 +34,12 @@ export class MainApplication extends LitElement {
       justify-content: center;
       width: 100vw;
       height: 100vh;
+      background-image: url("images/ocean-3k.jpg");
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-color: #133759;
     }
 
     .stripes {
@@ -56,15 +62,37 @@ export class MainApplication extends LitElement {
     }
 
     .enemy-fleet {
-      background-image: url("images/ocean.png");
       width: 50%;
       height: 100%;
     }
 
     .fleet {
-      background-image: url("images/ocean.png");
       width: 50%;
       height: 100%;
+    }
+
+    @media only screen and (max-width: 767px) {
+      .content {
+        background-image: url("images/ocean-800.jpg");
+      }
+    }
+
+    @media only screen and (max-width: 1024px) {
+      .content {
+        background-image: url("images/ocean-1k.jpg");
+      }
+    }
+
+    @media only screen and (max-width: 1440px) {
+      .content {
+        background-image: url("images/ocean-1.5k.jpg");
+      }
+    }
+
+    @media only screen and (max-width: 1920px) {
+      .content {
+        background-image: url("images/ocean-2k.jpg");
+      }
     }
 
     @media (spanning: single-fold-vertical) {
@@ -179,7 +207,7 @@ export class MainApplication extends LitElement {
 
   playerWin() {
     this._enemyGrid.classList.add('blocked');
-    this._dialogbox.showMessage('You won!');
+    this._dialogbox.showMessage('You won! <br> You played ' + this._round + ' rounds to defeat your enemy.');
   }
 
   playerLost() {

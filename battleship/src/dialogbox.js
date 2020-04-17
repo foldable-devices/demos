@@ -12,7 +12,7 @@ export class DialogBox extends LitElement {
       width: 15vw;
       height: 10vh;
       position: absolute;
-      top: calc(50vh - 10vh);
+      top: calc(50vh - 5vh);
       left: calc(50vw - 7.5vw);
       z-index: 4;
       visibility: hidden;
@@ -45,6 +45,7 @@ export class DialogBox extends LitElement {
     .label {
       font-size: 1vw;
       line-height: 200%;
+      text-align: center;
     }
 
     @media (spanning: single-fold-horizontal) {
@@ -60,7 +61,7 @@ export class DialogBox extends LitElement {
       :host {
         width: 15vw;
         height: 10vh;
-        top: calc(50vh - 20vh);
+        top: calc(50vh - 5vh);
         left: calc(50vw - 7.5vw);
       }
     }

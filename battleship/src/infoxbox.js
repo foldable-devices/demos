@@ -31,7 +31,7 @@ export class SpeechBubble extends LitElement {
 
     ::slotted(*) {
       position: absolute;
-      top: 20%;
+      top: 19%;
       left: 3%;
       width: 90%;
       height: 40%;
