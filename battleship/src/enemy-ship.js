@@ -33,6 +33,7 @@ export class EnemyShip extends Ship.Ship {
       return;
     this.hitCount = this.hitCount + 1;
     hitArea.style.visibility = 'visible';
+    this.shipHit()
     if (this.hitCount === this.size) {
       this.shadowRoot.querySelector('#image').style.display = 'inline';
       this.shipDestroyed();

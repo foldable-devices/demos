@@ -17,6 +17,7 @@ export class MainApplication extends LitElement {
     :host {
       width: 100vw;
       height: 100vh;
+      font-family: 'Bangers', sans-serif;
     }
 
     *,
@@ -124,6 +125,8 @@ export class MainApplication extends LitElement {
     }
   `;
 
+  _timeBetweenRounds = 1500;
+
   firstUpdated() {
     this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
     this._playerGrid = this.shadowRoot.querySelector('#player-grid');
@@ -133,7 +136,7 @@ export class MainApplication extends LitElement {
 
   constructor() {
     super();
-    this._round = 1;
+    this._round = 0;
   }
 
   connectedCallback() {
@@ -143,13 +146,35 @@ export class MainApplication extends LitElement {
 
   playerPlayed() {
     this._enemyGrid.classList.add('blocked');
-    this._playerGrid.enemyShootRandomly();
+    this._infobox.showMessage('You missed!');
+    setTimeout( () => this._playerGrid.enemyShootRandomly(), this._timeBetweenRounds);
+    this._round++;
   }
 
   enemyPlayed(event) {
+    this._infobox.showMessage('I shot at ' + alphabeticalCells[event.detail.x] + '-' + event.detail.y);
+    setTimeout( () => this.nextPlayerTurn(), this._timeBetweenRounds);
+  }
+
+  nextPlayerTurn() {
+    this._infobox.showMessage('Your turn...');
     this._enemyGrid.classList.remove('blocked');
-    this._infobox.showMessage("Your enemy played at " + alphabeticalCells[event.detail.x] + ' ' + event.detail.y);
-    this._round++;
+  }
+
+  playerHit(event) {
+    this._infobox.showMessage('You hit my ' + event.detail.type + '!<br> Shoot again.');
+  }
+
+  playerSank(event) {
+    this._infobox.showMessage('You sank my ' + event.detail.type + ' :( !<br> Shoot again.');
+  }
+
+  enemyHit(event) {
+    this._infobox.showMessage('Ah! I hit your ' + event.detail.type + '!<br> I\'ll shoot again.');
+  }
+
+  enemySank(event) {
+    this._infobox.showMessage('Sank your ' + event.detail.type + '!<br> I\'ll shoot again.');
   }
 
   playerWin() {
@@ -166,11 +191,11 @@ export class MainApplication extends LitElement {
     return html`
       <div class="content">
         <div class="enemy-fleet">
-          <enemy-grid id="enemy-grid" @player-played=${this.playerPlayed} @game-over=${this.playerWin}></enemy-grid>
+          <enemy-grid id="enemy-grid" @player-played=${this.playerPlayed} @player-sank=${this.playerSank} @player-hit=${this.playerHit} @game-over=${this.playerWin}></enemy-grid>
         </div>
         <div class="fold angled stripes"></div>
         <div class="fleet">
-          <player-grid id="player-grid" @player-played=${this.enemyPlayed} @game-over=${this.playerLost}></player-grid>
+          <player-grid id="player-grid" @player-played=${this.enemyPlayed} @game-over=${this.playerLost} @player-hit=${this.enemyHit} @player-sank=${this.enemySank}></player-grid>
         </div>
       </div>
       <info-box id="infobox"></info-box>

@@ -214,7 +214,15 @@ export class Ship extends LitElement {
   shipDestroyed() {
     this.destroyed = true;
     let event = new CustomEvent('ship-destroyed', {
-      detail: { message: 'Ship Destroyed' },
+      detail: { message: 'Ship Destroyed', type: this.type },
+      bubbles: true,
+      composed: true });
+    this.dispatchEvent(event);
+  }
+
+  shipHit() {
+    let event = new CustomEvent('ship-hit', {
+      detail: { message: 'Ship Hit', type: this.type },
       bubbles: true,
       composed: true });
     this.dispatchEvent(event);

@@ -32,14 +32,19 @@ export class EnemyGrid extends GameGrid {
     this.playerPlayed(x, y);
   }
 
-  shipDestroyed() {
+  shipDestroyed(event) {
+    this.playerSankShip(event.detail.type);
     this.dispatchGameOverIfNecessary();
+  }
+
+  shipHit(event) {
+    this.playerHitShip(event.detail.type);
   }
 
   render() {
     return html`
+      <div class="title">Enemy's fleet</div>
       <div class="grid">
-        <div class="title">Enemy's fleet</div>
           ${this._grid.map((row, x) =>
             row.map((cell, y) => {
                 if (this.isShip(this._grid[x][y])) {
@@ -47,7 +52,8 @@ export class EnemyGrid extends GameGrid {
                     this._shipPlaced.push(cell.type);
                     return html`
                       <enemy-ship id="${cell.type}" x="${cell.x}" y="${cell.y}"
-                        type="${cell.type}" orientation="${cell.orientation}" @ship-destroyed="${this.shipDestroyed}">
+                        type="${cell.type}" orientation="${cell.orientation}" @ship-destroyed="${this.shipDestroyed}"
+                        @ship-hit="${this.shipHit}">
                       </enemy-ship>`
                   }
                 } else

@@ -23,25 +23,24 @@ export class GameGrid extends LitElement {
       display: flex;
       justify-content: center;
       align-items: center;
+      font-size: 1vw;
     }
 
     .grid {
       display: grid;
       width: 100%;
-      height: 100%;
+      height: 97%;
       grid-template-columns: repeat(11, 1fr);
       grid-template-rows: repeat(11, 1fr);
-      position: relative;
     }
 
     .title {
-      text-align: center;
-      font-size: 1.2em;
-      position: absolute;
-      left: 40%;
-      background-color: white;
-      border-radius: 0.5em;
-      width: 25%;
+      font-size: 1vw;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 3%;
     }
 
     .hit-water-area {
@@ -177,6 +176,16 @@ export class GameGrid extends LitElement {
     return this._shipPlaced.includes(type);
   }
 
+  playerHit(type) {
+    let event = new CustomEvent('player-hit', {
+      detail: { message: 'player played.', type: type},
+      bubbles: true,
+      composed: true });
+    this.dispatchEvent(event);
+
+    this.dispatchGameOverIfNecessary();
+  }
+
   dispatchGameOverIfNecessary() {
     const isGameOver = this._submarine.destroyed && this._destroyer.destroyed &&
       this._carrier.destroyed && this._battleship.destroyed && this._rescue.destroyed;
@@ -191,12 +200,28 @@ export class GameGrid extends LitElement {
 
   playerPlayed(x, y) {
     let event = new CustomEvent('player-played', {
-      detail: { message: 'player played.', x: x, y: y },
+      detail: { message: 'player played.', x: x, y: y},
       bubbles: true,
       composed: true });
     this.dispatchEvent(event);
 
     this.dispatchGameOverIfNecessary();
+  }
+
+  playerHitShip(type) {
+    let event = new CustomEvent('player-hit', {
+      detail: { message: 'player played.', type: type},
+      bubbles: true,
+      composed: true });
+    this.dispatchEvent(event);
+  }
+
+  playerSankShip(type) {
+    let event = new CustomEvent('player-sank', {
+      detail: { message: 'player played.', type: type},
+      bubbles: true,
+      composed: true });
+    this.dispatchEvent(event);
   }
 
   update() {

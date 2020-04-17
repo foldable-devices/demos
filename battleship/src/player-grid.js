@@ -74,7 +74,9 @@ export class PlayerGrid extends GameGrid {
       ship.enemyShootAt(x, y);
       this._grid[x][y].shot = true;
       this._previousShot = {x: x, y: y};
-      this.enemyShootRandomly();
+      this.playerHitShip(ship.type);
+      setTimeout( () => this.enemyShootRandomly(), 2000);
+      return;
     } else {
       const hitArea = this.shadowRoot.querySelector('#hit-' + x + '-' + y);
       hitArea.style.display = 'block';
@@ -83,14 +85,15 @@ export class PlayerGrid extends GameGrid {
     this.playerPlayed(x, y);
   }
 
-  shipDestroyed() {
+  shipDestroyed(event) {
     this._previousShot = {x: 0, y: 0};
+    this.playerSankShip(event.detail.type);
   }
 
   render() {
     return html`
+      <div class="title">Your fleet</div>
       <div class="grid">
-        <div class="title">Your fleet</div>
           ${this._grid.map((row, x) =>
             row.map((cell, y) => {
                 if (this.isShip(this._grid[x][y])) {
