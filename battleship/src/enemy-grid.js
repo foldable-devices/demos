@@ -22,13 +22,13 @@ export class EnemyGrid extends GameGrid {
     let element = this.grid[x][y];
     if (this.isShip(element) || element.text != '')
       return;
-    if (element.shoot === true) {
+    if (element.shot === true) {
       // TODO : Show a dialog.
       console.log('You shot there already.');
       return;
     }
-    this.shadowRoot.querySelector('#hit-' + x + '-' + y).style.display = 'block';
-    element.shoot = true;
+    element.shot = true;
+    this.updateGrid();
     this.playerPlayed(x, y);
   }
 
@@ -45,9 +45,9 @@ export class EnemyGrid extends GameGrid {
     return html`
       <div class="title">Enemy's fleet</div>
       <div class="grid">
-          ${this._grid.map((row, x) =>
+          ${this.grid.map((row, x) =>
             row.map((cell, y) => {
-                if (this.isShip(this._grid[x][y])) {
+                if (this.isShip(this.grid[x][y])) {
                   if(!this.isShipPlaced(cell.type)) {
                     this._shipPlaced.push(cell.type);
                     return html`
@@ -57,11 +57,7 @@ export class EnemyGrid extends GameGrid {
                       </enemy-ship>`
                   }
                 } else
-                  return html`
-                    <div class="cell" id="${x}-${y}" @click="${() => this.fireAt(x, y)}">
-                      ${cell.text}
-                      <div class="hit-water-area" id="hit-${x}-${y}"></div>
-                    </div>`
+                  return html`<empty-cell ?hit="${cell.shot}" @click="${() => this.fireAt(x, y)}">${cell.text}</empty-cell>`;
               })
           )}
       </div>

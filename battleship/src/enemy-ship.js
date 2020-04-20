@@ -22,8 +22,20 @@ export class EnemyShip extends Ship.Ship {
     }
 `];
 
+  _image;
+
   firstUpdated() {
     super.firstUpdated();
+    this._image = this.shadowRoot.querySelector('#image')
+  }
+
+  reset() {
+    Array.from({ length: this.size }).map((_, pos) => {
+      const hitArea = this.shadowRoot.querySelector('#hit-' + pos);
+      hitArea.style.visibility = 'hidden';
+    });
+    this.hitCount = 0;
+    this._image.style.display = 'none';
   }
 
   shootAt(pos) {
@@ -35,7 +47,7 @@ export class EnemyShip extends Ship.Ship {
     hitArea.style.visibility = 'visible';
     this.shipHit()
     if (this.hitCount === this.size) {
-      this.shadowRoot.querySelector('#image').style.display = 'inline';
+      this._image.style.display = 'inline';
       this.shipDestroyed();
     }
   }

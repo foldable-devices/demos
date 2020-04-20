@@ -1,5 +1,57 @@
-import { LitElement, css } from '../web_modules/lit-element.js';
+import { LitElement, css, html } from '../web_modules/lit-element.js';
 import * as Ship from './ship.js';
+
+
+export class EmptyCell extends LitElement {
+  static styles = css`
+    :host {
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1vw;
+    }
+
+    .hit-water-area {
+      height: 30px;
+      width: 30px;
+      background-color: white;
+      border-radius: 50%;
+      display: none;
+    }
+
+    .visible {
+      display: block;
+    }
+  `;
+
+static get properties() {
+  return { hit : {type: Boolean, reflectToAttribute: true, attribute: true} };
+  }
+
+  set hit(hit) {
+    let oldHit = this._hit;
+    this._hit = hit;
+    this.requestUpdate('hit', oldHit);
+  }
+
+  get hit() { return this._hit; }
+
+  constructor() {
+    super();
+    this._hit = false;
+  }
+
+  render() {
+    return html`
+      <div class="cell">
+        <slot></slot>
+        <div class="hit-water-area ${this.hit? "visible" : ""}"></div>
+      </div>`;
+  }
+}
+
+customElements.define("empty-cell", EmptyCell);
 
 export class GameGrid extends LitElement {
   static styles = css`
@@ -17,13 +69,8 @@ export class GameGrid extends LitElement {
       box-sizing: inherit;
     }
 
-    .cell {
+    empty-cell {
       border: var(--border-grid);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1vw;
     }
 
     .grid {
@@ -80,11 +127,17 @@ export class GameGrid extends LitElement {
     return isVertical? Ship.Orientation.Vertical : Ship.Orientation.Horizontal;
   }
 
-  firstUpdated() {}
+  firstUpdated() {
+    this.initGrid();
+  }
 
   constructor() {
     super();
-    this._grid = [
+    this._grid = [];
+  }
+
+  initGrid() {
+    this.grid = [
       [{ text: '/'}, { text: '1'}, { text: '2'}, { text: '3'},
        { text: '4'}, { text: '5'}, { text: '6'}, { text: '7'},
        { text: '8'}, { text: '9'}, { text: '10'}],
@@ -101,7 +154,18 @@ export class GameGrid extends LitElement {
     ];
     for (let i = 1; i <= 10; ++i)
       for (let j = 1; j <= 10; j++)
-        this._grid[i][j] = { text:'', shot: false};
+        this.grid[i][j] = { text:'', shot: false};
+  }
+
+  restart() {
+    this.initGrid();
+    this._shipPlaced = [];
+    this._submarine.reset();
+    this._destroyer.reset();
+    this._carrier.reset();
+    this._battleship.reset();
+    this._rescue.reset();
+    this.generateRandomGrid();
   }
 
   generateRandomGrid() {
@@ -145,6 +209,7 @@ export class GameGrid extends LitElement {
       console.error('Adding ship in the wrong column/row.');
       return;
     }
+
     const ship = { type: type, orientation: orientation, x: x, y: y, shot: false};
     this.grid[x][y] = ship;
     if (orientation === Ship.Orientation.Horizontal) {
@@ -154,12 +219,11 @@ export class GameGrid extends LitElement {
       for (let i = x; i < x + size; ++i)
         this.grid[i][y] = { type: type, orientation: orientation, x: i, y: y, shot: false};
     }
-    this.updateGrid();
   }
 
   updateGrid() {
-    let gridOld = this.grid;
-    this.requestUpdate('grid', gridOld);
+    this._shipPlaced = [];
+    this.requestUpdate('grid', this.grid);
   }
 
   isShip(gridElement) {

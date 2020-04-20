@@ -172,6 +172,14 @@ export class MainApplication extends LitElement {
     observe(this);
   }
 
+  restartGame() {
+    this._round = 0;
+    this._enemyGrid.classList.remove('blocked');
+    this._enemyGrid.restart();
+    this._playerGrid.restart();
+    this._infobox.showMessage('Let\'s get started, fire first.');
+  }
+
   playerPlayed() {
     this._enemyGrid.classList.add('blocked');
     this._infobox.showMessage('You missed!');
@@ -207,12 +215,12 @@ export class MainApplication extends LitElement {
 
   playerWin() {
     this._enemyGrid.classList.add('blocked');
-    this._dialogbox.showMessage('You won! <br> You played ' + this._round + ' rounds to defeat your enemy.');
+    this._dialogbox.showMessage('You won! <br> You defeated your enemy in ' + this._round + ' rounds.');
   }
 
   playerLost() {
     this._enemyGrid.classList.add('blocked');
-    this._dialogbox.showMessage('You lost!');
+    this._dialogbox.showMessage('You lost! <br> Your enemy defeated you in ' + this._round + ' rounds.');
   }
 
   render() {
@@ -227,7 +235,7 @@ export class MainApplication extends LitElement {
         </div>
       </div>
       <info-box id="infobox"></info-box>
-      <dialog-box id="dialogbox"></dialog-box>
+      <dialog-box id="dialogbox" @button-clicked=${this.restartGame}></dialog-box>
     `;
   }
 }

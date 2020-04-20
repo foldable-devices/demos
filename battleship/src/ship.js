@@ -104,19 +104,22 @@ export class Ship extends LitElement {
   `;
 
   static get properties() {
-    return { type: { type: String, reflectToAttribute: true },
-             orientation: { type: String, reflectToAttribute: true },
-             x: { type: Number, reflectToAttribute: true },
-             y: { type: Number, reflectToAttribute: true },
+    return { type: { type: String, reflectToAttribute: true, attribute: true},
+             orientation: { type: String, reflectToAttribute: true, attribute: true },
+             x: { type: Number, reflectToAttribute: true, attribute: true },
+             y: { type: Number, reflectToAttribute: true, attribute: true },
             size: { type: Number},
             hitCount: { type: Number},
-            destroyed: {type: Boolean}, reflectToAttribute: true };
+            destroyed: {type: Boolean, reflectToAttribute: true, attribute: true }
+          };
   }
 
   set type(type) {
     let oldType = this._type;
     this._type = type;
     this.requestUpdate('type', oldType);
+    this.size = getShipSize(this._type);
+    this.shadowRoot.host.style.setProperty('--size', this._size);
   }
 
   get type() { return this._type; }
@@ -190,11 +193,21 @@ export class Ship extends LitElement {
 
   constructor() {
     super();
+    this._x = 0;
+    this._y = 0;
     this._orientation = Orientation.Horizontal;
     this._type = ShipType.Submarine;
     this._size = 0;
     this._destroyed = false;
     this._hitCount = 0;
+  }
+
+  reset() {
+    Array.from({ length: this.size }).map((_, pos) => {
+      const hitArea = this.shadowRoot.querySelector('#hit-' + pos);
+      hitArea.classList.remove('hit');
+    });
+    this.hitCount = 0;
   }
 
   enemyShootAt(x, y) {
@@ -204,7 +217,7 @@ export class Ship extends LitElement {
    } else {
       hitZoneId = x - this.x;
    }
-   let hitArea = this.shadowRoot.querySelector('#hit-' + hitZoneId);
+   const hitArea = this.shadowRoot.querySelector('#hit-' + hitZoneId);
    hitArea.classList.add('hit');
    this.hitCount++;
    if (this.hitCount === this.size)

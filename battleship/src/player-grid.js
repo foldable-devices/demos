@@ -1,4 +1,4 @@
-import { html, css } from '../web_modules/lit-element.js';
+import { html, css, LitElement } from '../web_modules/lit-element.js';
 import { GameGrid } from './game-grid.js';
 
 export class PlayerGrid extends GameGrid {
@@ -9,11 +9,17 @@ export class PlayerGrid extends GameGrid {
   `];
 
   firstUpdated() {
+    super.firstUpdated();
     this.generateRandomGrid();
   }
 
   constructor() {
     super();
+    this._previousShot = {x: 0, y: 0};
+  }
+
+  restart() {
+    super.restart();
     this._previousShot = {x: 0, y: 0};
   }
 
@@ -23,13 +29,13 @@ export class PlayerGrid extends GameGrid {
     if (this._previousShot.x != 0 && this._previousShot.y != 0) {
       //Successful shot, we'll try around.
       const leftCell = {x: this._previousShot.x, y: Math.max(this._previousShot.y - 1, 1)};
-      const leftCandidate = this._grid[leftCell.x][leftCell.y].shot === false;
+      const leftCandidate = this.grid[leftCell.x][leftCell.y].shot === false;
       const rightCell = {x: this._previousShot.x, y: Math.min(this._previousShot.y + 1, 10)};
-      const rightCandidate = this._grid[rightCell.x][rightCell.y].shot === false;
+      const rightCandidate = this.grid[rightCell.x][rightCell.y].shot === false;
       const topCell = {x: Math.max(this._previousShot.x - 1, 1), y: this._previousShot.y};
-      const topCandidate = this._grid[topCell.x][topCell.y].shot === false;
+      const topCandidate = this.grid[topCell.x][topCell.y].shot === false;
       const bottomCell = {x: Math.min(this._previousShot.x + 1, 10), y: this._previousShot.y};
-      const bottomCandidate = this._grid[bottomCell.x][bottomCell.y].shot === false;
+      const bottomCandidate = this.grid[bottomCell.x][bottomCell.y].shot === false;
       const tryVertical = Math.random() >= 0.5;
       if (tryVertical && (topCandidate || bottomCandidate)) {
         if (topCandidate && bottomCandidate) {
@@ -64,24 +70,22 @@ export class PlayerGrid extends GameGrid {
       x = this.getRandomCoordinate();
       y = this.getRandomCoordinate();
     }
-    if (this._grid[x][y].shot === true) {
+    if (this.grid[x][y].shot === true) {
       this.enemyShootRandomly();
     }
 
-    if(this.isShip(this._grid[x][y])) {
+    if(this.isShip(this.grid[x][y])) {
       //Fire at the boat.
-      const ship = this.shadowRoot.querySelector('#' + this._grid[x][y].type);
+      const ship = this.shadowRoot.querySelector('#' + this.grid[x][y].type);
       ship.enemyShootAt(x, y);
-      this._grid[x][y].shot = true;
+      this.grid[x][y].shot = true;
       this._previousShot = {x: x, y: y};
       this.playerHitShip(ship.type);
       setTimeout( () => this.enemyShootRandomly(), 2000);
       return;
-    } else {
-      const hitArea = this.shadowRoot.querySelector('#hit-' + x + '-' + y);
-      hitArea.style.display = 'block';
     }
-    this._grid[x][y].shot = true;
+    this.grid[x][y].shot = true;
+    this.updateGrid();
     this.playerPlayed(x, y);
   }
 
@@ -94,9 +98,9 @@ export class PlayerGrid extends GameGrid {
     return html`
       <div class="title">Your fleet</div>
       <div class="grid">
-          ${this._grid.map((row, x) =>
+          ${this.grid.map((row, x) =>
             row.map((cell, y) => {
-                if (this.isShip(this._grid[x][y])) {
+                if (this.isShip(this.grid[x][y])) {
                   if(!this.isShipPlaced(cell.type)) {
                     this._shipPlaced.push(cell.type);
                     return html`
@@ -105,10 +109,7 @@ export class PlayerGrid extends GameGrid {
                       </ship-element>`
                   }
                 } else
-                  return html`<div class="cell" id="${x}-${y}">
-                    ${cell.text}
-                    <div class="hit-water-area" id="hit-${x}-${y}"></div>
-                  </div>`
+                  return html`<empty-cell ?hit="${cell.shot}">${cell.text}</empty-cell>`
               })
           )}
       </div>
