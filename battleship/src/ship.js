@@ -79,8 +79,8 @@ export class Ship extends LitElement {
 
 
     .hit-area {
-      height: 30px;
-      width: 30px;
+      height: 2vw;
+      width: 2vw;
       background-color: black;
       border-radius: 50%;
       z-index: 3;

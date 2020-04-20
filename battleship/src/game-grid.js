@@ -13,8 +13,8 @@ export class EmptyCell extends LitElement {
     }
 
     .hit-water-area {
-      height: 30px;
-      width: 30px;
+      height: 2vw;
+      width: 2vw;
       background-color: white;
       border-radius: 50%;
       display: none;
@@ -88,14 +88,6 @@ export class GameGrid extends LitElement {
       align-items: center;
       justify-content: center;
       height: 3%;
-    }
-
-    .hit-water-area {
-      height: 30px;
-      width: 30px;
-      background-color: white;
-      border-radius: 50%;
-      display: none;
     }
   `;
 
