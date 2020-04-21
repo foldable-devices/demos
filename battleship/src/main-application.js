@@ -183,7 +183,7 @@ export class MainApplication extends LitElement {
   playerPlayed() {
     this._enemyGrid.classList.add('blocked');
     this._infobox.showMessage('You missed!');
-    setTimeout( () => this._playerGrid.enemyShootRandomly(), this._timeBetweenRounds);
+    setTimeout( () => this._playerGrid.enemyShoot(), this._timeBetweenRounds);
     this._round++;
   }
 
