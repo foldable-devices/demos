@@ -23,7 +23,7 @@ export class MainApplication extends LitElement {
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('../sw.js');
+        navigator.serviceWorker.register('./sw.js');
       });
     }
   }
@@ -122,7 +122,7 @@ export class MainApplication extends LitElement {
                   srcset="images/ocean-1920.webp 1920w, images/ocean-1920.jpg 1920w"
                   sizes="(max-width: 1920px) 1920px" />
           <source media="(min-width: 1920px)"
-                  srcset="images/ocean-4k.jpg 2560w, images/ocean-4k.webp 2560w, images/ocean-1920.jpg 1920vw"/>
+                  srcset="images/ocean-4k.jpg 2560w, images/ocean-4k.webp 2560w, images/ocean-1920.jpg 1920w"/>
           <img class="background" src="images/ocean-1024.jpg" alt="Background of an ocean">
         </picture>
         <div class="enemy-fleet">
