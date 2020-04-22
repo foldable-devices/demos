@@ -84,7 +84,10 @@ export class InfoBox extends LitElement {
         <speech-bubble class="bubble">
             <div class="label">Let's get started, fire first.</div>
         </speech-bubble>
-        <img class="captain" src="images/captain.png"/>
+        <picture class="picture">
+          <source srcset="images/captain.webp" type="image/webp">
+          <img class="captain" src="images/captain.png" alt="captain face"/>
+        </picture>
       </div>
     `;
   }
@@ -129,11 +132,16 @@ _defineProperty(InfoBox, "styles", css`
       width: 80%;
     }
 
-    .captain {
+    .picture {
       width: 30%;
       align-self: flex-end;
+      margin-top: -20px;
+    }
+
+    .captain {
+      width: 100%;
       transform: rotateY(180deg);
-      margin-top: -30px;
+      opacity: 0.8;
     }
   `);
 

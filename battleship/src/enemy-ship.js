@@ -65,7 +65,10 @@ export class EnemyShip extends Ship.Ship {
             <div class="cell" @click="${() => this.shootAt(pos)}"><div class="hit-area" id="hit-${pos}"></div></div>
         `})}
       </div>
-      <img id="image" src="images/${this.type}-top-${this.orientation}.png"/>
+      <picture>
+          <source srcset="images/${this.type}-top-${this.orientation}.webp" type="image/webp">
+          <img id="image" src="images/${this.type}-top-${this.orientation}.png" alt="${this.type}"/>
+      </picture>
     `;
   }
 }

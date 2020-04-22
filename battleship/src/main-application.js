@@ -34,12 +34,13 @@ export class MainApplication extends LitElement {
       justify-content: center;
       width: 100vw;
       height: 100vh;
-      background-image: url("images/ocean-3k.jpg");
-      background-size: cover;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-color: #133759;
+    }
+
+    .background {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      z-index: -1;
     }
 
     .stripes {
@@ -69,30 +70,6 @@ export class MainApplication extends LitElement {
     .fleet {
       width: 50%;
       height: 100%;
-    }
-
-    @media only screen and (max-width: 767px) {
-      .content {
-        background-image: url("images/ocean-800.jpg");
-      }
-    }
-
-    @media only screen and (max-width: 1024px) {
-      .content {
-        background-image: url("images/ocean-1k.jpg");
-      }
-    }
-
-    @media only screen and (max-width: 1440px) {
-      .content {
-        background-image: url("images/ocean-1.5k.jpg");
-      }
-    }
-
-    @media only screen and (max-width: 1920px) {
-      .content {
-        background-image: url("images/ocean-2k.jpg");
-      }
     }
 
     @media (spanning: single-fold-vertical) {
@@ -160,6 +137,13 @@ export class MainApplication extends LitElement {
     this._playerGrid = this.shadowRoot.querySelector('#player-grid');
     this._infobox = this.shadowRoot.querySelector('#infobox');
     this._dialogbox = this.shadowRoot.querySelector('#dialogbox');
+
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('../sw.js');
+      });
+    }
   }
 
   constructor() {
@@ -226,6 +210,26 @@ export class MainApplication extends LitElement {
   render() {
     return html`
       <div class="content">
+        <picture>
+          <source media="(max-width: 767px)"
+                  srcset="images/ocean-412.webp 412w, images/ocean-768.webp 768w, images/ocean-800.webp 800w,
+                          images/ocean-412.jpg 412w, images/ocean-768.jpg 768w, images/ocean-800.jpg 800w"
+                  sizes="(max-width: 1366px) 1024px, 1366px" />
+          <source media="(max-width: 1366px)"
+                  srcset="images/ocean-1024.webp 1024w, images/ocean-1024.jpg 1024w,
+                          images/ocean-1366.webp 1366w, images/ocean-1366.jpg 1366w"
+                  sizes="(max-width: 1366px) 1024px, 1366px" />
+          <source media="(max-width: 1440px)"
+                  srcset="images/ocean-1440.webp 1440w, images/ocean-1366.webp 1366w,
+                          images/ocean-1440.jpg 1440w, images/ocean-1366.jpg 1366w"
+                  sizes="(max-width: 1440px) 1440px, 1366px" />
+          <source media="(max-width: 1920px)"
+                  srcset="images/ocean-1920.webp 1920w, images/ocean-1920.jpg 1920w"
+                  sizes="(max-width: 1920px) 1920px" />
+          <source media="(min-width: 1920px)"
+                  srcset="images/ocean-4k.jpg 2560w, images/ocean-4k.webp 2560w, images/ocean-1920.jpg 1920vw"/>
+          <img class="background" src="images/ocean-1024.jpg" alt="Background of an ocean">
+        </picture>
         <div class="enemy-fleet">
           <enemy-grid id="enemy-grid" @player-played=${this.playerPlayed} @player-sank=${this.playerSank} @player-hit=${this.playerHit} @game-over=${this.playerWin}></enemy-grid>
         </div>

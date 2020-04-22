@@ -230,10 +230,13 @@ export class Ship extends LitElement {
         ${Array.from({
       length: this.size
     }).map((_, pos) => html`
-            <div class="cell "><div class="hit-area" id="hit-${pos}"></div></div>
+            <div class="cell"><div class="hit-area" id="hit-${pos}"></div></div>
         `)}
       </div>
-      <img id="image" src="images/${this.type}-top-${this.orientation}.png"/>
+      <picture>
+          <source srcset="images/${this.type}-top-${this.orientation}.webp" type="image/webp">
+          <img id="image" src="images/${this.type}-top-${this.orientation}.png" alt="${this.type}"/>
+      </picture>
     `;
   }
 

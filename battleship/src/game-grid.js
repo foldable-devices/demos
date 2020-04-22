@@ -1,7 +1,6 @@
 import { LitElement, css, html } from '../web_modules/lit-element.js';
 import * as Ship from './ship.js';
 
-
 export class EmptyCell extends LitElement {
   static styles = css`
     :host {

@@ -18,8 +18,8 @@
     ]
   },
   "scripts": {
-    "start": "concurrently --kill-others \"babel src/ --out-dir dist/ --watch\" \"es-dev-server --node-resolve --watch --babel --open index.html --port 8081\"",
-    "build": "rimraf web_modules && babel src/ --out-dir dist/ && workbox generateSW workbox-config.js && snowpack --optimize",
+    "start": "concurrently --kill-others \"babel src/ --watch --out-dir dist/\" \"es-dev-server --node-resolve --watch --babel --open index.html --port 8081\"",
+    "build": "rimraf web_modules && snowpack --optimize && babel src/ --out-dir dist/ && workbox generateSW workbox-config.js",
     "regen-package-lock": "rimraf node_modules && rimraf package-lock.json; npm install"
   },
   "dependencies": {
