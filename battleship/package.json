@@ -18,7 +18,7 @@
     ]
   },
   "scripts": {
-    "start": "babel src/ --out-dir dist/ && es-dev-server --node-resolve --watch --babel --open index.html --port 8081",
+    "start": "concurrently --kill-others \"babel src/ --out-dir dist/ --watch\" \"es-dev-server --node-resolve --watch --babel --open index.html --port 8081\"",
     "build": "rimraf web_modules && babel src/ --out-dir dist/ && workbox generateSW workbox-config.js && snowpack --optimize",
     "regen-package-lock": "rimraf node_modules && rimraf package-lock.json; npm install"
   },
@@ -30,16 +30,17 @@
     "spanning-css-polyfill": "^1.0.12"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "babel-eslint": "10.1.0",
+    "concurrently": "^5.1.0",
     "es-dev-server": "^1.44.0",
     "eslint": "^6.8.0",
     "eslint-plugin-lit": "1.2.0",
-    "babel-eslint": "10.1.0",
     "rimraf": "^3.0.2",
     "snowpack": "^1.6.0",
-    "workbox-cli": "^5.1.2",
-    "@babel/core": "^7.9.0",
-    "@babel/cli": "^7.8.4",
-    "@babel/plugin-proposal-class-properties": "^7.8.3"
+    "workbox-cli": "^5.1.2"
   },
   "keywords": [],
   "license": "BSD-3-Clause",
