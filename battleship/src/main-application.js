@@ -216,18 +216,20 @@ export class MainApplication extends LitElement {
                           images/ocean-412.jpg 412w, images/ocean-768.jpg 768w, images/ocean-800.jpg 800w"
                   sizes="(max-width: 1366px) 1024px, 1366px" />
           <source media="(max-width: 1366px)"
-                  srcset="images/ocean-1024.webp 1024w, images/ocean-1024.jpg 1024w,
-                          images/ocean-1366.webp 1366w, images/ocean-1366.jpg 1366w"
+                  srcset="images/ocean-1024.webp 1024w, images/ocean-1366.webp 1366w,
+                          images/ocean-1024.jpg 1024w, images/ocean-1366.jpg 1366w"
                   sizes="(max-width: 1366px) 1024px, 1366px" />
           <source media="(max-width: 1440px)"
                   srcset="images/ocean-1440.webp 1440w, images/ocean-1366.webp 1366w,
                           images/ocean-1440.jpg 1440w, images/ocean-1366.jpg 1366w"
                   sizes="(max-width: 1440px) 1440px, 1366px" />
           <source media="(max-width: 1920px)"
-                  srcset="images/ocean-1920.webp 1920w, images/ocean-1920.jpg 1920w"
+                  srcset="images/ocean-1920.webp 1920w, images/ocean-1440.webp 1440w,
+                          images/ocean-1920.jpg 1920w, images/ocean-1440.jpg 1440w"
                   sizes="(max-width: 1920px) 1920px" />
           <source media="(min-width: 1920px)"
-                  srcset="images/ocean-4k.jpg 2560w, images/ocean-4k.webp 2560w, images/ocean-1920.jpg 1920w"/>
+                  srcset="images/ocean-4k.webp 2560w, images/ocean-1920.webp 1920w, images/ocean-4k.jpg 2560w,
+                          images/ocean-1920.jpg 1920w"/>
           <img class="background" src="images/ocean-1024.jpg" alt="Background of an ocean">
         </picture>
         <div class="enemy-fleet">
