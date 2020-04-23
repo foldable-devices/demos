@@ -49,9 +49,13 @@ export class DialogBox extends LitElement {
       text-align: center;
     }
 
-    .button {
+    .picture {
       width: 20%;
       margin-bottom: 5px;
+    }
+
+    .button {
+      width: 100%;
     }
 
     .button:hover {
@@ -127,7 +131,10 @@ export class DialogBox extends LitElement {
       <div class="content">
         <div class="text">
           <div class="label">You won!</div>
-          <img src="images/restart-button.png" class="button" @click="${this.buttonClicked}"/>
+          <picture class="picture">
+            <source srcset="images/restart-button.webp" type="image/webp">
+            <img class="button" src="images/restart-button.png" @click="${this.buttonClicked}"/>
+          </picture>
         </div>
       </div>
     `;
