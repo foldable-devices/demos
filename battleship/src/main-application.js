@@ -213,10 +213,10 @@ export class MainApplication extends LitElement {
         <picture>
           <source media="(max-width: 767px)"
                   srcset="images/ocean-412.webp 412w, images/ocean-768.webp 768w, images/ocean-800.webp 800w"
-                  sizes="(max-width: 1366px) 412px, 768px, 800px" type="image/webp"/>
+                  sizes="(max-width: 767px) 412px, 768px, 800px" type="image/webp"/>
           <source media="(max-width: 767px)"
                   srcset="images/ocean-412.jpg 412w, images/ocean-768.jpg 768w, images/ocean-800.jpg 800w"
-                  sizes="(max-width: 1366px) 412px, 768px, 800px" type="image/jpeg"/>
+                  sizes="(max-width: 767px) 412px, 768px, 800px" type="image/jpeg"/>
           <source media="(max-width: 1366px)"
                   srcset="images/ocean-1024.webp 1024w, images/ocean-1366.webp 1366w"
                   sizes="(max-width: 1366px) 1024px, 1366px" type="image/webp"/>
