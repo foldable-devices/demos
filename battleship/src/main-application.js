@@ -32,13 +32,13 @@ export class MainApplication extends LitElement {
       display: flex;
       flex-direction: row;
       justify-content: center;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
     }
 
     .background {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       position: absolute;
       z-index: -1;
     }
@@ -58,7 +58,7 @@ export class MainApplication extends LitElement {
     }
 
     .fold {
-      height: 100vh;
+      height: 100%;
       width: 15px;
     }
 
@@ -84,11 +84,11 @@ export class MainApplication extends LitElement {
 
       .enemy-fleet {
         width: env(fold-left);
-        height: 100vh;
+        height: 100%;
       }
 
       .fleet {
-        height: 100vh;
+        height: 100%;
         width: calc(100vw - env(fold-left) - env(fold-width));
       }
     }
@@ -105,18 +105,18 @@ export class MainApplication extends LitElement {
 
       .enemy-fleet {
         height: var(--zenbook-span2-height, env(fold-top));
-        width: 100vw;
+        width: 100%;
       }
 
       .fleet {
-        width: 100vw;
+        width: 100%;
         height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
       }
     }
 
     @media (spanning: none) {
       .fold {
-        height: 100vh;
+        height: 100%;
         width: 15px;
       }
 
