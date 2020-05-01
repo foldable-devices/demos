@@ -1,4 +1,4 @@
-import"./ponyfill-792d38b8.js";import{LitElement as s}from"../lit-element.js";const t=s=>(t,o)=>{if(t.constructor._observers){if(!t.constructor.hasOwnProperty("_observers")){const s=t.constructor._observers;t.constructor._observers=new Map,s.forEach((s,o)=>t.constructor._observers.set(o,s))}}else{t.constructor._observers=new Map;const s=t.updated;t.updated=function(t){s.call(this,t),t.forEach((s,t)=>{const o=this.constructor._observers.get(t);void 0!==o&&o.call(this,this[t],s)})}}t.constructor._observers.set(o,s)}
+import{LitElement as s}from"../lit-element.js";const t=s=>(t,o)=>{if(t.constructor._observers){if(!t.constructor.hasOwnProperty("_observers")){const s=t.constructor._observers;t.constructor._observers=new Map,s.forEach((s,o)=>t.constructor._observers.set(o,s))}}else{t.constructor._observers=new Map;const s=t.updated;t.updated=function(t){s.call(this,t),t.forEach((s,t)=>{const o=this.constructor._observers.get(t);void 0!==o&&o.call(this,this[t],s)})}}t.constructor._observers.set(o,s)}
 /**
 @license
 Copyright 2018 Google Inc. All Rights Reserved.
@@ -32,4 +32,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 class n extends s{createFoundation(){void 0!==this.mdcFoundation&&this.mdcFoundation.destroy(),this.mdcFoundation=new this.mdcFoundationClass(this.createAdapter()),this.mdcFoundation.init()}firstUpdated(){this.createFoundation()}}export{n as B,o as a,t as o};
-//# sourceMappingURL=base-element-48526550.js.map
+//# sourceMappingURL=base-element-0e9fd1ae.js.map

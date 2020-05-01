@@ -1,4 +1,4 @@
-import{b as t}from"../common/ponyfill-792d38b8.js";import{h as o}from"../common/lit-html-5735858c.js";import{property as i,LitElement as n,css as e,customElement as c}from"../lit-element.js";import{a as r}from"../common/ripple-directive-7c401e3d.js";class a extends n{constructor(){super(...arguments),this.disabled=!1,this.icon="",this.label=""}render(){return o`<button
+import{b as t}from"../common/foundation-dc06f16c.js";import{h as o}from"../common/lit-html-99d404bd.js";import{property as i,LitElement as n,css as e,customElement as c}from"../lit-element.js";import{a as r}from"../common/ripple-directive-2f47d06d.js";class a extends n{constructor(){super(...arguments),this.disabled=!1,this.icon="",this.label=""}render(){return o`<button
     .ripple="${r()}"
     class="mdc-icon-button"
     aria-label="${this.label||this.icon}"
