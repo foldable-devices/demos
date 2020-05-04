@@ -1,26 +1,4 @@
-import{_ as t,a as e,M as a}from"./foundation-dc06f16c.js";import{e as i,n,N as r,u as s}from"./lit-html-99d404bd.js";import{css as o}from"../lit-element.js";
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+import{a as t,b as e,M as a}from"./foundation-130fe4b7.js";import{e as i,n,N as r,u as s}from"./lit-html-99d404bd.js";import{css as o}from"../lit-element.js";
 /**
  * @license
  * Copyright 2019 Google Inc.
@@ -42,8 +20,29 @@ import{_ as t,a as e,M as a}from"./foundation-dc06f16c.js";import{e as i,n,N as 
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- */
-function d(t){return void 0===t&&(t=window),!!function(t){void 0===t&&(t=window);var e=!1;try{var a={get passive(){return e=!0,!1}},i=function(){};t.document.addEventListener("test",i,a),t.document.removeEventListener("test",i,a)}catch(t){e=!1}return e}
+ */function d(t){return void 0===t&&(t=window),!!function(t){void 0===t&&(t=window);var e=!1;try{var a={get passive(){return e=!0,!1}},i=function(){};t.document.addEventListener("test",i,a),t.document.removeEventListener("test",i,a)}catch(t){e=!1}return e}
+/**
+ * @license
+ * Copyright 2018 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */(t)&&{passive:!0}}
 /**
  * @license
  * Copyright 2016 Google Inc.
@@ -65,7 +64,8 @@ function d(t){return void 0===t&&(t=window),!!function(t){void 0===t&&(t=window)
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- */(t)&&{passive:!0}}var c,u={BG_FOCUSED:"mdc-ripple-upgraded--background-focused",FG_ACTIVATION:"mdc-ripple-upgraded--foreground-activation",FG_DEACTIVATION:"mdc-ripple-upgraded--foreground-deactivation",ROOT:"mdc-ripple-upgraded",UNBOUNDED:"mdc-ripple-upgraded--unbounded"},p={VAR_FG_SCALE:"--mdc-ripple-fg-scale",VAR_FG_SIZE:"--mdc-ripple-fg-size",VAR_FG_TRANSLATE_END:"--mdc-ripple-fg-translate-end",VAR_FG_TRANSLATE_START:"--mdc-ripple-fg-translate-start",VAR_LEFT:"--mdc-ripple-left",VAR_TOP:"--mdc-ripple-top"},l={DEACTIVATION_TIMEOUT_MS:225,FG_DEACTIVATION_MS:150,INITIAL_ORIGIN_SCALE:.6,PADDING:10,TAP_DELAY_MS:300};
+ */
+var c,u={BG_FOCUSED:"mdc-ripple-upgraded--background-focused",FG_ACTIVATION:"mdc-ripple-upgraded--foreground-activation",FG_DEACTIVATION:"mdc-ripple-upgraded--foreground-deactivation",ROOT:"mdc-ripple-upgraded",UNBOUNDED:"mdc-ripple-upgraded--unbounded"},p={VAR_FG_SCALE:"--mdc-ripple-fg-scale",VAR_FG_SIZE:"--mdc-ripple-fg-size",VAR_FG_TRANSLATE_END:"--mdc-ripple-fg-translate-end",VAR_FG_TRANSLATE_START:"--mdc-ripple-fg-translate-start",VAR_LEFT:"--mdc-ripple-left",VAR_TOP:"--mdc-ripple-top"},l={DEACTIVATION_TIMEOUT_MS:225,FG_DEACTIVATION_MS:150,INITIAL_ORIGIN_SCALE:.6,PADDING:10,TAP_DELAY_MS:300};
 /**
  * @license
  * Copyright 2016 Google Inc.
@@ -121,5 +121,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/,g=function(t,e){void 0===e&&(e=!1);var a,i=t.CSS;if("boolean"==typeof c&&!e)return c;if(!(i&&"function"==typeof i.supports))return!1;var n=i.supports("--css-vars","yes"),r=i.supports("(--css-vars: yes)")&&i.supports("color","#00000000");return a=n||r,e||(c=a),a}(window),A=navigator.userAgent.match(/Safari/);let y=!1;const C=t=>{A&&!y&&(()=>{y=!0;const t=document.createElement("style"),e=new r({templateFactory:s});e.appendInto(t),e.setValue(h),e.commit(),document.head.appendChild(t)})();const e=t.surfaceNode,a=t.interactionNode||e;a.getRootNode()!==e.getRootNode()&&""===a.style.position&&(a.style.position="relative");const i=new f({browserSupportsCssVars:()=>g,isUnbounded:()=>void 0===t.unbounded||t.unbounded,isSurfaceActive:()=>{return e=":active",((t=a).matches||t.webkitMatchesSelector||t.msMatchesSelector).call(t,e);var t,e},isSurfaceDisabled:()=>Boolean(a.hasAttribute("disabled")),addClass:t=>e.classList.add(t),removeClass:t=>e.classList.remove(t),containsEventTarget:t=>a.contains(t),registerInteractionHandler:(t,e)=>a.addEventListener(t,e,d()),deregisterInteractionHandler:(t,e)=>a.removeEventListener(t,e,d()),registerDocumentInteractionHandler:(t,e)=>document.documentElement.addEventListener(t,e,d()),deregisterDocumentInteractionHandler:(t,e)=>document.documentElement.removeEventListener(t,e,d()),registerResizeHandler:t=>window.addEventListener("resize",t),deregisterResizeHandler:t=>window.removeEventListener("resize",t),updateCssVariable:(t,a)=>e.style.setProperty(t,a),computeBoundingRect:()=>e.getBoundingClientRect(),getWindowPageOffset:()=>({x:window.pageXOffset,y:window.pageYOffset})});return i.init(),i},T=new WeakMap,E=i((t={})=>e=>{const a=e.committer.element,i=t.interactionNode||a;let r=e.value;const s=T.get(r);void 0!==s&&s!==i&&(r.destroy(),r=n),r===n?(r=C(Object.assign({},t,{surfaceNode:a})),T.set(r,i),e.setValue(r)):(void 0!==t.unbounded&&r.setUnbounded(t.unbounded),void 0!==t.disabled&&r.setUnbounded(t.disabled)),!0===t.active?r.activate():!1===t.active&&r.deactivate()});export{E as a,C as r};
-//# sourceMappingURL=ripple-directive-2f47d06d.js.map
+*/,g=function(t,e){void 0===e&&(e=!1);var a,i=t.CSS;if("boolean"==typeof c&&!e)return c;if(!(i&&"function"==typeof i.supports))return!1;var n=i.supports("--css-vars","yes"),r=i.supports("(--css-vars: yes)")&&i.supports("color","#00000000");return a=n||r,e||(c=a),a}(window),A=navigator.userAgent.match(/Safari/);let y=!1;const C=t=>{A&&!y&&(()=>{y=!0;const t=document.createElement("style"),e=new r({templateFactory:s});e.appendInto(t),e.setValue(h),e.commit(),document.head.appendChild(t)})();const e=t.surfaceNode,a=t.interactionNode||e;a.getRootNode()!==e.getRootNode()&&""===a.style.position&&(a.style.position="relative");const i=new f({browserSupportsCssVars:()=>g,isUnbounded:()=>void 0===t.unbounded||t.unbounded,isSurfaceActive:()=>{return e=":active",((t=a).matches||t.webkitMatchesSelector||t.msMatchesSelector).call(t,e);var t,e},isSurfaceDisabled:()=>Boolean(a.hasAttribute("disabled")),addClass:t=>e.classList.add(t),removeClass:t=>e.classList.remove(t),containsEventTarget:t=>a.contains(t),registerInteractionHandler:(t,e)=>a.addEventListener(t,e,d()),deregisterInteractionHandler:(t,e)=>a.removeEventListener(t,e,d()),registerDocumentInteractionHandler:(t,e)=>document.documentElement.addEventListener(t,e,d()),deregisterDocumentInteractionHandler:(t,e)=>document.documentElement.removeEventListener(t,e,d()),registerResizeHandler:t=>window.addEventListener("resize",t),deregisterResizeHandler:t=>window.removeEventListener("resize",t),updateCssVariable:(t,a)=>e.style.setProperty(t,a),computeBoundingRect:()=>e.getBoundingClientRect(),getWindowPageOffset:()=>({x:window.pageXOffset,y:window.pageYOffset})});return i.init(),i},T=new WeakMap,b=i((t={})=>e=>{const a=e.committer.element,i=t.interactionNode||a;let r=e.value;const s=T.get(r);void 0!==s&&s!==i&&(r.destroy(),r=n),r===n?(r=C(Object.assign({},t,{surfaceNode:a})),T.set(r,i),e.setValue(r)):(void 0!==t.unbounded&&r.setUnbounded(t.unbounded),void 0!==t.disabled&&r.setUnbounded(t.disabled)),!0===t.active?r.activate():!1===t.active&&r.deactivate()});export{b as a,C as r};
+//# sourceMappingURL=ripple-directive-e4db3964.js.map

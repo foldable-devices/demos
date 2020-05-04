@@ -44,7 +44,7 @@ To build, run
 $ npm run build
 ```
 
-This will update the `web_modules` directory which can be committed to the repository.
+This will update the `web_modules` directory which can be committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
 
 ## Assets
 

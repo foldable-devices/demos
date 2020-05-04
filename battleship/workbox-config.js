@@ -2,7 +2,7 @@ module.exports = {
   "globDirectory": ".",
   "inlineWorkboxRuntime": "true",
   "globPatterns": [
-    "**/*.{js,ico,html,css}",
+    "**/*.{ico,html,css}",
     "images/manifest/icon-512x512.png",
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
@@ -20,7 +20,8 @@ module.exports = {
     "images/ocean-1024.webp",
     "images/captain.webp",
     "images/restart-button.webp",
-    "web_modules/import-map.json"
+    "web_modules/import-map.json",
+    "dist/*.js"
   ],
   "swDest": "sw.js",
 

@@ -2,13 +2,14 @@ module.exports = {
   "globDirectory": ".",
   "inlineWorkboxRuntime": "true",
   "globPatterns": [
-    "**/*.{js,ico,html,css}",
+    "**/*.{ico,html,css}",
     "images/manifest/icon-512x512.png",
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
     "web_modules/import-map.json",
     "**/*-l.webp",
+    "dist/*.js"
   ],
   "swDest": "sw.js",
 

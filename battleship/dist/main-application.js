@@ -2,10 +2,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
 import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+import '../web_modules/@material/mwc-button.js';
+import '../web_modules/@material/mwc-icon-button.js';
+import '../web_modules/@material/mwc-snackbar.js';
 import "./player-grid.js";
 import "./enemy-grid.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
+import '../web_modules/@material/mwc-snackbar.js';
+import { Workbox, messageSW } from '../web_modules/workbox-window.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -19,11 +24,36 @@ export class MainApplication extends LitElement {
     this._playerGrid = this.shadowRoot.querySelector('#player-grid');
     this._infobox = this.shadowRoot.querySelector('#infobox');
     this._dialogbox = this.shadowRoot.querySelector('#dialogbox');
+    this._snackbar = this.shadowRoot.querySelector('#snackbar');
+
+    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
+      if (event.detail.reason === "action") {
+        this._wb.addEventListener('controlling', event => {
+          console.log("reloading");
+          window.location.reload();
+          this._newSW = undefined;
+        }); // Send a message to the waiting service worker instructing
+        // it to skip waiting, which will trigger the `controlling`
+        // event listener above.
+
+
+        if (this._newSW) messageSW(this._newSW, {
+          type: 'SKIP_WAITING'
+        });
+      }
+    }); // Check that service workers are supported
+
 
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
+        this._wb = new Workbox('./sw.js');
+
+        this._wb.addEventListener('waiting', event => this._showSnackbar(event));
+
+        this._wb.addEventListener('externalwaiting', event => this._showSnackbar(event));
+
+        this._wb.register();
       });
     }
   }
@@ -33,12 +63,24 @@ export class MainApplication extends LitElement {
 
     _defineProperty(this, "_timeBetweenRounds", 1500);
 
+    _defineProperty(this, "_snackbar", void 0);
+
+    _defineProperty(this, "_wb", void 0);
+
+    _defineProperty(this, "_newSW", undefined);
+
     this._round = 0;
   }
 
   connectedCallback() {
     super.connectedCallback();
     observe(this);
+  }
+
+  _showSnackbar(event) {
+    if (event.originalEvent) this._newSW = event.originalEvent.currentTarget;
+
+    this._snackbar.open();
   }
 
   restartGame() {
@@ -148,6 +190,10 @@ export class MainApplication extends LitElement {
       </div>
       <info-box id="infobox"></info-box>
       <dialog-box id="dialogbox" @button-clicked=${this.restartGame}></dialog-box>
+      <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
+        <mwc-button slot="action">RELOAD</mwc-button>
+        <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+      </mwc-snackbar>
     `;
   }
 
@@ -210,6 +256,10 @@ _defineProperty(MainApplication, "styles", css`
     .fleet {
       width: 50%;
       height: 100%;
+    }
+
+    mwc-snackbar {
+      --mdc-snackbar-action-color: #2d89ef;
     }
 
     @media (spanning: single-fold-vertical) {

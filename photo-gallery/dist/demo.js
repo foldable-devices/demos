@@ -2,10 +2,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
 import { classMap } from '../web_modules/lit-html/directives/class-map.js';
+import '../web_modules/@material/mwc-button.js';
 import '../web_modules/@material/mwc-checkbox.js';
 import '../web_modules/@material/mwc-drawer.js';
 import '../web_modules/@material/mwc-icon-button.js';
+import '../web_modules/@material/mwc-snackbar.js';
 import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+import { Workbox, messageSW } from '../web_modules/workbox-window.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -174,17 +177,42 @@ export class MainApplication extends LitElement {
     this._detail_select = this.shadowRoot.querySelector('.detail-select');
     this._spinner = this.shadowRoot.querySelector('mwc-circular-progress');
     this._drawer = this.shadowRoot.querySelector('#drawer');
+    this._snackbar = this.shadowRoot.querySelector('#snackbar');
     this._fold = this.shadowRoot.querySelector('.fold');
     this._styleCheckbox = this.shadowRoot.querySelector('mwc-checkbox');
 
     this._styleCheckbox.addEventListener('change', this._styleChanged);
 
-    this._fullview_container = this.shadowRoot.querySelector('.fullview-container'); // Check that service workers are supported
+    this._fullview_container = this.shadowRoot.querySelector('.fullview-container');
+
+    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
+      if (event.detail.reason === "action") {
+        this._wb.addEventListener('controlling', event => {
+          console.log("reloading");
+          window.location.reload();
+          this._newSW = undefined;
+        }); // Send a message to the waiting service worker instructing
+        // it to skip waiting, which will trigger the `controlling`
+        // event listener above.
+
+
+        if (this._newSW) messageSW(this._newSW, {
+          type: 'SKIP_WAITING'
+        });
+      }
+    }); // Check that service workers are supported
+
 
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
+        this._wb = new Workbox('./sw.js');
+
+        this._wb.addEventListener('waiting', event => this._showSnackbar(event));
+
+        this._wb.addEventListener('externalwaiting', event => this._showSnackbar(event));
+
+        this._wb.register();
       });
     }
   }
@@ -214,6 +242,12 @@ export class MainApplication extends LitElement {
 
     _defineProperty(this, "_fullview_container", void 0);
 
+    _defineProperty(this, "_snackbar", void 0);
+
+    _defineProperty(this, "_wb", void 0);
+
+    _defineProperty(this, "_newSW", undefined);
+
     _defineProperty(this, "_styleChanged", event => {
       if (this._styleCheckbox.checked) {
         this._fullview_container.style.height = '100vh';
@@ -241,6 +275,12 @@ export class MainApplication extends LitElement {
 
   _openDrawer() {
     this._drawer.open = true;
+  }
+
+  _showSnackbar(event) {
+    if (event.originalEvent) this._newSW = event.originalEvent.currentTarget;
+
+    this._snackbar.open();
   }
 
   _openPicture(e) {
@@ -445,6 +485,10 @@ export class MainApplication extends LitElement {
             Split UX : <mwc-checkbox checked></mwc-checkbox>
         </div>
         <div slot="appContent" class="content">
+          <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
+            <mwc-button slot="action">RELOAD</mwc-button>
+            <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+          </mwc-snackbar>
           <mwc-icon-button icon="menu" class="menu-icon" @click="${this._openDrawer}"></mwc-icon-button>
           <div class="gallery">
             ${images.map(images => html`
@@ -692,6 +736,10 @@ _defineProperty(MainApplication, "styles", css`
 
     mwc-drawer {
       z-index: 3;
+    }
+
+    mwc-snackbar {
+      --mdc-snackbar-action-color: white;
     }
 
     .menu-icon {
