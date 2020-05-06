@@ -29,7 +29,7 @@ export class SpeechBubble extends LitElement {
       position: relative;
     }
 
-    ::slotted(*) {
+    .label {
       position: absolute;
       top: 0;
       left: 0;
@@ -38,7 +38,6 @@ export class SpeechBubble extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2%;
     }
   `;
 
@@ -52,7 +51,9 @@ export class SpeechBubble extends LitElement {
         <svg  xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 132 136">
           <path class="path" d="M66.1 1.5C30.4 1.5 1.5 22.9 1.5 46c0 18.1 17.9 33.5 42.8 39.3 1.5 14.8-1.3 39-8.5 48.1 10.8-12.5 22.4-33.6 26.6-45.7 1.2 0 2.5.1 3.7.1 35.7 0 64.6-18.7 64.6-41.8S101.8 1.5 66.1 1.5zM35.8 133.4c-.3.4-.7.8-1 1.1.4-.3.7-.7 1-1.1z"/>
         </svg>
-        <slot></slot>
+        <div class="label">
+          <slot name="text"></slot>
+        </div>
       </div>
     `;
   }
@@ -118,7 +119,7 @@ export class InfoBox extends LitElement {
     return html`
       <div class="content">
         <speech-bubble class="bubble">
-            <slot name="label"></slot>
+            <slot name="label" slot="text"></slot>
         </speech-bubble>
         <picture class="picture">
           <source srcset="images/captain.webp" type="image/webp">
