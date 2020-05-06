@@ -50,12 +50,14 @@ _defineProperty(SpeechBubble, "styles", litCSS`
 
     ::slotted(*) {
       position: absolute;
-      top: 19%;
-      left: 3%;
-      width: 90%;
-      height: 40%;
-      font-size: 1vw;
-      text-align: center;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 62%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2%;
     }
   `);
 
@@ -70,19 +72,11 @@ export class InfoBox extends LitElement {
     observe(this);
   }
 
-  firstUpdated() {
-    this._label = this.shadowRoot.querySelector('.label');
-  }
-
-  showMessage(text) {
-    this._label.innerHTML = text;
-  }
-
   render() {
     return html`
       <div class="content">
         <speech-bubble class="bubble">
-            <div class="label">Let's get started, fire first.</div>
+            <slot name="label"></slot>
         </speech-bubble>
         <picture class="picture">
           <source srcset="images/captain.webp" type="image/webp">
@@ -102,14 +96,7 @@ _defineProperty(InfoBox, "styles", css`
       right: 0;
       z-index: 3;
       opacity: 0.8;
-    }
-
-    *,
-    *::after,
-    *::before {
-      margin: 0;
-      padding: 0;
-      box-sizing: inherit;
+      font-size: 1vw;
     }
 
     .content {
@@ -122,20 +109,21 @@ _defineProperty(InfoBox, "styles", css`
       justify-content: center;
     }
 
-    .label {
-      font-size: 1vw;
-      line-height: 200%;
-      margin: 5px;
-    }
-
     .bubble {
       width: 80%;
+      height: auto;
+    }
+
+    ::slotted(*) {
+      line-height: 200%;
+      margin: 5px;
+      font-size: inherit;
     }
 
     .picture {
       width: 30%;
       align-self: flex-end;
-      margin-top: -20px;
+      margin-top: -3em;
     }
 
     .captain {

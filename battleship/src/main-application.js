@@ -81,10 +81,74 @@ export class MainApplication extends LitElement {
       --mdc-snackbar-action-color: #2d89ef;
     }
 
+    #fullscreen-rotate {
+      width: 100%;
+      height: 100%;
+      z-index: 99;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #rotate-infobox {
+      width: 70%;
+      height: 70%;
+      position: absolute;
+      top: 15%;
+      left: 15%;
+      font-size: 2vmax;
+      opacity: 1;
+    }
+
+    @media all and (orientation:portrait) {
+      #fullscreen-rotate {
+        display: block;
+      }
+
+      .fold {
+        visibility: hidden;
+      }
+
+      .enemy-fleet {
+        visibility: hidden;
+      }
+
+      .fleet {
+        visibility: hidden;
+      }
+
+      #infobox {
+        visibility: hidden;
+      }
+    }
+
+    @media all and (orientation:landscape) {
+      #fullscreen-rotate {
+        display: none;
+      }
+
+      .fold {
+        visibility: visible;
+      }
+
+      .enemy-fleet {
+        visibility: visible;
+      }
+
+      .fleet {
+        visibility: visible;
+      }
+
+      #infobox {
+        visibility: visible;
+      }
+    }
+
     @media (spanning: single-fold-vertical) {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
+        visibility: visible;
       }
 
       .content {
@@ -94,11 +158,21 @@ export class MainApplication extends LitElement {
       .enemy-fleet {
         width: env(fold-left);
         height: 100%;
+        visibility: visible;
       }
 
       .fleet {
         height: 100%;
         width: calc(100vw - env(fold-left) - env(fold-width));
+        visibility: visible;
+      }
+
+      #fullscreen-rotate {
+        display: none;
+      }
+
+      #infobox {
+        visibility: visible;
       }
     }
 
@@ -106,6 +180,7 @@ export class MainApplication extends LitElement {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
+        visibility: visible;
       }
 
       .content {
@@ -115,46 +190,92 @@ export class MainApplication extends LitElement {
       .enemy-fleet {
         height: var(--zenbook-span2-height, env(fold-top));
         width: 100%;
+        visibility: visible;
       }
 
       .fleet {
         width: 100%;
         height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
+        visibility: visible;
+      }
+
+      #fullscreen-rotate {
+        display: none;
+      }
+
+      #infobox {
+        visibility: visible;
       }
     }
 
-    @media (spanning: none) {
+    @media (spanning: none) and (orientation:landscape) {
       .fold {
         height: 100%;
         width: 15px;
+        visibility: visible;
       }
 
       .content {
         flex-direction: row;
       }
 
+      .enemy-fleet {
+        visibility: visible;
+      }
+
+      .fleet {
+        visibility: visible;
+      }
+
       .blocked {
-        pointer-events:none;
+        pointer-events: none;
+      }
+
+      #infobox {
+        visibility: visible;
+      }
+    }
+
+    @media (spanning: none) and (orientation:portrait) {
+
+      #fullscreen-rotate {
+        display: block;
+      }
+
+      .enemy-fleet {
+        visibility: hidden;
+      }
+
+      .fleet {
+        visibility: hidden;
+      }
+
+      .fold {
+        visibility: hidden;
+      }
+
+      #infobox {
+        visibility: hidden;
       }
     }
   `;
 
   _timeBetweenRounds = 1500;
   _snackbar;
+  _playMessage;
   _wb;
   _newSW = undefined;
 
   firstUpdated() {
     this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
     this._playerGrid = this.shadowRoot.querySelector('#player-grid');
-    this._infobox = this.shadowRoot.querySelector('#infobox');
+    this._playMessage = this.shadowRoot.querySelector('#play-message');
     this._dialogbox = this.shadowRoot.querySelector('#dialogbox');
     this._snackbar = this.shadowRoot.querySelector('#snackbar');
 
     this._snackbar.addEventListener('MDCSnackbar:closed', event => {
       if (event.detail.reason === "action") {
-        this._wb.addEventListener('controlling', (event) => {
-          console.log("reloading")
+        this._wb.addEventListener('controlling', () => {
           window.location.reload();
           this._newSW = undefined;
         });
@@ -200,50 +321,50 @@ export class MainApplication extends LitElement {
     this._enemyGrid.classList.remove('blocked');
     this._enemyGrid.restart();
     this._playerGrid.restart();
-    this._infobox.showMessage('Let\'s get started, fire first.');
+    this._playMessage.innerHTML = 'Let\'s get started, fire first.';
   }
 
   playerPlayed() {
     this._enemyGrid.classList.add('blocked');
-    this._infobox.showMessage('You missed!');
+    this._playMessage.innerHTML = 'You missed!';
     setTimeout( () => this._playerGrid.enemyShoot(), this._timeBetweenRounds);
     this._round++;
   }
 
   enemyPlayed(event) {
-    this._infobox.showMessage('I shot at ' + alphabeticalCells[event.detail.x] + '-' + event.detail.y);
+    this._playMessage.innerHTML = 'I shot at ' + alphabeticalCells[event.detail.x] + '-' + event.detail.y;
     setTimeout( () => this.nextPlayerTurn(), this._timeBetweenRounds);
   }
 
   nextPlayerTurn() {
-    this._infobox.showMessage('Your turn...');
+    this._playMessage.innerHTML = 'Your turn...';
     this._enemyGrid.classList.remove('blocked');
   }
 
   playerHit(event) {
-    this._infobox.showMessage('You hit my ' + event.detail.type + '!<br> Shoot again.');
+    this._playMessage.innerHTML = 'You hit my ' + event.detail.type + '!<br> Shoot again.';
   }
 
   playerSank(event) {
-    this._infobox.showMessage('You sank my ' + event.detail.type + ' :( !<br> Shoot again.');
+    this._playMessage.innerHTML = 'You sank my ' + event.detail.type + ' :( !<br> Shoot again.';
   }
 
   enemyHit(event) {
-    this._infobox.showMessage('Ah! I hit your ' + event.detail.type + '!<br> I\'ll shoot again.');
+    this._playMessage.innerHTML = 'Ah! I hit your ' + event.detail.type + '!<br> I\'ll shoot again.';
   }
 
   enemySank(event) {
-    this._infobox.showMessage('Sank your ' + event.detail.type + '!<br> I\'ll shoot again.');
+    this._playMessage.innerHTML = 'Sank your ' + event.detail.type + '!<br> I\'ll shoot again.';
   }
 
   playerWin() {
     this._enemyGrid.classList.add('blocked');
-    this._dialogbox.showMessage('You won! <br> You defeated your enemy in ' + this._round + ' rounds.');
+    this._playMessage.innerHTML = 'You won! <br> You defeated your enemy in ' + this._round + ' rounds.';
   }
 
   playerLost() {
     this._enemyGrid.classList.add('blocked');
-    this._dialogbox.showMessage('You lost! <br> Your enemy defeated you in ' + this._round + ' rounds.');
+    this._playMessage.innerHTML = 'You lost! <br> Your enemy defeated you in ' + this._round + ' rounds.';
   }
 
   render() {
@@ -290,12 +411,19 @@ export class MainApplication extends LitElement {
           <player-grid id="player-grid" @player-played=${this.enemyPlayed} @game-over=${this.playerLost} @player-hit=${this.enemyHit} @player-sank=${this.enemySank}></player-grid>
         </div>
       </div>
-      <info-box id="infobox"></info-box>
+      <info-box id="infobox">
+        <div slot="label" id="play-message">Let's get started, fire first.</div>
+      </info-box>
       <dialog-box id="dialogbox" @button-clicked=${this.restartGame}></dialog-box>
       <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
         <mwc-button slot="action">RELOAD</mwc-button>
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
+      <div id="fullscreen-rotate">
+        <info-box id="rotate-infobox">
+          <div slot="label">Ahoy Captain!<br>Please rotate your device to play.</div>
+        </info-box>
+      </div>
     `;
   }
 }
