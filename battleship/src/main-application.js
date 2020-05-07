@@ -91,11 +91,11 @@ export class MainApplication extends LitElement {
     }
 
     #rotate-infobox {
-      width: 70%;
-      height: 70%;
+      width: 90%;
+      height: 90%;
       position: absolute;
-      top: 15%;
-      left: 15%;
+      top: 5%;
+      left: 5%;
       font-size: 2vmax;
       opacity: 1;
       text-align: center;
@@ -274,6 +274,12 @@ export class MainApplication extends LitElement {
     this._dialogbox = this.shadowRoot.querySelector('#dialogbox');
     this._snackbar = this.shadowRoot.querySelector('#snackbar');
 
+    if (this._deviceSupportsSpanningMQs()) {
+      let rotateMessage = this.shadowRoot.querySelector('#rotate-message');
+      rotateMessage.innerHTML= 'Ahoy Captain!<br>Please rotate your device to play. \
+                                <br> You can also span the window to play.'
+    }
+
     this._snackbar.addEventListener('MDCSnackbar:closed', event => {
       if (event.detail.reason === "action") {
         this._wb.addEventListener('controlling', () => {
@@ -316,6 +322,14 @@ export class MainApplication extends LitElement {
 
   _showSnackbar() {
     this._snackbar.open();
+  }
+
+  _deviceSupportsSpanningMQs() {
+    const hasBrowserSupport =
+      window.matchMedia('(spanning: single-fold-horizontal)').matches ||
+      window.matchMedia('(spanning: single-fold-vertical)').matches ||
+      window.matchMedia('(spanning: none)').matches || false;
+    return hasBrowserSupport;
   }
 
   restartGame() {
@@ -423,7 +437,7 @@ export class MainApplication extends LitElement {
       </mwc-snackbar>
       <div id="fullscreen-rotate">
         <info-box id="rotate-infobox">
-          <div slot="label">Ahoy Captain!<br>Please rotate your device to play.</div>
+          <div slot="label" id="rotate-message">Ahoy Captain!<br>Please rotate your device to play.</div>
         </info-box>
       </div>
     `;
