@@ -265,7 +265,7 @@ export class MainApplication extends LitElement {
   _snackbar;
   _playMessage;
   _wb;
-  _newSW = undefined;
+  _wbRegistration = undefined;
 
   firstUpdated() {
     this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
@@ -277,26 +277,29 @@ export class MainApplication extends LitElement {
     this._snackbar.addEventListener('MDCSnackbar:closed', event => {
       if (event.detail.reason === "action") {
         this._wb.addEventListener('controlling', () => {
+          console.log("reloading")
           window.location.reload();
-          this._newSW = undefined;
+          this._wbRegistration = undefined;
         });
-
+        console.log(this._wbRegistration)
         // Send a message to the waiting service worker instructing
         // it to skip waiting, which will trigger the `controlling`
         // event listener above.
-        if (this._newSW)
-          messageSW(this._newSW, {type: 'SKIP_WAITING'})
+        if (this._wbRegistration && this._wbRegistration.waiting) {
+          console.log('skip waiting')
+          messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
+        }
       }
     });
 
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
-      window.addEventListener('load', () => {
+      window.addEventListener('load', async () => {
         this._wb = new Workbox('./sw.js');
-        this._wb.addEventListener('waiting', (event) => this._showSnackbar(event));
-        this._wb.addEventListener('externalwaiting', (event) => this._showSnackbar(event));
-        this._wb.register();
+        this._wb.addEventListener('waiting', () => this._showSnackbar());
+        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
+        this._wbRegistration = await this._wb.register();
       });
     }
   }
@@ -311,11 +314,7 @@ export class MainApplication extends LitElement {
     observe(this);
   }
 
-  _showSnackbar(event) {
-    if (event.originalEvent)
-      this._newSW = event.originalEvent.currentTarget;
-    else
-      this._newSW = event.sw;
+  _showSnackbar() {
     this._snackbar.open();
   }
 

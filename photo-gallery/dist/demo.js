@@ -190,13 +190,13 @@ export class MainApplication extends LitElement {
         this._wb.addEventListener('controlling', event => {
           console.log("reloading");
           window.location.reload();
-          this._newSW = undefined;
+          this._wbRegistration = undefined;
         }); // Send a message to the waiting service worker instructing
         // it to skip waiting, which will trigger the `controlling`
         // event listener above.
 
 
-        if (this._newSW) messageSW(this._newSW, {
+        if (this._wbRegistration && this._wbRegistration.waiting) messageSW(this._wbRegistration.waiting, {
           type: 'SKIP_WAITING'
         });
       }
@@ -205,14 +205,14 @@ export class MainApplication extends LitElement {
 
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
-      window.addEventListener('load', () => {
+      window.addEventListener('load', async () => {
         this._wb = new Workbox('./sw.js');
 
-        this._wb.addEventListener('waiting', event => this._showSnackbar(event));
+        this._wb.addEventListener('waiting', () => this._showSnackbar());
 
-        this._wb.addEventListener('externalwaiting', event => this._showSnackbar(event));
+        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
 
-        this._wb.register();
+        this._wbRegistration = await this._wb.register();
       });
     }
   }
@@ -246,7 +246,7 @@ export class MainApplication extends LitElement {
 
     _defineProperty(this, "_wb", void 0);
 
-    _defineProperty(this, "_newSW", undefined);
+    _defineProperty(this, "_wbRegistration", undefined);
 
     _defineProperty(this, "_styleChanged", event => {
       if (this._styleCheckbox.checked) {
@@ -277,9 +277,7 @@ export class MainApplication extends LitElement {
     this._drawer.open = true;
   }
 
-  _showSnackbar(event) {
-    if (event.originalEvent) this._newSW = event.originalEvent.currentTarget;
-
+  _showSnackbar() {
     this._snackbar.open();
   }
 
