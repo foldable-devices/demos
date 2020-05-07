@@ -312,7 +312,10 @@ export class MainApplication extends LitElement {
   }
 
   _showSnackbar(event) {
-    this._newSW = event.sw;
+    if (event.originalEvent)
+      this._newSW = event.originalEvent.currentTarget;
+    else
+      this._newSW = event.sw;
     this._snackbar.open();
   }
 
