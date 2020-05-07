@@ -98,6 +98,7 @@ export class MainApplication extends LitElement {
       left: 15%;
       font-size: 2vmax;
       opacity: 1;
+      text-align: center;
     }
 
     @media all and (orientation:portrait) {
