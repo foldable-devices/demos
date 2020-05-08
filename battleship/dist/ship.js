@@ -196,7 +196,7 @@ export class Ship extends LitElement {
     const hitArea = this.shadowRoot.querySelector('#hit-' + hitZoneId);
     hitArea.classList.add('hit');
     this.hitCount++;
-    if (this.hitCount === this.size) this.shipDestroyed();
+    if (this.hitCount === this.size) this.shipDestroyed();else this.shipHit();
   }
 
   shipDestroyed() {

@@ -8,6 +8,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 import { html, css } from '../web_modules/lit-element.js';
 import { GameGrid } from './game-grid.js';
+import * as Ship from './ship.js';
 export const GridDirection = {
   Top: 'Top',
   Bottom: 'Bottom',
@@ -17,13 +18,17 @@ export const GridDirection = {
 export class PlayerGrid extends GameGrid {
   firstUpdated() {
     super.firstUpdated();
-    this.generateRandomGrid();
+    this.generateRandomGrid(); // Ordered by size so it makes it easier to find the biggest boat left.
+
+    this._boatsToSink = [Ship.ShipType.Carrier, Ship.ShipType.Battleship, Ship.ShipType.Submarine, Ship.ShipType.Destroyer, Ship.ShipType.Rescue];
   }
 
   constructor() {
     super();
 
     _defineProperty(this, "_pendingSanks", []);
+
+    _defineProperty(this, "_boatsToSink", []);
 
     this._previousShot = {
       x: 0,
@@ -38,6 +43,7 @@ export class PlayerGrid extends GameGrid {
       y: 0
     };
     this._pendingSanks = [];
+    this._boatsToSink = [Ship.ShipType.Carrier, Ship.ShipType.Battleship, Ship.ShipType.Submarine, Ship.ShipType.Destroyer, Ship.ShipType.Rescue];
   }
 
   isCellAPreviouslyMissedShot(cell) {
@@ -69,9 +75,88 @@ export class PlayerGrid extends GameGrid {
     }
   }
 
+  biggestBoatLeft() {
+    return Ship.getShipSize(this._boatsToSink[0]);
+  }
+
+  boatsLeftFitAround(x, y) {
+    let biggestBoatLeft = this.biggestBoatLeft();
+    const cell = {
+      x: x,
+      y: y
+    };
+    const emptySpotsLeft = this.walkGridAndCountEmptySpaces(GridDirection.Left, cell, biggestBoatLeft - 1, 0);
+    const emptySpotsRight = this.walkGridAndCountEmptySpaces(GridDirection.Right, cell, biggestBoatLeft - 1, 0);
+    const emptySpotsTop = this.walkGridAndCountEmptySpaces(GridDirection.Top, cell, biggestBoatLeft - 1, 0);
+    const emptySpotsBottom = this.walkGridAndCountEmptySpaces(GridDirection.Bottom, cell, biggestBoatLeft - 1, 0);
+
+    if (emptySpotsLeft + 1 === biggestBoatLeft || emptySpotsRight + 1 === biggestBoatLeft || emptySpotsTop + 1 === biggestBoatLeft || emptySpotsBottom + 1 === biggestBoatLeft || emptySpotsLeft + emptySpotsRight + 1 >= biggestBoatLeft || emptySpotsTop + emptySpotsBottom + 1 >= biggestBoatLeft) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  walkGridAndCountEmptySpaces(direction, cell, maxWalk, currentSpaceNumber) {
+    if (this.isCellAtTheEge(direction, cell)) return currentSpaceNumber;
+    let nextCell = cell;
+
+    switch (direction) {
+      case GridDirection.Left:
+        nextCell = {
+          x: cell.x,
+          y: Math.max(cell.y - 1, 1)
+        };
+        break;
+
+      case GridDirection.Right:
+        nextCell = {
+          x: cell.x,
+          y: Math.min(cell.y + 1, 10)
+        };
+        break;
+
+      case GridDirection.Top:
+        nextCell = {
+          x: Math.max(cell.x - 1, 1),
+          y: cell.y
+        };
+        break;
+
+      case GridDirection.Bottom:
+        nextCell = {
+          x: Math.min(cell.x + 1, 10),
+          y: cell.y
+        };
+        break;
+
+      default:
+        console.error("wrong direction");
+        return;
+    }
+
+    if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) {
+      return currentSpaceNumber;
+    }
+
+    if (this.isCellABoatPreviouslyShot(this.grid[nextCell.x][nextCell.y])) {
+      return currentSpaceNumber;
+    }
+
+    currentSpaceNumber++;
+
+    if (currentSpaceNumber === maxWalk) {
+      return currentSpaceNumber;
+    } else return this.walkGridAndCountEmptySpaces(direction, nextCell, maxWalk, currentSpaceNumber);
+  }
+
+  isCellAtTheEge(direction, cell) {
+    return direction === GridDirection.Left && cell.y - 1 === 0 || direction === GridDirection.Right && cell.y + 1 === 11 || direction === GridDirection.Top && cell.x - 1 === 0 || direction === GridDirection.Bottom && cell.x + 1 === 11;
+  }
+
   walkGrid(direction, cell) {
     // It's not possible to walk the grid (edges) then walk the other direction.
-    if (direction === GridDirection.Left && cell.y - 1 === 0 || direction === GridDirection.Right && cell.y + 1 === 11 || direction === GridDirection.Top && cell.x - 1 === 0 || direction === GridDirection.Bottom && cell.x + 1 === 11) return this.walkGrid(this.oppositeDirection(direction), cell);
+    if (this.isCellAtTheEge(direction, cell)) return this.walkGrid(this.oppositeDirection(direction), cell);
     let candidateCell = cell;
 
     switch (direction) {
@@ -117,6 +202,7 @@ export class PlayerGrid extends GameGrid {
   }
 
   enemyShoot() {
+    if (this.isGameOver()) return;
     let x;
     let y; //Successful shot, we'll try around.
 
@@ -196,21 +282,12 @@ export class PlayerGrid extends GameGrid {
 
         x = this._previousShot.x;
       }
-
-      if (x === undefined || y === undefined) {
-        this;
-        x = this.getRandomCoordinate();
-        y = this.getRandomCoordinate();
-      }
     } else {
       x = this.getRandomCoordinate();
       y = this.getRandomCoordinate();
-    } // Keep trying to find an empty spot if the random coordinates are
-    // returning a spot we've already fired.
 
+      while (this.grid[x][y].shot === true || this.grid[x][y].shot === false && !this.boatsLeftFitAround(x, y)) x = this.getRandomCoordinate();
 
-    while (this.grid[x][y].shot === true) {
-      x = this.getRandomCoordinate();
       y = this.getRandomCoordinate();
     }
 
@@ -240,7 +317,6 @@ export class PlayerGrid extends GameGrid {
         };
       }
 
-      this.playerHitShip(ship.type);
       setTimeout(() => this.enemyShoot(), 2000);
       return;
     }
@@ -251,7 +327,12 @@ export class PlayerGrid extends GameGrid {
   }
 
   shipDestroyed(event) {
+    this._boatsToSink = this._boatsToSink.filter(item => item != event.detail.type);
     this.playerSankShip(event.detail.type);
+  }
+
+  shipHit(event) {
+    this.playerHitShip(event.detail.type);
   }
 
   render() {
@@ -265,7 +346,8 @@ export class PlayerGrid extends GameGrid {
 
           return html`
                       <ship-element id="${cell.type}" x="${cell.x}" y="${cell.y}"
-                        type="${cell.type}" orientation="${cell.orientation}" @ship-destroyed="${this.shipDestroyed}">
+                        type="${cell.type}" orientation="${cell.orientation}" @ship-hit="${this.shipHit}"
+                        @ship-destroyed="${this.shipDestroyed}">
                       </ship-element>`;
         }
       } else return html`<empty-cell ?hit="${cell.shot}">${cell.text}</empty-cell>`;

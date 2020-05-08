@@ -231,20 +231,14 @@ export class GameGrid extends LitElement {
     return this._shipPlaced.includes(type);
   }
 
-  playerHit(type) {
-    let event = new CustomEvent('player-hit', {
-      detail: { message: 'player played.', type: type},
-      bubbles: true,
-      composed: true });
-    this.dispatchEvent(event);
-
-    this.dispatchGameOverIfNecessary();
+  isGameOver() {
+    return this._submarine.destroyed && this._destroyer.destroyed &&
+           this._carrier.destroyed && this._battleship.destroyed &&
+           this._rescue.destroyed;
   }
 
   dispatchGameOverIfNecessary() {
-    const isGameOver = this._submarine.destroyed && this._destroyer.destroyed &&
-      this._carrier.destroyed && this._battleship.destroyed && this._rescue.destroyed;
-    if (isGameOver) {
+    if (this.isGameOver()) {
       let event = new CustomEvent('game-over', {
         detail: { message: 'Game Over' },
         bubbles: true,
@@ -277,6 +271,7 @@ export class GameGrid extends LitElement {
       bubbles: true,
       composed: true });
     this.dispatchEvent(event);
+    this.dispatchGameOverIfNecessary();
   }
 
   update() {

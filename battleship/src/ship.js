@@ -222,6 +222,8 @@ export class Ship extends LitElement {
    this.hitCount++;
    if (this.hitCount === this.size)
       this.shipDestroyed();
+   else
+      this.shipHit();
   }
 
   shipDestroyed() {

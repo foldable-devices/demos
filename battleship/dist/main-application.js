@@ -139,19 +139,23 @@ export class MainApplication extends LitElement {
   }
 
   enemySank(event) {
-    this._playMessage.innerHTML = 'Sank your ' + event.detail.type + '!<br> I\'ll shoot again.';
+    this._playMessage.innerHTML = 'I sank your ' + event.detail.type + '!<br> I\'ll shoot again.';
   }
 
   playerWin() {
     this._enemyGrid.classList.add('blocked');
 
-    this._playMessage.innerHTML = 'You won! <br> You defeated your enemy in ' + this._round + ' rounds.';
+    this._dialogbox.showMessage('You won! <br> You defeated your enemy in ' + this._round + ' rounds.');
+
+    this._playMessage.innerHTML = 'Oh no :(, you won...';
   }
 
   playerLost() {
     this._enemyGrid.classList.add('blocked');
 
-    this._playMessage.innerHTML = 'You lost! <br> Your enemy defeated you in ' + this._round + ' rounds.';
+    this._dialogbox.showMessage('You lost! <br> Your enemy defeated you in ' + this._round + ' rounds.');
+
+    this._playMessage.innerHTML = 'Yeah, I won!';
   }
 
   render() {
