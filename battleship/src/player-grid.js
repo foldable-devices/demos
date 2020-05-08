@@ -96,24 +96,8 @@ export class PlayerGrid extends GameGrid {
   walkGridAndCountEmptySpaces(direction, cell, maxWalk, currentSpaceNumber) {
     if (this.isCellAtTheEge(direction, cell))
       return currentSpaceNumber;
-    let nextCell = cell;
-    switch(direction) {
-      case GridDirection.Left:
-        nextCell = {x: cell.x, y: Math.max(cell.y - 1, 1)};
-        break;
-      case GridDirection.Right:
-        nextCell = {x: cell.x, y: Math.min(cell.y + 1, 10)};
-        break;
-      case GridDirection.Top:
-        nextCell = {x: Math.max(cell.x - 1, 1), y: cell.y};
-        break;
-      case GridDirection.Bottom:
-        nextCell = {x: Math.min(cell.x + 1, 10), y: cell.y};
-        break;
-      default:
-        console.error("wrong direction")
-        return;
-    }
+
+    const nextCell = this.getNeighborCell(direction, cell);
 
     if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) {
       return currentSpaceNumber;
@@ -136,11 +120,7 @@ export class PlayerGrid extends GameGrid {
     (direction === GridDirection.Bottom && cell.x + 1 === 11);
   }
 
-  walkGrid(direction, cell) {
-    // It's not possible to walk the grid (edges) then walk the other direction.
-    if (this.isCellAtTheEge(direction, cell))
-      return this.walkGrid(this.oppositeDirection(direction), cell);
-
+  getNeighborCell(direction, cell) {
     let candidateCell = cell;
     switch(direction) {
       case GridDirection.Left:
@@ -159,6 +139,16 @@ export class PlayerGrid extends GameGrid {
         console.error("wrong direction")
         return;
     }
+    return candidateCell;
+  }
+
+  walkGrid(direction, cell) {
+    // It's not possible to walk the grid (edges) then walk the other direction.
+    if (this.isCellAtTheEge(direction, cell))
+      return this.walkGrid(this.oppositeDirection(direction), cell);
+
+    const candidateCell = this.getNeighborCell(direction, cell);
+
     // We shot and found a boat there, let's continue to climb.
     if (this.isCellABoatPreviouslyShot(this.grid[candidateCell.x][candidateCell.y]))
       return this.walkGrid(direction, candidateCell);
