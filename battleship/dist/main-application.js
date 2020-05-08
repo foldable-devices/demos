@@ -35,17 +35,14 @@ export class MainApplication extends LitElement {
     this._snackbar.addEventListener('MDCSnackbar:closed', event => {
       if (event.detail.reason === "action") {
         this._wb.addEventListener('controlling', () => {
-          console.log("reloading");
           window.location.reload();
           this._wbRegistration = undefined;
-        });
-
-        console.log(this._wbRegistration); // Send a message to the waiting service worker instructing
+        }); // Send a message to the waiting service worker instructing
         // it to skip waiting, which will trigger the `controlling`
         // event listener above.
 
+
         if (this._wbRegistration && this._wbRegistration.waiting) {
-          console.log('skip waiting');
           messageSW(this._wbRegistration.waiting, {
             type: 'SKIP_WAITING'
           });
