@@ -55,28 +55,12 @@ export class PlayerGrid extends GameGrid {
     return cell.shot && cell.type != undefined && cell.type === this.grid[this._previousShot.x][this._previousShot.y].type;
   }
 
-  oppositeDirection(direction) {
-    switch (direction) {
-      case GridDirection.Left:
-        return GridDirection.Right;
-
-      case GridDirection.Right:
-        return GridDirection.Left;
-
-      case GridDirection.Top:
-        return GridDirection.Bottom;
-
-      case GridDirection.Bottom:
-        return GridDirection.Top;
-
-      default:
-        console.error("wrong direction");
-        return GridDirection.Top;
-    }
-  }
-
   biggestBoatLeft() {
     return Ship.getShipSize(this._boatsToSink[0]);
+  }
+
+  smallestBoatLeft() {
+    return Ship.getShipSize(this._boatsToSink[this._boatsToSink.length - 1]);
   }
 
   boatsLeftFitAround(x, y) {
@@ -101,11 +85,7 @@ export class PlayerGrid extends GameGrid {
     if (this.isCellAtTheEge(direction, cell)) return currentSpaceNumber;
     const nextCell = this.getNeighborCell(direction, cell);
 
-    if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) {
-      return currentSpaceNumber;
-    }
-
-    if (this.isCellABoatPreviouslyShot(this.grid[nextCell.x][nextCell.y])) {
+    if (this.grid[nextCell.x][nextCell.y].shot === true) {
       return currentSpaceNumber;
     }
 
@@ -160,16 +140,71 @@ export class PlayerGrid extends GameGrid {
     return candidateCell;
   }
 
-  walkGrid(direction, cell) {
-    // It's not possible to walk the grid (edges) then walk the other direction.
-    if (this.isCellAtTheEge(direction, cell)) return this.walkGrid(this.oppositeDirection(direction), cell);
-    const candidateCell = this.getNeighborCell(direction, cell); // We shot and found a boat there, let's continue to climb.
+  walkGridToFindEmptyCell(direction, cell) {
+    if (this.isCellAtTheEge(direction, cell)) return null;
+    const nextCell = this.getNeighborCell(direction, cell); // If we shot there then bail out, we can't shoot there.
 
-    if (this.isCellABoatPreviouslyShot(this.grid[candidateCell.x][candidateCell.y])) return this.walkGrid(direction, candidateCell); // We're trying to climb but we found a water that we shot previously so
-    // we should climb the other direction.
+    if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) {
+      return null;
+    } // If it's the current boat let's continue.
 
-    if (this.isCellAPreviouslyMissedShot(this.grid[candidateCell.x][candidateCell.y])) return this.walkGrid(this.oppositeDirection(direction), candidateCell);
-    return candidateCell;
+
+    if (this.isCellABoatPreviouslyShot(this.grid[nextCell.x][nextCell.y])) {
+      // We continue to walk.
+      return this.walkGridToFindEmptyCell(direction, nextCell);
+    } // Spot has been shot previously (other boat).
+
+
+    if (this.grid[nextCell.x][nextCell.y].shot === true) return null;
+    return nextCell;
+  }
+
+  walkGridToFindCandidateToShoot(direction, cell, maxWalk, currentSpaceNumber) {
+    if (this.isCellAtTheEge(direction, cell)) return currentSpaceNumber;
+    const nextCell = this.getNeighborCell(direction, cell);
+    if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) return currentSpaceNumber; // If it's the current boat let's continue.
+
+    if (this.isCellABoatPreviouslyShot(this.grid[nextCell.x][nextCell.y])) {
+      // We continue to walk.
+      return this.walkGridToFindCandidateToShoot(direction, nextCell, maxWalk, ++currentSpaceNumber);
+    } // Spot has been shot previously (other boat).
+
+
+    if (this.grid[nextCell.x][nextCell.y].shot === true) return currentSpaceNumber;
+    currentSpaceNumber++;
+    if (currentSpaceNumber >= maxWalk) return currentSpaceNumber;else return this.walkGridToFindCandidateToShoot(direction, nextCell, maxWalk, currentSpaceNumber);
+  }
+
+  isBoatHorizontal(cell) {
+    let isHorizontal = null;
+
+    if (!this.isCellAtTheEge(GridDirection.Left, cell)) {
+      let leftCell = this.getNeighborCell(GridDirection.Left, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[leftCell.x][leftCell.y])) isHorizontal = true;
+    }
+
+    if (!this.isCellAtTheEge(GridDirection.Right, cell)) {
+      let rightCell = this.getNeighborCell(GridDirection.Right, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[rightCell.x][rightCell.y])) isHorizontal = true;
+    }
+
+    return isHorizontal;
+  }
+
+  isBoatVertical(cell) {
+    let isVertical = null;
+
+    if (!this.isCellAtTheEge(GridDirection.Top, cell)) {
+      let topCell = this.getNeighborCell(GridDirection.Top, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[topCell.x][topCell.y])) isVertical = true;
+    }
+
+    if (!this.isCellAtTheEge(GridDirection.Bottom, cell)) {
+      let bottomCell = this.getNeighborCell(GridDirection.Bottom, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[bottomCell.x][bottomCell.y])) isVertical = true;
+    }
+
+    return isVertical;
   }
 
   enemyShoot() {
@@ -182,58 +217,43 @@ export class PlayerGrid extends GameGrid {
       let rightCell;
       let topCell;
       let bottomCell;
-      const hasLeft = this._previousShot.y - 1 > 0;
-      let leftCandidate = hasLeft && this.grid[this._previousShot.x][this._previousShot.y - 1].shot === false;
-      if (hasLeft) leftCell = {
-        x: this._previousShot.x,
-        y: this._previousShot.y - 1
-      };
-      const hasRight = this._previousShot.y + 1 < 11;
-      let rightCandidate = hasRight && this.grid[this._previousShot.x][this._previousShot.y + 1].shot === false;
-      if (hasRight) rightCell = {
-        x: this._previousShot.x,
-        y: this._previousShot.y + 1
-      };
-      const hasTop = this._previousShot.x - 1 > 0;
-      let topCandidate = hasTop && this.grid[this._previousShot.x - 1][this._previousShot.y].shot === false;
-      if (hasTop) topCell = {
-        x: this._previousShot.x - 1,
-        y: this._previousShot.y
-      };
-      const hasBottom = this._previousShot.x + 1 < 11;
-      let bottomCandidate = hasBottom && this.grid[this._previousShot.x + 1][this._previousShot.y].shot === false;
-      if (hasBottom) bottomCell = {
-        x: this._previousShot.x + 1,
-        y: this._previousShot.y
-      };
-      let tryVertical = Math.random() >= 0.5; // If the cells around were shot and had a boat we need to climb up the grid.
+      let leftCandidate = false;
+      let rightCandidate = false;
+      let topCandidate = false;
+      let bottomCandidate = false;
+      let tryVertical;
+      let smallestBoatLeft = this.smallestBoatLeft();
+      const leftSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Left, this._previousShot, smallestBoatLeft - 1, 0);
+      const rightSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Right, this._previousShot, smallestBoatLeft - 1, 0);
+      const topSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Top, this._previousShot, smallestBoatLeft - 1, 0);
+      const bottomSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Bottom, this._previousShot, smallestBoatLeft - 1, 0);
+      let boatIsVertical = this.isBoatVertical(this._previousShot);
+      let boatIsHorizontal = this.isBoatHorizontal(this._previousShot);
 
-      if (hasLeft && this.isCellABoatPreviouslyShot(this.grid[leftCell.x][leftCell.y]) || hasRight && this.isCellABoatPreviouslyShot(this.grid[rightCell.x][rightCell.y])) {
-        // we shot there previously so it's an horizontal boat
-        if (hasLeft && this.grid[leftCell.x][leftCell.y].shot) {
-          rightCell = this.walkGrid(GridDirection.Right, leftCell);
-          if (rightCell) rightCandidate = true;
-        } else if (hasRight && this.grid[rightCell.x][rightCell.y].shot) {
-          leftCell = this.walkGrid(GridDirection.Left, rightCell);
-          if (leftCell) leftCandidate = true;
-        }
-
-        tryVertical = false;
+      if (leftSpaces > 0 && (boatIsHorizontal === null || boatIsHorizontal) && (leftSpaces + 1 === smallestBoatLeft || rightSpaces + leftSpaces + 1 >= smallestBoatLeft)) {
+        leftCell = this.walkGridToFindEmptyCell(GridDirection.Left, this._previousShot);
+        if (leftCell) leftCandidate = true;
       }
 
-      if (hasTop && this.isCellABoatPreviouslyShot(this.grid[topCell.x][topCell.y]) || hasBottom && this.isCellABoatPreviouslyShot(this.grid[bottomCell.x][bottomCell.y])) {
-        if (hasTop && this.grid[topCell.x][topCell.y].shot) {
-          bottomCell = this.walkGrid(GridDirection.Bottom, topCell);
-          if (bottomCell) bottomCandidate = true;
-        } else if (hasBottom && this.grid[bottomCell.x][bottomCell.y].shot) {
-          topCell = this.walkGrid(GridDirection.Top, bottomCell);
-          if (topCell) topCandidate = true;
-        }
+      if (rightSpaces > 0 && (boatIsHorizontal === null || boatIsHorizontal) && (rightSpaces + 1 === smallestBoatLeft || rightSpaces + leftSpaces + 1 >= smallestBoatLeft)) {
+        rightCell = this.walkGridToFindEmptyCell(GridDirection.Right, this._previousShot);
+        if (rightCell) rightCandidate = true;
+      }
 
-        tryVertical = true;
-      } // tryVertical can be random in case we have no previous shots but we need
+      if (topSpaces > 0 && (boatIsVertical === null || boatIsVertical) && (topSpaces + 1 === smallestBoatLeft || topSpaces + bottomSpaces + 1 >= smallestBoatLeft)) {
+        topCell = this.walkGridToFindEmptyCell(GridDirection.Top, this._previousShot);
+        if (topCell) topCandidate = true;
+      }
+
+      if (bottomSpaces > 0 && (boatIsVertical === null || boatIsVertical) && (bottomSpaces + 1 === smallestBoatLeft || topSpaces + bottomSpaces + 1 >= smallestBoatLeft)) {
+        bottomCell = this.walkGridToFindEmptyCell(GridDirection.Bottom, this._previousShot);
+        if (bottomCell) bottomCandidate = true;
+      } // We can't figure out yet if the boat is vertical or horizontal, let's
+      // try random.
+
+
+      if (boatIsVertical === null && boatIsHorizontal === null) tryVertical = Math.random() >= 0.5;else if (boatIsHorizontal) tryVertical = false;else if (boatIsVertical) tryVertical = true; // tryVertical can be random in case we have no previous shots but we need
       // to make sure we can actually shoot there (e.g. edges)
-
 
       if (tryVertical && !bottomCandidate && !topCandidate) tryVertical = false;
       if (!tryVertical && !leftCandidate && !rightCandidate) tryVertical = true;
@@ -257,9 +277,10 @@ export class PlayerGrid extends GameGrid {
       x = this.getRandomCoordinate();
       y = this.getRandomCoordinate();
 
-      while (this.grid[x][y].shot === true || this.grid[x][y].shot === false && !this.boatsLeftFitAround(x, y)) x = this.getRandomCoordinate();
-
-      y = this.getRandomCoordinate();
+      while (this.grid[x][y].shot === true || this.grid[x][y].shot === false && !this.boatsLeftFitAround(x, y)) {
+        x = this.getRandomCoordinate();
+        y = this.getRandomCoordinate();
+      }
     }
 
     if (this.isShip(this.grid[x][y])) {

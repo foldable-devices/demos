@@ -208,6 +208,7 @@ export class Ship extends LitElement {
       hitArea.classList.remove('hit');
     });
     this.hitCount = 0;
+    this.destroyed = false;
   }
 
   enemyShootAt(x, y) {
