@@ -499,7 +499,7 @@ const He=te`@keyframes mdc-slider-emphasize{0%{animation-timing-function:ease-ou
       z-index: 9999;
       position: absolute;
       font-size: 12px;
-      width: 8vw;
+      width: 12vw;
       height: 50px;
 
       /* Surface Duo */
