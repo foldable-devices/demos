@@ -87,7 +87,7 @@ export class MainApplication extends LitElement {
   }
 
   _showSnackbar() {
-    this._snackbar.open();
+    this._snackbar.show();
   }
 
   _deviceSupportsSpanningMQs() {
