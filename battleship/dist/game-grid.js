@@ -1,6 +1,6 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, css, html } from '../web_modules/lit-element.js';
+import { LitElement, css, html } from '../build/web_modules/lit-element.js';
 import * as Ship from './ship.js';
 export class EmptyCell extends LitElement {
   static get properties() {
