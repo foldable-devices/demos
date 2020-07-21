@@ -24,7 +24,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"babel src/ --watch --out-dir dist/\" \"es-dev-server --node-resolve --watch --babel --open index.html --port 8081\"",
     "build": "rimraf web_modules && snowpack --optimize && babel src/ --out-dir dist/ && workbox generateSW workbox-config.js",
-    "regen-package-lock": "rimraf node_modules && rimraf package-lock.json; npm install"
+    "regen-package-lock": "rimraf package-lock.json && rimraf node_modules && npm install"
   },
   "dependencies": {
     "foldable-device-configurator": "1.1.4",
@@ -55,5 +55,9 @@
   "author": {
     "name": "Alexis Menard",
     "email": "alexis.menard@intel.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foldable-devices/demos.git"
   }
 }

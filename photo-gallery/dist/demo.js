@@ -1,14 +1,14 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
-import { classMap } from '../web_modules/lit-html/directives/class-map.js';
-import '../web_modules/@material/mwc-button.js';
-import '../web_modules/@material/mwc-checkbox.js';
-import '../web_modules/@material/mwc-drawer.js';
-import '../web_modules/@material/mwc-icon-button.js';
-import '../web_modules/@material/mwc-snackbar.js';
-import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
-import { Workbox, messageSW } from '../web_modules/workbox-window.js';
+import { LitElement, html, css as litCSS } from '../build/web_modules/lit-element.js';
+import { classMap } from '../build/web_modules/lit-html/directives/class-map.js';
+import '../build/web_modules/@material/mwc-button.js';
+import '../build/web_modules/@material/mwc-checkbox.js';
+import '../build/web_modules/@material/mwc-drawer.js';
+import '../build/web_modules/@material/mwc-icon-button.js';
+import '../build/web_modules/@material/mwc-snackbar.js';
+import { adjustCSS, observe } from "../build/web_modules/spanning-css-polyfill.js";
+import { Workbox, messageSW } from '../build/web_modules/workbox-window.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -278,7 +278,7 @@ export class MainApplication extends LitElement {
   }
 
   _showSnackbar() {
-    this._snackbar.open();
+    this._snackbar.show();
   }
 
   _openPicture(e) {
