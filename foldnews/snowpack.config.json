@@ -1,0 +1,22 @@
+{
+  "install": [
+    "foldable-device-configurator",
+    "lit-element",
+    "lit-html",
+    "lit-html/directives/class-map.js",
+    "@material/mwc-button",
+    "@material/mwc-icon-button",
+    "@material/mwc-snackbar",
+    "spanning-css-polyfill",
+    "workbox-window"
+  ],
+  "rollup.dedupe": [
+    "lit-element",
+    "lit-html",
+    "spanning-css-polyfill"
+  ],
+  "plugins": ["@snowpack/plugin-babel"],
+  "scripts": {
+    "build:js": "@snowpack/plugin-babel"
+  }
+}
