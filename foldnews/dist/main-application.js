@@ -473,11 +473,27 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .cell-1 {
+        grid-row: 1 / span 1;
         width: env(fold-left);
+      }
+
+      .cell-2 {
+        grid-column: span 2 / span 2;
       }
 
       .cell-4 {
         width: env(fold-left);
+        grid-row: 2 / span 1;
+        grid-column: 1;
+      }
+
+      .cell-5 {
+        grid-row: 2 / span 1;
+      }
+
+      .picture {
+        display: block;
+        max-width: 100%;
       }
     }
 
@@ -511,11 +527,26 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .cell-1 {
+        grid-row: 1 / span 2;
         width: auto;
+      }
+
+      .cell-2 {
+        grid-column: span 2 / span 2;
+      }
+
+      .cell-3 {
+        grid-row: 2;
+        grid-column: 2;
       }
 
       .cell-4 {
         width: auto;
+        grid-column: 1 / span 3;
+      }
+
+      .cell-5 {
+        grid-row: 2 / span 1;
       }
     }
   `);

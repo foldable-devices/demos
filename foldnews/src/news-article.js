@@ -49,7 +49,7 @@ class NewsArticle extends LitElement {
     }
 
     .picture-container {
-      width: 100%;
+      width: 80%;
       margin-bottom: 10px;
     }
 
@@ -64,6 +64,7 @@ class NewsArticle extends LitElement {
     .article-content {
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     .large-text {

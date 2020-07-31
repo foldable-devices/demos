@@ -148,7 +148,7 @@ _defineProperty(NewsArticle, "styles", css`
     }
 
     .picture-container {
-      width: 100%;
+      width: 80%;
       margin-bottom: 10px;
     }
 
@@ -163,6 +163,7 @@ _defineProperty(NewsArticle, "styles", css`
     .article-content {
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     .large-text {
