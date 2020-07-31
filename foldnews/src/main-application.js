@@ -45,7 +45,7 @@ export class MainApplication extends LitElement {
     }
 
     .header-main {
-      width: 95%;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -86,6 +86,20 @@ export class MainApplication extends LitElement {
       margin-left: 5px;
     }
 
+    .title-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+    }
+
+    .title-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+    }
+
     .logo-container {
       margin-left: 20px;
     }
@@ -103,6 +117,10 @@ export class MainApplication extends LitElement {
       font-weight: 700;
       font-size: 15px;
       width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
     }
 
     .frontpage {
@@ -245,6 +263,67 @@ export class MainApplication extends LitElement {
     p {
       margin-top: 10px;
     }
+
+    @media (spanning: single-fold-vertical) {
+      .fold {
+        width: env(fold-width);
+      }
+
+      .title-left {
+        width: env(fold-left);
+      }
+
+      .title-right {
+        width: calc(100vw - env(fold-left) - env(fold-width));
+      }
+
+      .grow-right {
+        display: block;
+        flex-grow: 2;
+        border: solid 1px green;
+      }
+
+      .date-grow {
+        width: env(fold-left);
+      }
+
+      .date{
+        flex-direction: row-reverse;
+      }
+
+      .header-main {
+        flex-direction: row-reverse;
+      }
+    }
+    @media (spanning: none) {
+      .fold {
+        width: 0;
+      }
+
+      .grow-right {
+        display: none;
+      }
+
+      .date-grow {
+        display: none;
+      }
+
+      .header-main {
+        flex-direction: row;
+      }
+
+      .date{
+        flex-direction: row;
+      }
+
+      .title-left {
+        width: auto;
+      }
+
+      .title-right {
+        width: auto;
+      }
+    }
   `;
 
   _snackbar;
@@ -307,17 +386,21 @@ export class MainApplication extends LitElement {
         <div class="header">
           <div class="header-main">
             <div class="grow"></div>
-            <div class="weather">
-              <div class="weather-type">
-                Sunshine
-                <picture>
-                  <img class="weather-picture" src="images/sun.webp" alt="Picture of a sun">
-                </picture>
+            <div class="title-left">
+              <div class="weather">
+                <div class="weather-type">
+                  Sunshine
+                  <picture>
+                    <img class="weather-picture" src="images/sun.webp" alt="Picture of a sun">
+                  </picture>
+                </div>
+                <div>Temperature: 29&deg;C</div>
+                <div>Wind: 2km/h</div>
               </div>
-              <div>Temperature: 29&deg;C</div>
-              <div>Wind: 2km/h</div>
             </div>
-            <div class="header-title">
+            <div class="fold angled stripes"></div>
+            <div class="grow-right"></div>
+            <div class="title-right">
               <div>The Fold News</div>
               <div class="logo-container">
                 <picture>
@@ -327,7 +410,11 @@ export class MainApplication extends LitElement {
             </div>
             <div class="grow"></div>
           </div>
-          <div class="date">Portland, OR - June 7th, 2011</div>
+          <div class="date">
+            <div class="date-grow"></div>
+            <div class="fold angled stripes"></div>
+            Portland, OR - June 7th, 2011
+          </div>
         </div>
         <div class="frontpage">
           <div class="fp-cell fp-cell--1">
