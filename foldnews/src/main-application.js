@@ -54,9 +54,10 @@ export class MainApplication extends LitElement {
 
     .header-title {
       flex-grow: 2;
-      text-align: center;
       display: flex;
       flex-direction: row;
+      justify-content: center;
+      align-items: center;
     }
 
     .grow {
@@ -86,7 +87,6 @@ export class MainApplication extends LitElement {
     }
 
     .logo-container {
-      margin: auto;
       margin-left: 20px;
     }
 
@@ -318,7 +318,7 @@ export class MainApplication extends LitElement {
               <div>Wind: 2km/h</div>
             </div>
             <div class="header-title">
-              <div >The Fold News</div>
+              <div>The Fold News</div>
               <div class="logo-container">
                 <picture>
                   <img class="logo" src="images/foldnews-logo.png" alt="Fold news logo">
