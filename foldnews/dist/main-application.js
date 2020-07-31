@@ -110,9 +110,9 @@ export class MainApplication extends LitElement {
           </div>
         </div>
         <div class="frontpage">
-          <div class="fp-cell fp-cell--1">
+          <div class="cell cell-1">
             <div class="item">
-            <div class="article-title">Asus launched its new Zephyrus Duo laptop, two screens in one laptop</div>
+              <div class="article-title">Asus launched its new Zephyrus Duo laptop, two screens in one laptop</div>
               <div class="author">By Alexis Menard</div>
               <div class="picture-container">
                 <picture>
@@ -133,9 +133,9 @@ export class MainApplication extends LitElement {
               </p>
             </div>
           </div>
-          <div class="fp-cell fp-cell--5">
+          <div class="cell cell-5">
             <div class="item">
-            <div class="article-title">W3C Community showcases early standards for foldables and dual screen devices</div>
+              <div class="article-title">W3C Community showcases early standards for foldables and dual screen devices</div>
               <div class="author">By Alexis Menard</div>
               <div class="picture-container">
                 <picture>
@@ -149,9 +149,9 @@ export class MainApplication extends LitElement {
               the work.
             </div>
           </div>
-          <div class="fp-cell fp-cell--2">
+          <div class="cell cell-2">
             <div class="item">
-              <div class="article-title">Microsoft demonstrates the Surface Duo.</div>
+              <div class="article-title">Microsoft demonstrates the Surface Duo</div>
               <div class="author">By Alexis Menard</div>
               <div class="picture-container">
                 <picture>
@@ -166,8 +166,9 @@ export class MainApplication extends LitElement {
               </p>
             </div>
           </div>
-          <div class="fp-cell fp-cell--3 fp-cell--border-top">
-            <div class="item"><div class="article-title">Intel shows its Horseshoe Bend foldable concept</div>
+          <div class="cell cell-3">
+            <div class="item">
+              <div class="article-title">Intel shows its Horseshoe Bend foldable concept</div>
               <div class="author">By Alexis Menard</div>
               <div class="picture-container">
                 <picture>
@@ -181,7 +182,7 @@ export class MainApplication extends LitElement {
               estate makes it perfect for productivity allowing to see more.
             </div>
           </div>
-          <div class="fp-cell fp-cell--4 fp-cell--border-top">
+          <div class="cell cell-4">
             <div class="item">
               <div class="article-title">Samsung announces the Galaxy Fold.</div>
               <div class="author">By Alexis Menard</div>
@@ -351,7 +352,7 @@ _defineProperty(MainApplication, "styles", css`
       border-left: 1px solid black;
     }
 
-    .fp-cell {
+    .cell {
       position: relative;
       padding: 10px;
       background-color:  var(--background-color);
@@ -359,24 +360,24 @@ _defineProperty(MainApplication, "styles", css`
       border-bottom: solid 1px black;
     }
 
-    .fp-cell--1 {
+    .cell-1 {
       grid-row: 1 / span 2;
     }
 
-    .fp-cell--2 {
+    .cell-2 {
       grid-column: span 2 / span 2;
     }
 
-    .fp-cell--3 {
+    .cell-3 {
       grid-row: 2;
       grid-column: 2;
     }
 
-    .fp-cell--4 {
+    .cell-4 {
       grid-column: 1 / span 3;
     }
 
-    .fp-cell--5 {
+    .cell-5 {
       grid-row: 2 / span 1;
     }
 
@@ -521,7 +522,16 @@ _defineProperty(MainApplication, "styles", css`
       .header-main {
         flex-direction: row-reverse;
       }
+
+      .cell-1 {
+        width: env(fold-left);
+      }
+
+      .cell-4 {
+        width: env(fold-left);
+      }
     }
+
     @media (spanning: none) {
       .fold {
         width: 0;
@@ -548,6 +558,14 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .title-right {
+        width: auto;
+      }
+
+      .cell-1 {
+        width: auto;
+      }
+
+      .cell-4 {
         width: auto;
       }
     }
