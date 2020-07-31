@@ -314,6 +314,7 @@ _defineProperty(MainApplication, "styles", css`
 
     .logo {
       height: 50px;
+      display: block;
     }
 
     .date {
@@ -470,6 +471,24 @@ _defineProperty(MainApplication, "styles", css`
 
     p {
       margin-top: 10px;
+    }
+
+    @media (min-width: 320px) and (max-width: 1024px) {
+      .header {
+        font-size: 2em;
+      }
+
+      .logo {
+        height: 30px;
+      }
+
+      .weather {
+        font-size: 10px;
+      }
+
+      .date {
+        font-size: 10px;
+      }
     }
 
     @media (spanning: single-fold-vertical) {
