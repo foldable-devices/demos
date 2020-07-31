@@ -1,5 +1,6 @@
 import { LitElement, html, css as litCSS } from '../build/web_modules/lit-element.js';
 import { adjustCSS, observe } from "../build/web_modules/spanning-css-polyfill.js";
+import "./news-article.js";
 import '../build/web_modules/@material/mwc-button.js';
 import '../build/web_modules/@material/mwc-icon-button.js';
 import '../build/web_modules/@material/mwc-snackbar.js';
@@ -172,51 +173,6 @@ export class MainApplication extends LitElement {
       grid-row: 2 / span 1;
     }
 
-    .item {
-      min-height: 200px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      font-family: 'Open Sans', sans-serif;
-      padding: 10px;
-    }
-
-    .article-title {
-      font-weight: 900;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-      text-align: center;
-      font-family: 'Cinzel', serif;
-      font-size: 24px;
-    }
-
-    .author {
-      font-style: italic;
-      margin-bottom: 10px;
-    }
-
-    .author:before {
-      border-top: 2px solid black;
-      width: 100%;
-      content: '';
-      height: 7px;
-      display: block;
-    }
-
-    .author:after {
-      border-bottom: 2px solid black;
-      width: 100%;
-      content: '';
-      display: block;
-      height: 7px;
-    }
-
-    .picture-container {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
     .picture {
       max-width: 100%;
     }
@@ -246,19 +202,6 @@ export class MainApplication extends LitElement {
       display: block;
       height: 7px;
       margin: auto;
-    }
-
-    .text {
-      padding: 15px;
-    }
-
-    .article-content {
-      display: flex;
-      flex-direction: row;
-    }
-
-    .side {
-      width: 70%;
     }
 
     p {
@@ -454,88 +397,95 @@ export class MainApplication extends LitElement {
         </div>
         <div class="frontpage">
           <div class="cell cell-1">
-            <div class="item">
-              <div class="article-title">Asus launched its new Zephyrus Duo laptop, two screens in one laptop</div>
-              <div class="author">By Alexis Menard</div>
-              <div class="picture-container">
+            <news-article picturePosition="top">
+              <div slot="title">Asus launched its new Zephyrus Duo laptop, two screens in one laptop</div>
+              <div slot="author">By Alexis Menard</div>
+              <div slot="news-picture">
                 <picture>
                   <img class="picture" src="images/asus-zephyrus.png" alt="Picture of the Asus Zephyrus Duo">
                 </picture>
               </div>
-              Asus launched its new Zephyrus Duo laptop which features two screens. It's a successor of the Zenbook Duo 
-              but this time it's directed towards the gaming community.
-              <div class="citation">the Zephyrus comes with a new hinge
-              design which now lifts the second screen for better visibility</div>
-              The specs have also been updated with a 10th Gen Intel Core i9, an updated Nvidia 2080 Super Max-Q, 32GB of
-              memory and 2TB of Solid State drive.
-              This laptop has two option for the main screen : OLED 4K at 60hz or FHD at 300hz IPS.
-              The secondary screen called ScreenPad Plus is a complete screen with touch capability (just like a secondary monitor).
-              <p>
-                Beside helping visibility the tilted second screen helps with cooling as Asus put a way to get fresh, unobstructed air
-                intake from beneath the screen.
-              </p>
-            </div>
+              <div slot="text">
+                Asus launched its new Zephyrus Duo laptop which features two screens. It's a successor of the Zenbook Duo 
+                but this time it's directed towards the gaming community.
+                <div class="citation">the Zephyrus comes with a new hinge
+                design which now lifts the second screen for better visibility</div>
+                The specs have also been updated with a 10th Gen Intel Core i9, an updated Nvidia 2080 Super Max-Q, 32GB of
+                memory and 2TB of Solid State drive.
+                This laptop has two option for the main screen : OLED 4K at 60hz or FHD at 300hz IPS.
+                The secondary screen called ScreenPad Plus is a complete screen with touch capability (just like a secondary monitor).
+                <p>
+                  Beside helping visibility the tilted second screen helps with cooling as Asus put a way to get fresh, unobstructed air
+                  intake from beneath the screen.
+                </p>
+              </div>
+            </news-article>
           </div>
           <div class="cell cell-5">
-            <div class="item">
-              <div class="article-title">W3C Community showcases early standards for foldables and dual screen devices</div>
-              <div class="author">By Alexis Menard</div>
-              <div class="picture-container">
+            <news-article picturePosition="top">
+              <div slot="title">W3C Community showcases early standards for foldables and dual screen devices</div>
+              <div slot="author">By Alexis Menard</div>
+              <div slot="news-picture">
                 <picture>
                   <img class="picture" src="images/battleship.jpg" alt="Picture of a battleship game demo running on a Asus Zenbook Duo">
                 </picture>
               </div>
-              The W3C community posted on Twitter a picture of a little demo using early proposed specifications to target dual screens
-              and foldable devices. A photo gallery optimized for dual screen as well as a little battleship game was showcased.
-              <div class="citation">The proposed standards enable web developers to target these innovative form factors</div>
-              These are early standards and are subject to change. At this point Microsoft, Intel and Samsung are involved into
-              the work.
-            </div>
+              <div slot="text">
+                The W3C community posted on Twitter a picture of a little demo using early proposed specifications to target dual screens
+                and foldable devices. A photo gallery optimized for dual screen as well as a little battleship game was showcased.
+                <div class="citation">The proposed standards enable web developers to target these innovative form factors</div>
+                These are early standards and are subject to change. At this point Microsoft, Intel and Samsung are involved into
+                the work.
+              </div>
+            </news-article>
           </div>
           <div class="cell cell-2">
-            <div class="item">
-              <div class="article-title">Microsoft demonstrates the Surface Duo</div>
-              <div class="author">By Alexis Menard</div>
-              <div class="picture-container">
+            <news-article picturePosition="top">
+              <div slot="title">Microsoft demonstrates the Surface Duo</div>
+              <div slot="author">By Alexis Menard</div>
+              <div slot="news-picture">
                 <picture>
                   <img class="picture" src="images/surface-duo.jpg" alt="Picture of the Microsoft Surface Duo">
                 </picture>
               </div>
-              The Microsoft Surface Duo, also known as the Surface Duo, is an
-              upcoming foldable device announced during Microsoft's Surface hardware conference on October 2, 2019.
-              Unlike previous Microsoft products, which run a in-house operating system, such as the recently discontinued Windows 10 Mobile, it will run Android instead. 
-              <p>
-                The device is generally regarded as a smartphone, however, Microsoft itself is reluctant to use the term to describe the device, instead referring to it as the newest member of the Surface family.
-              </p>
-            </div>
+              <div slot="text">
+                The Microsoft Surface Duo, also known as the Surface Duo, is an
+                upcoming foldable device announced during Microsoft's Surface hardware conference on October 2, 2019.
+                Unlike previous Microsoft products, which run a in-house operating system, such as the recently discontinued Windows 10 Mobile, it will run Android instead. 
+                <p>
+                  The device is generally regarded as a smartphone, however, Microsoft itself is reluctant to use the term to describe the device, instead referring to it as the newest member of the Surface family.
+                </p>
+              </div>
+            </news-article>
           </div>
           <div class="cell cell-3">
-            <div class="item">
-              <div class="article-title">Intel shows its Horseshoe Bend foldable concept</div>
-              <div class="author">By Alexis Menard</div>
-              <div class="picture-container">
+            <news-article picturePosition="top">
+              <div slot="title">Intel shows its Horseshoe Bend foldable concept</div>
+              <div slot="author">By Alexis Menard</div>
+              <div slot="news-picture">
                 <picture>
                   <img class="picture" src="images/intel-hsb.gif" alt="Picture of the Intel Horseshoe bend concept">
                 </picture>
               </div>
-              Intel showed its new Horseshoe Bend prototype at CES. It's a folding PC with a foldable OLED screen.
-              Unfolded the screen size is 17.3 inches making it close to a traditional laptop size. <div class="citation">It has a kickstand
-              and a detachable keyboard which allow you to use the device as a monitor</div>. You can also attach the keyboard
-              on the bottom part of the device if you want to use it as a traditional laptop form factor. The added screen
-              estate makes it perfect for productivity allowing to see more.
-            </div>
+              <div slot="text">
+                Intel showed its new Horseshoe Bend prototype at CES. It's a folding PC with a foldable OLED screen.
+                Unfolded the screen size is 17.3 inches making it close to a traditional laptop size.
+                <div class="citation">It has a kickstand and a detachable keyboard which allow you to use the device as a monitor</div>
+                You can also attach the keyboard on the bottom part of the device if you want to use it as a traditional laptop form factor.
+                The added screen estate makes it perfect for productivity allowing to see more.
+              </div>
+            </news-article>
           </div>
           <div class="cell cell-4">
-            <div class="item">
-              <div class="article-title">Samsung announces the Galaxy Fold.</div>
-              <div class="author">By Alexis Menard</div>
-              <div class="article-content">
-                <div class="picture-container">
-                  <picture>
-                    <img class="picture" src="images/galaxy-fold.jpg" alt="Picture of the Samsung Galaxy Fold">
-                  </picture>
-                </div>
-                <div class="text side">
+            <news-article picturePosition="left">
+              <div slot="title">Samsung announces the Galaxy Fold.</div>
+              <div slot="author">By Alexis Menard</div>
+              <div slot="news-picture">
+                <picture>
+                  <img class="picture" src="images/galaxy-fold.jpg" alt="Picture of the Samsung Galaxy Fold">
+                </picture>
+              </div>
+              <div slot="text">
                   The Samsung Galaxy Fold is an Android-based foldable smartphone developed by Samsung Electronics.
                   Unveiled on February 20, 2019, it was released on September 6, 2019 in South Korea.
                   <p>
@@ -548,9 +498,8 @@ export class MainApplication extends LitElement {
                     transition from the big screen to the small screen and vice-versa smoothly without restarting the application
                     (provided it's supported by the app itself).
                   </p>
-                </div>
               </div>
-            </div>
+            </news-article>
           </div>
         </div>
       </div>
