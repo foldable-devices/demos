@@ -494,9 +494,10 @@ export class MainApplication extends LitElement {
               <div slot="title">Intel shows its Horseshoe Bend foldable concept</div>
               <div slot="author">By Alexis Menard</div>
               <div slot="news-picture">
-                <picture>
-                  <img class="picture" src="images/intel-hsb.gif" alt="Picture of the Intel Horseshoe bend concept">
-                </picture>
+                <video class="picture" autoplay loop muted playsinline>
+                  <source src="images/intel-hsb.webm" type="video/webm">
+                  <source src="images/intel-hsb.mp4" type="video/mp4">
+                </video>
               </div>
               <div slot="text">
                 Intel showed its new Horseshoe Bend prototype at CES. It's a folding PC with a foldable OLED screen.
