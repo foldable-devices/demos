@@ -69,6 +69,12 @@ class NewsArticle extends LitElement {
       width: 70%;
     }
 
+    @media (min-width: 320px) and (max-width: 1024px) {
+      .article-title {
+        font-size: 1.2em;
+      }
+    }
+
   `;
 
   static get properties() {
@@ -78,6 +84,10 @@ class NewsArticle extends LitElement {
   set picturePosition(position) {
     let oldPosition = this._picturePosition;
     this._picturePosition = position;
+    const isMobile =
+      window.matchMedia('(min-width: 320px) and (max-width: 1024px)').matches || false;
+    if (isMobile)
+      this._picturePosition = 'top';
     this.requestUpdate('picturePosition', oldPosition);
     if (this._text)
       this._togglePicturePosition();

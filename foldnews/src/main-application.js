@@ -145,7 +145,6 @@ export class MainApplication extends LitElement {
     }
 
     .cell {
-      position: relative;
       padding: 10px;
       background-color:  var(--background-color);
       border-right: solid 1px black;
@@ -210,7 +209,16 @@ export class MainApplication extends LitElement {
 
     @media (min-width: 320px) and (max-width: 1024px) {
       .header {
-        font-size: 2em;
+        font-size: 1.7em;
+      }
+
+      .weather-picture {
+        width: 20px;
+      }
+
+      .frontpage {
+        display: flex;
+        flex-direction: column;
       }
 
       .logo {
@@ -218,7 +226,7 @@ export class MainApplication extends LitElement {
       }
 
       .weather {
-        font-size: 10px;
+        font-size: 0.25em;
       }
 
       .date {
@@ -229,6 +237,10 @@ export class MainApplication extends LitElement {
     @media (spanning: single-fold-vertical) {
       .fold {
         width: env(fold-width);
+      }
+
+      .frontpage {
+        display: grid;
       }
 
       .title-left {
@@ -287,6 +299,10 @@ export class MainApplication extends LitElement {
         width: 0;
       }
 
+      .frontpage {
+        display: grid;
+      }
+
       .grow-right {
         display: none;
       }
@@ -332,6 +348,13 @@ export class MainApplication extends LitElement {
 
       .cell-5 {
         grid-row: 2 / span 1;
+      }
+    }
+
+    @media (min-width: 320px) and (max-width: 1024px) and (spanning: none) {
+      .frontpage {
+        display: flex;
+        flex-direction: column;
       }
     }
   `;

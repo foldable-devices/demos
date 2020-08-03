@@ -367,7 +367,6 @@ _defineProperty(MainApplication, "styles", css`
     }
 
     .cell {
-      position: relative;
       padding: 10px;
       background-color:  var(--background-color);
       border-right: solid 1px black;
@@ -432,7 +431,16 @@ _defineProperty(MainApplication, "styles", css`
 
     @media (min-width: 320px) and (max-width: 1024px) {
       .header {
-        font-size: 2em;
+        font-size: 1.7em;
+      }
+
+      .weather-picture {
+        width: 20px;
+      }
+
+      .frontpage {
+        display: flex;
+        flex-direction: column;
       }
 
       .logo {
@@ -440,7 +448,7 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .weather {
-        font-size: 10px;
+        font-size: 0.25em;
       }
 
       .date {
@@ -451,6 +459,10 @@ _defineProperty(MainApplication, "styles", css`
     @media (spanning: single-fold-vertical) {
       .fold {
         width: env(fold-width);
+      }
+
+      .frontpage {
+        display: grid;
       }
 
       .title-left {
@@ -509,6 +521,10 @@ _defineProperty(MainApplication, "styles", css`
         width: 0;
       }
 
+      .frontpage {
+        display: grid;
+      }
+
       .grow-right {
         display: none;
       }
@@ -554,6 +570,13 @@ _defineProperty(MainApplication, "styles", css`
 
       .cell-5 {
         grid-row: 2 / span 1;
+      }
+    }
+
+    @media (min-width: 320px) and (max-width: 1024px) and (spanning: none) {
+      .frontpage {
+        display: flex;
+        flex-direction: column;
       }
     }
   `);
