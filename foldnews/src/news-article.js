@@ -51,10 +51,8 @@ class NewsArticle extends LitElement {
     .picture-container {
       width: 80%;
       margin-bottom: 10px;
-    }
-
-    .picture {
-      max-width: 100%;
+      display: flex;
+      justify-content: center;
     }
 
     .text {
