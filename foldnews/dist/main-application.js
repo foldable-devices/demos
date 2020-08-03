@@ -85,7 +85,8 @@ export class MainApplication extends LitElement {
                 <div class="weather-type">
                   Sunshine
                   <picture>
-                    <img class="weather-picture" src="images/sun.webp" alt="Picture of a sun">
+                    <source srcset="images/sun.webp" type="image/webp">
+                    <img class="weather-picture" src="images/sun.png" alt="Picture of a sun">
                   </picture>
                 </div>
                 <div>Temperature: 29&deg;C</div>
@@ -98,6 +99,7 @@ export class MainApplication extends LitElement {
               <div>The Fold News</div>
               <div class="logo-container">
                 <picture>
+                  <source srcset="images/foldnews-logo.webp" type="image/webp">
                   <img class="logo" src="images/foldnews-logo.png" alt="Fold news logo">
                 </picture>
               </div>
@@ -117,6 +119,7 @@ export class MainApplication extends LitElement {
               <div slot="author">By Alexis Menard</div>
               <div slot="news-picture">
                 <picture>
+                  <source srcset="images/asus-zephyrus.webp" type="image/webp">
                   <img class="picture" src="images/asus-zephyrus.png" alt="Picture of the Asus Zephyrus Duo">
                 </picture>
               </div>
@@ -142,6 +145,7 @@ export class MainApplication extends LitElement {
               <div slot="author">By Alexis Menard</div>
               <div slot="news-picture">
                 <picture>
+                  <source srcset="images/battleship.webp" type="image/webp">
                   <img class="picture" src="images/battleship.jpg" alt="Picture of a battleship game demo running on a Asus Zenbook Duo">
                 </picture>
               </div>
@@ -160,6 +164,7 @@ export class MainApplication extends LitElement {
               <div slot="author">By Alexis Menard</div>
               <div slot="news-picture">
                 <picture>
+                  <source srcset="images/surface-duo.webp" type="image/webp">
                   <img class="picture" src="images/surface-duo.jpg" alt="Picture of the Microsoft Surface Duo">
                 </picture>
               </div>
@@ -198,6 +203,7 @@ export class MainApplication extends LitElement {
               <div slot="author">By Alexis Menard</div>
               <div slot="news-picture">
                 <picture>
+                  <source srcset="images/galaxy-fold.webp" type="image/webp">
                   <img class="picture" src="images/galaxy-fold.jpg" alt="Picture of the Samsung Galaxy Fold">
                 </picture>
               </div>
