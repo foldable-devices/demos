@@ -508,7 +508,7 @@ export class MainApplication extends LitElement {
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', async () => {
-        this._wb = new Workbox('/build/sw.js');
+        this._wb = new Workbox('./sw.js');
         this._wb.addEventListener('waiting', () => this._showSnackbar());
         this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
         this._wbRegistration = await this._wb.register();
