@@ -13,7 +13,10 @@
   ],
   "plugins": [
     [
-      "@snowpack/plugin-babel"
+      "@snowpack/plugin-babel",
+      {
+        "input": [".js", ".mjs", ".jsx", ".ts", ".tsx"]
+      }
     ]
   ]
 }
