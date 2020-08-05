@@ -1,12 +1,12 @@
-import { LitElement, html, css as litCSS } from '../build/web_modules/lit-element.js';
-import { classMap } from '../build/web_modules/lit-html/directives/class-map.js';
-import '../build/web_modules/@material/mwc-button.js';
-import '../build/web_modules/@material/mwc-checkbox.js';
-import '../build/web_modules/@material/mwc-drawer.js';
-import '../build/web_modules/@material/mwc-icon-button.js';
-import '../build/web_modules/@material/mwc-snackbar.js';
-import { adjustCSS, observe } from "../build/web_modules/spanning-css-polyfill.js";
-import { Workbox, messageSW} from '../build/web_modules/workbox-window.js';
+import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
+import { classMap } from '/web_modules/lit-html/directives/class-map.js';
+import '/web_modules/@material/mwc-button.js';
+import '/web_modules/@material/mwc-checkbox.js';
+import '/web_modules/@material/mwc-drawer.js';
+import '/web_modules/@material/mwc-icon-button.js';
+import '/web_modules/@material/mwc-snackbar.js';
+import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
+import { Workbox, messageSW} from '/web_modules/workbox-window.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -508,7 +508,7 @@ export class MainApplication extends LitElement {
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', async () => {
-        this._wb = new Workbox('./sw.js');
+        this._wb = new Workbox('/build/sw.js');
         this._wb.addEventListener('waiting', () => this._showSnackbar());
         this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
         this._wbRegistration = await this._wb.register();

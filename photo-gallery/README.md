@@ -1,6 +1,6 @@
 ## Run the demo.
 
-Navigate [here](https://foldable-devices.github.io/demos/photo-gallery).
+Navigate [here](https://foldable-devices.github.io/demos/photo-gallery/build).
 
 It uses the [device configurator](https://github.com/foldable-devices/device-configurator) to emulate various devices.
 
@@ -29,7 +29,7 @@ ESM compatible modules can be found using [pika.dev](pika.de). Material design w
 Then run
 
 ```bash
-$ npx snowpack --optimize
+$ npm run build
 ```
 
 To test in the browser, run
@@ -44,4 +44,4 @@ To build, run
 $ npm run build
 ```
 
-This will update the `web_modules` directory which can be committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
+This will update the `build` directory which is committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
