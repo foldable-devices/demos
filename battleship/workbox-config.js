@@ -20,7 +20,8 @@ module.exports = {
     "images/ocean-1024.webp",
     "images/captain.webp",
     "images/restart-button.webp",
-    "web_modules/import-map.json"
+    "web_modules/import-map.json",
+    "dist/*.js"
   ],
   "swDest": "build/sw.js",
 

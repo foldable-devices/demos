@@ -8,7 +8,8 @@ module.exports = {
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
     "web_modules/import-map.json",
-    "images/*-l.webp"
+    "images/*-l.webp",
+    "dist/*.js"
   ],
   "swDest": "build/sw.js",
 
