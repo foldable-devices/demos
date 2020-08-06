@@ -1,5 +1,5 @@
 module.exports = {
-  "globDirectory": ".",
+  "globDirectory": "build",
   "inlineWorkboxRuntime": "true",
   "globPatterns": [
     "**/*.{ico,html,css}",
@@ -20,10 +20,9 @@ module.exports = {
     "images/ocean-1024.webp",
     "images/captain.webp",
     "images/restart-button.webp",
-    "build/web_modules/import-map.json",
-    "dist/*.js"
+    "web_modules/import-map.json"
   ],
-  "swDest": "sw.js",
+  "swDest": "build/sw.js",
 
   // Define runtime caching rules.
   runtimeCaching: [{

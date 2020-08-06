@@ -5,8 +5,6 @@
     "@material/mwc-snackbar": "./@material/mwc-snackbar.js",
     "foldable-device-configurator": "./foldable-device-configurator.js",
     "lit-element": "./lit-element.js",
-    "lit-html": "./lit-html.js",
-    "lit-html/directives/class-map.js": "./lit-html/directives/class-map.js",
     "spanning-css-polyfill": "./spanning-css-polyfill.js",
     "workbox-window": "./workbox-window.js"
   }

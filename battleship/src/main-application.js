@@ -1,14 +1,14 @@
-import { LitElement, html, css as litCSS } from '../build/web_modules/lit-element.js';
-import { adjustCSS, observe } from "../build/web_modules/spanning-css-polyfill.js";
-import '../build/web_modules/@material/mwc-button.js';
-import '../build/web_modules/@material/mwc-icon-button.js';
-import '../build/web_modules/@material/mwc-snackbar.js';
+import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
+import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
+import '/web_modules/@material/mwc-button.js';
+import '/web_modules/@material/mwc-icon-button.js';
+import '/web_modules/@material/mwc-snackbar.js';
 import "./player-grid.js";
 import "./enemy-grid.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
-import '../build/web_modules/@material/mwc-snackbar.js';
-import { Workbox, messageSW} from '../build/web_modules/workbox-window.js';
+import '/web_modules/@material/mwc-snackbar.js';
+import { Workbox, messageSW} from '/web_modules/workbox-window.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
