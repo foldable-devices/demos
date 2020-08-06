@@ -7,7 +7,8 @@ module.exports = {
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
-    "web_modules/import-map.json"
+    "web_modules/import-map.json",
+    "dist/*.js"
   ],
   "swDest": "build/sw.js",
 
