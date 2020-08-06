@@ -1,5 +1,5 @@
-import { LitElement, html, css as litCSS } from '../build/web_modules/lit-element.js';
-import { adjustCSS, observe } from "../build/web_modules/spanning-css-polyfill.js";
+import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
+import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "news-article");

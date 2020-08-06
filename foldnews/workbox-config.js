@@ -1,5 +1,5 @@
 module.exports = {
-  "globDirectory": ".",
+  "globDirectory": "build",
   "inlineWorkboxRuntime": "true",
   "globPatterns": [
     "**/*.{ico,html,css}",
@@ -7,10 +7,9 @@ module.exports = {
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
-    "build/web_modules/import-map.json",
-    "dist/*.js"
+    "web_modules/import-map.json"
   ],
-  "swDest": "sw.js",
+  "swDest": "build/sw.js",
 
   // Define runtime caching rules.
   runtimeCaching: [{
