@@ -5,5 +5,7 @@ Links :
 
 - Battleship: Navigate [here](https://foldable-devices.github.io/demos/battleship).
 
+- FoldNews: Navigate [here](https://foldable-devices.github.io/demos/foldnews).
+
 # How to build/develop the demos
 Enter a directory and run follow the README.md.
