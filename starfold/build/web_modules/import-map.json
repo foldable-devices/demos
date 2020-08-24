@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "@material/mwc-button": "./@material/mwc-button.js",
+    "@material/mwc-icon-button": "./@material/mwc-icon-button.js",
+    "@material/mwc-snackbar": "./@material/mwc-snackbar.js",
+    "lit-element": "./lit-element.js",
+    "spanning-css-polyfill": "./spanning-css-polyfill.js",
+    "workbox-window": "./workbox-window.js"
+  }
+}
