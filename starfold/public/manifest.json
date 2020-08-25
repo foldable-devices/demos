@@ -2,7 +2,7 @@
   "name": "Star Fold",
   "short_name": "Star Fold",
   "theme_color": "#4e4e4e",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "display": "standalone",
   "orientation": "any",
   "start_url": "index.html",

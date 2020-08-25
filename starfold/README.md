@@ -48,7 +48,11 @@ This will update the `build` directory which is committed to the repository. Thi
 
 ## Assets
 
-- Icon
-    - License: Creative Commons with commercial usages included.
+- Icons
+    - License: Creative Commons with commercial use.
     - Source: https://opengameart.org/content/space-shooter-extension-250
     - Author: www.kenney.nl, thank you!
+- Background
+    - License: Creative Commons with commercial use.
+    - Source: https://opengameart.org/content/starfield-alpha-4k
+    - Author: Darklighter Designs 2017, thank you!

@@ -4,5 +4,7 @@ html, body {
   height: 100%;
   width: 100%;
   font-family: 'Roboto', sans-serif;
-  background: #f9f7f1;
+  background: black;
+  overflow: hidden;
+  position: fixed;
 }
