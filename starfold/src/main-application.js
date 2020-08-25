@@ -41,10 +41,23 @@ export class MainApplication extends LitElement {
   _wbRegistration = undefined;
   _ship;
   _shipSize = 80;
-  _shipY = 0;
-  _shipX = 0;
+  _shipObject;
   _background1Y = 0;
   _background2Y = 0;
+  _meteorSize = 80;
+  _meteorImage;
+  _meteorImage2;
+  _meteors = [];
+  _explosionImage;
+  _currentTime = 0;
+  _startTime = 0;
+  _timeSize;
+  _timeX;
+  _timeY;
+  _velocity = 1;
+  _paused = false;
+  _dead = false;
+  _enableDebug = false;
 
   firstUpdated() {
     this._canvas = this.shadowRoot.querySelector('#canvas');
@@ -89,10 +102,12 @@ export class MainApplication extends LitElement {
     this._canvas.height =  parseInt(style.height, 10);
     window.addEventListener('resize', this._onResize);
     this._ship = this.shadowRoot.querySelector('#ship');
+    this._meteorImage = this.shadowRoot.querySelector('#meteor');
+    this._meteorImage2 = this.shadowRoot.querySelector('#meteor2');
     this._background = this.shadowRoot.querySelector('#background');
+    this._explosionImage = this.shadowRoot.querySelector('#explosion');
     this._ship.onload = this._startGame.bind(this);
     document.addEventListener('keydown', this._handleKeyDown, false);
-    requestAnimationFrame(this._drawCanvas);
   }
 
   constructor() {
@@ -117,14 +132,61 @@ export class MainApplication extends LitElement {
   }
 
   _startGame() {
-    this._shipX = this._canvas.width / 2 - this._shipSize / 2;
-    this._shipY = this._canvas.height - this._shipSize;
+    this._paused = false;
+    this._dead = false;
+    this._shipObject = { x: this._canvas.width / 2 - this._shipSize / 2,
+        y: this._canvas.height - this._shipSize, size: this._shipSize};
     this._background2Y = -this._canvas.height;
     this._background1Y = -this._canvas.height;
+    this._currentTime = 0;
+    this._velocity = 2;
+    this._context.font = '20px serif';
+    this._timeSize = this._context.measureText('Elapsed Time : 22222s').width;
+    this._timeX = this._canvas.width - this._timeSize;
+    this._timeY = 30;
+    this._startTime = Math.round(window.performance.now() / 1000);
+    this._addNewMeteors();
+    requestAnimationFrame(this._drawCanvas);
+  }
+
+  _pauseGame() {
+    if (this._paused)
+      return;
+    this._paused = true;
+  }
+
+  _lostGame() {
+    if (this._paused)
+      return;
+    this._paused = true;
+    this._dead = true;
+    console.log('You lost');
+  }
+
+  _addNewMeteors() {
+    for (let i = 0 ; i < 6; ++i)
+      this._addRandomMeteor();
+  }
+
+  _addRandomMeteor() {
+    let x = this._getRandomInt(0, this._canvas.width - this._meteorSize);
+    let y = this._getRandomInt(0, -500);
+    for (const meteor of this._meteors) {
+      if (this._checkCollision(meteor, {x: x, y: y, size: this._meteorSize}))
+        return this._addRandomMeteor();
+    }
+    this._meteors.push({x: x, y: y, size: this._meteorSize, spriteId: Math.random() >= 0.5})
+  }
+
+  _getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   _drawShip() {
-    this._context.drawImage(this._ship, this._shipX, this._shipY, this._shipSize, this._shipSize);
+    if (this._dead)
+      this._context.drawImage(this._explosionImage, this._shipObject.x, this._shipObject.y, this._shipObject.size + 10, this._shipObject.size + 10);
+    else
+      this._context.drawImage(this._ship, this._shipObject.x, this._shipObject.y, this._shipObject.size, this._shipObject.size);
   }
 
   _drawBackground() {
@@ -141,38 +203,96 @@ export class MainApplication extends LitElement {
     this._context.restore();
   }
 
+  _drawMeteors() {
+    for (const meteor of this._meteors) {
+      const imagePath = meteor.spriteId ? this._meteorImage : this._meteorImage2;
+      this._context.drawImage(imagePath, meteor.x, meteor.y, meteor.size, meteor.size);
+      if (this._enableDebug) {
+        let coord = meteor.x + ' ' + meteor.y;
+        this._context.font = '20px serif';
+        this._context.strokeStyle = '#ffffff';
+        this._context.strokeText(coord, meteor.x, meteor.y + meteor.size / 2)
+      }
+      meteor.y += this._velocity;
+      if (this._checkCollision(meteor, this._shipObject))
+         this._lostGame();
+    }
+    // Get rid of out of bounds meteors
+    for (let i = this._meteors.length; i--; ) {
+      let meteor = this._meteors[i];
+      if (meteor.y > this._canvas.height) {
+        this._meteors.splice(i, 1);
+      }
+    }
+  }
+
+  _checkCollision(object1, object2) {
+    const overlap = object1.x + object1.size >= object2.x &&
+                    object1.x <= object2.x + object2.size &&
+                    object1.y + object1.size >= object2.y &&
+                    object1.y <= object2.y + object2.size
+     return overlap;
+  }
+
+  _drawTime() {
+    const elapsedText = 'Elapsed Time : ' + this._currentTime + 's';
+    this._context.font = '20px serif';
+    this._context.fillStyle = '#fbc02d';
+    this._context.fillText(elapsedText, this._timeX, this._timeY);
+  }
+
   _handleKeyDown = (event) => {
     if (event.keyCode == 37) { // Left
       this._moveShipLeft();
     } else if (event.keyCode == 39) { // Right
       this._moveShipRight();
+    } else if (event.keyCode == 32) { // space
+      this._pauseGame();
     }
   }
 
   _drawCanvas = (event) => {
+    if (this._paused)
+        return;
     this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
     this._drawBackground();
+    this._drawMeteors();
     this._drawShip();
+    this._drawTime();
+    let newTime =  Math.round(window.performance.now() / 1000) - this._startTime;
+    if (this._currentTime == newTime) {
+      requestAnimationFrame(this._drawCanvas);
+      return;
+    }
+    this._currentTime = newTime;
+    const newMeteorSeconds = (5 - this._velocity) <= 0 ? 1 : (5 - this._velocity);
+    if (this._currentTime % newMeteorSeconds === 0)
+      this._addNewMeteors();
+    if (this._currentTime % 30 == 0)
+      this._velocity++;
     requestAnimationFrame(this._drawCanvas);
   }
 
   _moveShipLeft() {
-    if (this._shipX <= 10)
+    if (this._shipObject.x <= 10  || this._paused)
        return;
-    this._shipX -= 10;
+    this._shipObject.x -= 10;
  }
 
- _moveShipRight() {
-    if (this._shipX + 10 >= this._canvas.width - this._shipSize)
-      return;
-    this._shipX += 10;
- }
+  _moveShipRight() {
+      if (this._shipObject.x + 10 >= this._canvas.width - this._shipObject.size || this._paused)
+        return;
+      this._shipObject.x += 10;
+  }
+
   _onResize = async (event) => {
     const style = window.getComputedStyle(this._canvas);
     this._canvas.width = parseInt(style.width, 10);
     this._canvas.height = parseInt(style.height, 10);
+    this._timeSize = this._context.measureText('Elapsed Time : 22222s').width;
+    this._timeX = this._canvas.width - this._timeSize;
+    this._timeY = 30;
   }
-
 
   render() {
     return html`
@@ -180,6 +300,18 @@ export class MainApplication extends LitElement {
       <picture class="hidden">
         <source srcset="images/ship.webp" type="image/webp"/>
         <img id="ship" src="images/ship.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/meteor.webp" type="image/webp"/>
+        <img id="meteor" src="images/meteor.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/meteor2.webp" type="image/webp"/>
+        <img id="meteor2" src="images/meteor2.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/explosion.webp" type="image/webp"/>
+        <img id="explosion" src="images/explosion.png">
       </picture>
       <picture class="hidden">
           <source media="(max-width: 767px)"

@@ -56,3 +56,7 @@ This will update the `build` directory which is committed to the repository. Thi
     - License: Creative Commons with commercial use.
     - Source: https://opengameart.org/content/starfield-alpha-4k
     - Author: Darklighter Designs 2017, thank you!
+- Explosions
+    - License: Public Domain.
+    - Source: https://opengameart.org/content/explosions
+    - Author: GameProgrammingSlave, thank you!
