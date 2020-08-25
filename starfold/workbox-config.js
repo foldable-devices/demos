@@ -7,6 +7,11 @@ module.exports = {
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
+    "images/explosion.webp",
+    "images/meteor.webp",
+    "images/meteor2.webp",
+    "images/ship.webp",
+    "images/starfield-1024.webp",
     "web_modules/import-map.json",
     "dist/*.js"
   ],

@@ -4,6 +4,7 @@ import '/web_modules/@material/mwc-button.js';
 import '/web_modules/@material/mwc-icon-button.js';
 import '/web_modules/@material/mwc-snackbar.js';
 import { Workbox, messageSW} from '/web_modules/workbox-window.js';
+import '/web_modules/foldable-device-configurator.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
