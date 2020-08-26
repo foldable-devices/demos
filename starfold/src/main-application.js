@@ -1,15 +1,10 @@
-import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
-import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
+import { LitElement, html, css } from '/web_modules/lit-element.js';
+import { FoldablesFeature } from '/web_modules/windowsegments-polyfill.js';
 import '/web_modules/@material/mwc-button.js';
 import '/web_modules/@material/mwc-icon-button.js';
 import '/web_modules/@material/mwc-snackbar.js';
 import { Workbox, messageSW} from '/web_modules/workbox-window.js';
 import '/web_modules/foldable-device-configurator.js';
-
-const css = (strings, ...values) => {
-  const string = adjustCSS(strings[0], "main-application");
-  return litCSS([string], ...values);
-};
 
 export class MainApplication extends LitElement {
   static styles = css`
@@ -113,11 +108,6 @@ export class MainApplication extends LitElement {
 
   constructor() {
     super();
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    observe(this);
   }
 
   _showSnackbar() {

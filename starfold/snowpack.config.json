@@ -9,7 +9,7 @@
   "rollup.dedupe": [
     "lit-element",
     "lit-html",
-    "spanning-css-polyfill"
+    "windowsegments-polyfill"
   ],
   "plugins": [
     [

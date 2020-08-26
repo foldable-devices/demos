@@ -5,7 +5,7 @@
     "@material/mwc-snackbar": "./@material/mwc-snackbar.js",
     "foldable-device-configurator": "./foldable-device-configurator.js",
     "lit-element": "./lit-element.js",
-    "spanning-css-polyfill": "./spanning-css-polyfill.js",
+    "windowsegments-polyfill": "./windowsegments-polyfill.js",
     "workbox-window": "./workbox-window.js"
   }
 }
