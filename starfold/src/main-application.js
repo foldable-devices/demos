@@ -12,6 +12,7 @@ export class MainApplication extends LitElement {
     :host {
       width: 100vw;
       height: 100vh;
+      color: white;
     }
 
     *,
@@ -42,12 +43,39 @@ export class MainApplication extends LitElement {
       color: white;
       display: none;
     }
+
+    .menu-button {
+      width: 80%;
+      display: block;
+      margin: auto;
+    }
+
+    .menu-button:hover {
+      filter: drop-shadow(5px 5px 5px black) contrast(150%);
+    }
+
+    .detail-about {
+      font-size: 0.8em;
+      margin: 5px;
+      text-align: justify;
+      text-justify: inter-character;
+    }
+
+    .score {
+      color: white;
+      font-family: 'Russo One', sans-serif;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
   `;
 
   _snackbar;
   _wb;
   _wbRegistration = undefined;
-  _menu;
+  _mainMenu;
+  _pauseMenu;
+  _aboutMenu;
+  _lostMenu;
   _ship;
   _shipSize = 80;
   _controllerSize= 80;
@@ -74,6 +102,18 @@ export class MainApplication extends LitElement {
   _pointerDown = false;
   _currentPointerTimeout;
   _pointerId;
+
+  static get properties() {
+    return { currentTime: { type: String} };
+  }
+
+  set currentTime(time) {
+    let oldTime = this._currentTime;
+    this._currentTime = time;
+    this.requestUpdate('currentTime', oldTime);
+  }
+
+  get currentTime() { return this._currentTime; }
 
   firstUpdated() {
     this._canvas = this.shadowRoot.querySelector('#canvas');
@@ -117,9 +157,13 @@ export class MainApplication extends LitElement {
     this._canvas.width  = parseInt(style.width, 10);
     this._canvas.height =  parseInt(style.height, 10);
     console.log('canvas size : ' + this._canvas.width + 'x' + this._canvas.height);
-    this._context.font = '20px serif';
+    this._context.font = '20px Russo One';
     window.addEventListener('resize', this._onResize);
-    this._menu = this.shadowRoot.querySelector('#menu');
+    this._mainMenu = this.shadowRoot.querySelector('#main-menu');
+    this._mainMenu.open();
+    this._pauseMenu = this.shadowRoot.querySelector('#pause-menu');
+    this._aboutMenu = this.shadowRoot.querySelector('#about-menu');
+    this._lostMenu = this.shadowRoot.querySelector('#lost-menu');
     this._ship = this.shadowRoot.querySelector('#ship');
     this._meteorImage = this.shadowRoot.querySelector('#meteor');
     this._meteorImage2 = this.shadowRoot.querySelector('#meteor2');
@@ -141,6 +185,7 @@ export class MainApplication extends LitElement {
 
   constructor() {
     super();
+    this._currentTime = 0;
   }
 
   _showSnackbar() {
@@ -156,10 +201,13 @@ export class MainApplication extends LitElement {
   }
 
   _startGame() {
+    this._mainMenu.close();
+    this._lostMenu.close();
+    this._pauseMenu.close();
     this._paused = false;
     this._dead = false;
     this._meteors = [];
-    this._currentTime = 0;
+    this.currentTime = 0;
     this._velocity = 2;
     this._startTime = Math.round(window.performance.now() / 1000);
     this._updateGameLayout();
@@ -175,6 +223,15 @@ export class MainApplication extends LitElement {
     if (this._paused)
       return;
     this._paused = true;
+    this._pauseMenu.open();
+  }
+
+  _resumeGame() {
+    if (!this._paused)
+      return;
+    this._paused = false;
+    this._pauseMenu.close();
+    requestAnimationFrame(this._drawCanvas);
   }
 
   _lostGame() {
@@ -182,7 +239,17 @@ export class MainApplication extends LitElement {
       return;
     this._paused = true;
     this._dead = true;
-    this._menu.open();
+    this._lostMenu.open();
+  }
+
+  _showAbout() {
+    this._mainMenu.close();
+    this._aboutMenu.open();
+  }
+
+  _openMainMenu() {
+    this._mainMenu.open();
+    this._aboutMenu.close();
   }
 
   _addNewMeteors() {
@@ -235,7 +302,7 @@ export class MainApplication extends LitElement {
       this._context.drawImage(imagePath, meteor.x, meteor.y, meteor.size, meteor.size);
       if (this._enableDebug) {
         let coord = meteor.x + ' ' + meteor.y;
-        this._context.font = '20px serif';
+        this._context.font = '20px Russo One';
         this._context.strokeStyle = '#ffffff';
         this._context.strokeText(coord, meteor.x, meteor.y + meteor.size / 2)
       }
@@ -261,8 +328,8 @@ export class MainApplication extends LitElement {
   }
 
   _drawTime() {
-    const elapsedText = 'Elapsed Time : ' + this._currentTime + 's';
-    this._context.font = '20px serif';
+    const elapsedText = 'Elapsed Time : ' + this.currentTime + 's';
+    this._context.font = '20px Russo One';
     this._context.fillStyle = '#fbc02d';
     this._context.fillText(elapsedText, this._timeX, this._timeY);
   }
@@ -295,7 +362,7 @@ export class MainApplication extends LitElement {
       this._moveShipLeft();
     } else if (event.keyCode == 39) { // Right
       this._moveShipRight();
-    } else if (event.keyCode == 32) { // space
+    } else if (event.keyCode == 27) { // Esc
       this._pauseGame();
     }
   }
@@ -362,15 +429,15 @@ export class MainApplication extends LitElement {
     if (this._spanning)
       this._drawController();
     let newTime =  Math.round(window.performance.now() / 1000) - this._startTime;
-    if (this._currentTime == newTime) {
+    if (this.currentTime == newTime) {
       requestAnimationFrame(this._drawCanvas);
       return;
     }
-    this._currentTime = newTime;
+    this.currentTime = newTime;
     const newMeteorSeconds = (5 - this._velocity) <= 0 ? 1 : (5 - this._velocity);
-    if (this._currentTime % newMeteorSeconds === 0)
+    if (this.currentTime % newMeteorSeconds === 0)
       this._addNewMeteors();
-    if (this._currentTime % 30 == 0)
+    if (this.currentTime % 30 == 0)
       this._velocity++;
     requestAnimationFrame(this._drawCanvas);
   }
@@ -391,18 +458,18 @@ export class MainApplication extends LitElement {
     const style = window.getComputedStyle(this._canvas);
     this._canvas.width = parseInt(style.width, 10);
     this._canvas.height = parseInt(style.height, 10);
-    this._updateGameLayout();
+    this._handleSpanning();
     if (this._paused)
       this._drawBackground();
   }
 
   _handleSpanning() {
     this._spanning = window.getWindowSegments().length > 1;
-    if (this._spanning)
-      this._updateGameLayout();
-    else
-      this._updateGameLayout();
-    this._menu.handleSpanning();
+    this._updateGameLayout();
+    this._mainMenu.handleSpanning();
+    this._pauseMenu.handleSpanning();
+    this._aboutMenu.handleSpanning();
+    this._lostMenu.handleSpanning();
   }
 
   _updateGameLayout() {
@@ -450,7 +517,7 @@ export class MainApplication extends LitElement {
     }
     this._timeX = this._playAreaSize.width - this._timeSize;
     this._timeY = 30;
-    this._timeSize = this._context.measureText('Elapsed Time : 22222s').width;
+    this._timeSize = this._context.measureText('Elapsed Time : 2222s').width;
   }
 
   _makeObjectFitInPlayBoundaries(object) {
@@ -528,7 +595,46 @@ export class MainApplication extends LitElement {
         <mwc-button slot="action">RELOAD</mwc-button>
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
-      <main-menu id="menu" @start-clicked=${this._startGame}></main-menu>
+      <game-menu id="main-menu">
+        <div slot="title">Welcome to Star Fold</div>
+        <picture slot="button">
+          <source srcset="images/play-button.webp" type="image/webp"/>
+          <img  class="menu-button" src="images/play-button.jpg" @click="${this._startGame}">
+        </picture>
+        <picture slot="button2">
+          <source srcset="images/about-button.webp" type="image/webp"/>
+          <img  class="menu-button" src="images/about-button.jpg" @click="${this._showAbout}">
+        </picture>
+      </game-menu>
+      <game-menu id="pause-menu">
+        <div slot="title">Game paused</div>
+        <picture slot="button">
+          <source srcset="images/resume-button.webp" type="image/webp"/>
+          <img  class="menu-button" src="images/resume-button.jpg" @click="${this._resumeGame}">
+        </picture>
+        <picture slot="button2">
+          <source srcset="images/restart-button.webp" type="image/webp"/>
+          <img  class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
+        </picture>
+      </game-menu>
+      <game-menu id="about-menu">
+        <div slot="title">
+           <div class="detail-about">About<br>This demo provides a specific experience on dual screens and foldable devices.
+           </div>
+        </div>
+        <picture slot="button">
+          <source srcset="images/close-button.webp" type="image/webp"/>
+          <img  class="menu-button" src="images/close-button.jpg" @click="${this._openMainMenu}">
+        </picture>
+      </game-menu>
+      <game-menu id="lost-menu">
+        <div slot="title">You Lost!</div>
+        <div slot="button" class="score">Your time was ${this.currentTime}</div>
+        <picture slot="button2">
+          <source srcset="images/restart-button.webp" type="image/webp"/>
+          <img  class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
+        </picture>
+      </game-menu>
     `;
   }
 }

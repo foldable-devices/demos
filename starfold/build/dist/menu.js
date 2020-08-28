@@ -1,23 +1,28 @@
-function n(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0,configurable:!0,writable:!0}):e[t]=i,e}import{LitElement as o,html as s,css as l}from"../web_modules/lit-element.js";import"../web_modules/windowsegments-polyfill.js";export class Menu extends o{firstUpdated(){}constructor(){super();n(this,"_spanning",!1)}handleSpanning(){this._spanning=window.getWindowSegments().length>1;let e=this.shadowRoot.host.style;if(this._spanning){const t=window.getWindowSegments()[0];t.width>t.height?(e.top="calc(25vh - 12.5vh)",e.left="calc(50vw - 20vw)",e.width="40vw",e.height=t.height/3+"px"):(e.top="calc(50vh - 12.5vh)",e.width="25vw",e.left="calc(25vw - 12.5vw)",e.height=window.getWindowSegments()[0].height/4+"px")}else e.top="calc(50vh - 12.5vh)",e.left="calc(50vw - 12.5vw)",e.width="25vw",e.height="25vh"}close(){this.shadowRoot.host.style.visibility="hidden"}open(){this.shadowRoot.host.style.visibility="visible"}_startClicked(){let e=new CustomEvent("start-clicked",{detail:{message:"Start clicked."},bubbles:!0,composed:!0});this.dispatchEvent(e),this.close()}render(){return s`
+function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0,configurable:!0,writable:!0}):t[e]=i,t}import{LitElement as o,html as s,css as l}from"../web_modules/lit-element.js";import"../web_modules/windowsegments-polyfill.js";export class Menu extends o{firstUpdated(){}constructor(){super();n(this,"_spanning",!1)}handleSpanning(){this._spanning=window.getWindowSegments().length>1;let t=this.shadowRoot.host.style;if(this._spanning){const e=window.getWindowSegments()[0];e.width>e.height?(t.top="calc(25vh - 12.5vh)",t.left="calc(50vw - 20vw)",t.width="40vw",t.height=e.height/2+"px"):(t.top="calc(50vh - 12.5vh)",t.width="25vw",t.left="calc(25vw - 12.5vw)",t.height=window.getWindowSegments()[0].height/4+"px")}else t.top="calc(50vh - 12.5vh)",t.left="calc(50vw - 15vw)",t.width="25vw",t.height="30vh"}close(){this.shadowRoot.host.style.visibility="hidden"}open(){this.shadowRoot.host.style.visibility="visible"}render(){return s`
       <div id="content">
           <div id="menu">
-            <div class="title">Welcome to Star Fold</div>
+            <div class="title">
+              <slot name="title"></slot>
+            </div>
             <div class="grow"></div>
-            <picture>
-              <source srcset="images/play-button.webp" type="image/webp"/>
-              <img  class="menu-button" src="images/play-button.png" @click="${this._startClicked}">
-            </picture>
-            <div class="grow"></div>
+            <div class="menu-button">
+              <slot name="button"></slot>
+            </div>
+            <div class="menu-button">
+              <slot name="button2"></slot>
+            </div>
+            <div class="grow last-item"></div>
           </div>
       </div>
     `}}n(Menu,"styles",l`
     :host {
       width: 25vw;
-      height: 25vh;
+      height: 30vh;
       position: absolute;
-      top: calc(50vh - 12.5vh);
+      top: calc(50vh - 15vh);
       left: calc(50vw - 12.5vw);
       z-index: 4;
+      visibility: hidden;
     }
 
     *,
@@ -54,16 +59,6 @@ function n(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0
       background-size: 100% 100%;
     }
 
-    .menu-button {
-      width: 80%;
-      display: block;
-      margin: auto;
-    }
-
-    .menu-button:hover {
-      filter: drop-shadow(5px 5px 5px black) contrast(150%);
-    }
-
     .title {
       color: white;
       font-family: 'Russo One', sans-serif;
@@ -73,6 +68,13 @@ function n(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0
 
     .grow {
       flex-grow: 2;
+    }
+
+    .menu-button {
+      margin-top: 10px;
+    }
+
+    .last-item {
       margin-bottom: 20px;
     }
 
@@ -80,5 +82,10 @@ function n(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0
       .title {
         font-size: 1em;
       }
+
+      :host {
+        width: 25vw;
+        height: 30vh;
+      }
     }
-  `),customElements.define("main-menu",Menu);
+  `),customElements.define("game-menu",Menu);

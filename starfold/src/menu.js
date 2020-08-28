@@ -5,11 +5,12 @@ export class Menu extends LitElement {
   static styles = css`
     :host {
       width: 25vw;
-      height: 25vh;
+      height: 30vh;
       position: absolute;
-      top: calc(50vh - 12.5vh);
+      top: calc(50vh - 15vh);
       left: calc(50vw - 12.5vw);
       z-index: 4;
+      visibility: hidden;
     }
 
     *,
@@ -46,16 +47,6 @@ export class Menu extends LitElement {
       background-size: 100% 100%;
     }
 
-    .menu-button {
-      width: 80%;
-      display: block;
-      margin: auto;
-    }
-
-    .menu-button:hover {
-      filter: drop-shadow(5px 5px 5px black) contrast(150%);
-    }
-
     .title {
       color: white;
       font-family: 'Russo One', sans-serif;
@@ -65,12 +56,24 @@ export class Menu extends LitElement {
 
     .grow {
       flex-grow: 2;
+    }
+
+    .menu-button {
+      margin-top: 10px;
+    }
+
+    .last-item {
       margin-bottom: 20px;
     }
 
     @media (min-width: 320px) and (max-width: 1024px) {
       .title {
         font-size: 1em;
+      }
+
+      :host {
+        width: 25vw;
+        height: 30vh;
       }
     }
   `;
@@ -92,7 +95,7 @@ export class Menu extends LitElement {
         rootStyle.top = "calc(25vh - 12.5vh)";
         rootStyle.left = "calc(50vw - 20vw)";
         rootStyle.width = '40vw';
-        rootStyle.height = segment.height / 3 + 'px';
+        rootStyle.height = segment.height / 2 + 'px';
       } else {
         rootStyle.top = "calc(50vh - 12.5vh)";
         rootStyle.width = '25vw';
@@ -101,9 +104,9 @@ export class Menu extends LitElement {
       }
     } else {
       rootStyle.top = "calc(50vh - 12.5vh)";
-      rootStyle.left = "calc(50vw - 12.5vw)";
+      rootStyle.left = "calc(50vw - 15vw)";
       rootStyle.width = '25vw';
-      rootStyle.height = '25vh';
+      rootStyle.height = '30vh';
     }
   }
 
@@ -115,30 +118,25 @@ export class Menu extends LitElement {
     this.shadowRoot.host.style.visibility = 'visible';
   }
 
-  _startClicked() {
-    let event = new CustomEvent('start-clicked', {
-      detail: { message: 'Start clicked.'},
-      bubbles: true,
-      composed: true });
-    this.dispatchEvent(event);
-    this.close();
-  }
-
   render() {
     return html`
       <div id="content">
           <div id="menu">
-            <div class="title">Welcome to Star Fold</div>
+            <div class="title">
+              <slot name="title"></slot>
+            </div>
             <div class="grow"></div>
-            <picture>
-              <source srcset="images/play-button.webp" type="image/webp"/>
-              <img  class="menu-button" src="images/play-button.png" @click="${this._startClicked}">
-            </picture>
-            <div class="grow"></div>
+            <div class="menu-button">
+              <slot name="button"></slot>
+            </div>
+            <div class="menu-button">
+              <slot name="button2"></slot>
+            </div>
+            <div class="grow last-item"></div>
           </div>
       </div>
     `;
   }
 }
 
-customElements.define("main-menu", Menu);
+customElements.define("game-menu", Menu);
