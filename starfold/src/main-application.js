@@ -79,6 +79,7 @@ export class MainApplication extends LitElement {
   _ship;
   _shipSize = 80;
   _controllerSize= 80;
+  _controllerSizeTouch = 60;
   _shipObject= {x: 0, y: 0};
   _background1Y = 0;
   _background2Y = 0;
@@ -174,6 +175,7 @@ export class MainApplication extends LitElement {
     document.addEventListener('keydown', this._handleKeyDown, false);
     this._canvas.onpointerdown = this._onPointerDown.bind(this);
     this._canvas.onpointerup = this._onPointerUp.bind(this);
+    this._timeSize = this._context.measureText('Elapsed Time : 2222s').width;
 
     this._updateGameLayout();
     this._background.onload = this._drawBackground.bind(this);
@@ -181,6 +183,8 @@ export class MainApplication extends LitElement {
     const foldablesFeat = new FoldablesFeature;
     // This is specific for the polyfill, the browser window won't be resized.
     foldablesFeat.onchange = () => this._handleSpanning();
+
+    window.onorientationchange = (event) => this._handleOrientationChange(event);
   }
 
   constructor() {
@@ -239,6 +243,7 @@ export class MainApplication extends LitElement {
       return;
     this._paused = true;
     this._dead = true;
+    clearTimeout(this._currentPointerTimeout);
     this._lostMenu.open();
   }
 
@@ -253,10 +258,7 @@ export class MainApplication extends LitElement {
   }
 
   _addNewMeteors() {
-    let numberMeteorToAdd = 6;
-    // Screen estate is smaller, let's add less.
-    if (this._spanning)
-      numberMeteorToAdd = 3;
+    let numberMeteorToAdd = Math.round(this._playAreaSize.width / this._meteorSize / 4);
     for (let i = 0 ; i < numberMeteorToAdd; ++i)
       this._addRandomMeteor();
   }
@@ -355,6 +357,35 @@ export class MainApplication extends LitElement {
       this._controllerSize, this._controllerSize);
   }
 
+  _drawTouchController() {
+    this._leftControllerPos = {
+      x: 0,
+      y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+    this._context.drawImage(this._controllerLeftImage,
+      this._leftControllerPos.x,
+      this._leftControllerPos.y,
+      this._controllerSizeTouch, this._controllerSizeTouch);
+    this._context.save();
+    this._context.fillStyle = 'white';
+    this._context.strokeStyle = "#333333";
+    this._context.lineWidth = "3";
+    this._context.fillRect(this._controllerSizeTouch,
+      this._playAreaSize.height - 2 * this._controllerSizeTouch + 1,
+      this._controllerSizeTouch, this._controllerSizeTouch - 2);
+    this._context.rect(this._controllerSizeTouch,
+      this._playAreaSize.height - 2 * this._controllerSizeTouch + 1,
+      this._controllerSizeTouch, this._controllerSizeTouch - 2);
+    this._context.stroke();
+    this._context.restore();
+    this._rightControllerPos = {
+      x: 2 * this._controllerSizeTouch,
+      y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+    this._context.drawImage(this._controllerRightImage,
+      this._rightControllerPos.x,
+      this._rightControllerPos.y,
+      this._controllerSizeTouch, this._controllerSizeTouch);
+  }
+
   _handleKeyDown = (event) => {
     if (this._paused)
       return;
@@ -382,8 +413,7 @@ export class MainApplication extends LitElement {
   }
 
   _onPointerDown = async (event) => {
-    if (!this._spanning)
-      return;
+    clearTimeout(this._currentPointerTimeout);
     const isTouchingLeftController = this._isTouchingLeftController(event);
     const isTouchingRightController = this._isTouchingRightController(event);
     if (isTouchingLeftController || isTouchingRightController) {
@@ -395,13 +425,11 @@ export class MainApplication extends LitElement {
         this._moveShipLeft();
       else
         this._moveShipRight();
-        this._currentPointerTimeout = setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 1000);
+      this._currentPointerTimeout = setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 300);
     }
   }
 
   _onPointerUp = async (event) => {
-    if (!this._spanning)
-      return;
     this._pointerDown = false;
     clearTimeout(this._currentPointerTimeout);
     if (this._pointerId)
@@ -428,6 +456,8 @@ export class MainApplication extends LitElement {
     this._drawTime();
     if (this._spanning)
       this._drawController();
+    else
+      this._drawTouchController();
     let newTime =  Math.round(window.performance.now() / 1000) - this._startTime;
     if (this.currentTime == newTime) {
       requestAnimationFrame(this._drawCanvas);
@@ -465,6 +495,15 @@ export class MainApplication extends LitElement {
 
   _handleSpanning() {
     this._spanning = window.getWindowSegments().length > 1;
+    this._updateGameLayout();
+    this._mainMenu.handleSpanning();
+    this._pauseMenu.handleSpanning();
+    this._aboutMenu.handleSpanning();
+    this._lostMenu.handleSpanning();
+  }
+
+  _handleOrientationChange(event) {
+    this._pauseGame();
     this._updateGameLayout();
     this._mainMenu.handleSpanning();
     this._pauseMenu.handleSpanning();
@@ -517,7 +556,6 @@ export class MainApplication extends LitElement {
     }
     this._timeX = this._playAreaSize.width - this._timeSize;
     this._timeY = 30;
-    this._timeSize = this._context.measureText('Elapsed Time : 2222s').width;
   }
 
   _makeObjectFitInPlayBoundaries(object) {
@@ -599,22 +637,22 @@ export class MainApplication extends LitElement {
         <div slot="title">Welcome to Star Fold</div>
         <picture slot="button">
           <source srcset="images/play-button.webp" type="image/webp"/>
-          <img  class="menu-button" src="images/play-button.jpg" @click="${this._startGame}">
+          <img alt="Image of a play button" class="menu-button" src="images/play-button.jpg" @click="${this._startGame}">
         </picture>
         <picture slot="button2">
           <source srcset="images/about-button.webp" type="image/webp"/>
-          <img  class="menu-button" src="images/about-button.jpg" @click="${this._showAbout}">
+          <img alt="Image of an about button" class="menu-button" src="images/about-button.jpg" @click="${this._showAbout}">
         </picture>
       </game-menu>
       <game-menu id="pause-menu">
         <div slot="title">Game paused</div>
         <picture slot="button">
           <source srcset="images/resume-button.webp" type="image/webp"/>
-          <img  class="menu-button" src="images/resume-button.jpg" @click="${this._resumeGame}">
+          <img alt="Image of a resume button" class="menu-button" src="images/resume-button.jpg" @click="${this._resumeGame}">
         </picture>
         <picture slot="button2">
           <source srcset="images/restart-button.webp" type="image/webp"/>
-          <img  class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
+          <img alt="Image of a restart button" class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
         </picture>
       </game-menu>
       <game-menu id="about-menu">
@@ -624,7 +662,7 @@ export class MainApplication extends LitElement {
         </div>
         <picture slot="button">
           <source srcset="images/close-button.webp" type="image/webp"/>
-          <img  class="menu-button" src="images/close-button.jpg" @click="${this._openMainMenu}">
+          <img alt="Image of a close button" class="menu-button" src="images/close-button.jpg" @click="${this._openMainMenu}">
         </picture>
       </game-menu>
       <game-menu id="lost-menu">
@@ -632,7 +670,7 @@ export class MainApplication extends LitElement {
         <div slot="button" class="score">Your time was ${this.currentTime}</div>
         <picture slot="button2">
           <source srcset="images/restart-button.webp" type="image/webp"/>
-          <img  class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
+          <img alt="Image of a restart button" class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
         </picture>
       </game-menu>
     `;

@@ -66,14 +66,29 @@ export class Menu extends LitElement {
       margin-bottom: 20px;
     }
 
-    @media (min-width: 320px) and (max-width: 1024px) {
+    @media (min-width: 320px) and (max-width: 1024px) and (orientation: portrait) {
       .title {
         font-size: 1em;
       }
 
       :host {
-        width: 25vw;
+        width: 50vw;
         height: 30vh;
+        top: calc(50vh - 20vh);
+        left: calc(50vw - 30vw);
+      }
+    }
+
+    @media (min-width: 320px) and (max-width: 1024px) and (orientation: landscape) {
+      .title {
+        font-size: 1em;
+      }
+
+      :host {
+        width: 50vw;
+        height: 60vh;
+        top: 10vh;
+        left: calc(50vw - 30vw);
       }
     }
   `;
@@ -92,21 +107,21 @@ export class Menu extends LitElement {
     if (this._spanning) {
       const segment = window.getWindowSegments()[0];
       if (segment.width > segment.height) {
-        rootStyle.top = "calc(25vh - 12.5vh)";
-        rootStyle.left = "calc(50vw - 20vw)";
+        rootStyle.top = 'calc(25vh - 12.5vh)';
+        rootStyle.left = 'calc(50vw - 20vw)';
         rootStyle.width = '40vw';
         rootStyle.height = segment.height / 2 + 'px';
       } else {
-        rootStyle.top = "calc(50vh - 12.5vh)";
+        rootStyle.top = 'calc(50vh - 12.5vh)';
         rootStyle.width = '25vw';
-        rootStyle.left = "calc(25vw - 12.5vw)";
-        rootStyle.height = window.getWindowSegments()[0].height / 4 + 'px';
+        rootStyle.left = 'calc(25vw - 12.5vw)';
+        rootStyle.height = window.getWindowSegments()[0].height / 3 + 'px';
       }
     } else {
-      rootStyle.top = "calc(50vh - 12.5vh)";
-      rootStyle.left = "calc(50vw - 15vw)";
-      rootStyle.width = '25vw';
-      rootStyle.height = '30vh';
+      rootStyle.top = '';
+      rootStyle.left = '';
+      rootStyle.width = '';
+      rootStyle.height = '';
     }
   }
 

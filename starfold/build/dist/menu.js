@@ -1,4 +1,4 @@
-function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0,configurable:!0,writable:!0}):t[e]=i,t}import{LitElement as o,html as s,css as l}from"../web_modules/lit-element.js";import"../web_modules/windowsegments-polyfill.js";export class Menu extends o{firstUpdated(){}constructor(){super();n(this,"_spanning",!1)}handleSpanning(){this._spanning=window.getWindowSegments().length>1;let t=this.shadowRoot.host.style;if(this._spanning){const e=window.getWindowSegments()[0];e.width>e.height?(t.top="calc(25vh - 12.5vh)",t.left="calc(50vw - 20vw)",t.width="40vw",t.height=e.height/2+"px"):(t.top="calc(50vh - 12.5vh)",t.width="25vw",t.left="calc(25vw - 12.5vw)",t.height=window.getWindowSegments()[0].height/4+"px")}else t.top="calc(50vh - 12.5vh)",t.left="calc(50vw - 15vw)",t.width="25vw",t.height="30vh"}close(){this.shadowRoot.host.style.visibility="hidden"}open(){this.shadowRoot.host.style.visibility="visible"}render(){return s`
+function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0,configurable:!0,writable:!0}):t[e]=i,t}import{LitElement as o,html as s,css as l}from"../web_modules/lit-element.js";import"../web_modules/windowsegments-polyfill.js";export class Menu extends o{firstUpdated(){}constructor(){super();n(this,"_spanning",!1)}handleSpanning(){this._spanning=window.getWindowSegments().length>1;let t=this.shadowRoot.host.style;if(this._spanning){const e=window.getWindowSegments()[0];e.width>e.height?(t.top="calc(25vh - 12.5vh)",t.left="calc(50vw - 20vw)",t.width="40vw",t.height=e.height/2+"px"):(t.top="calc(50vh - 12.5vh)",t.width="25vw",t.left="calc(25vw - 12.5vw)",t.height=window.getWindowSegments()[0].height/3+"px")}else t.top="",t.left="",t.width="",t.height=""}close(){this.shadowRoot.host.style.visibility="hidden"}open(){this.shadowRoot.host.style.visibility="visible"}render(){return s`
       <div id="content">
           <div id="menu">
             <div class="title">
@@ -78,14 +78,29 @@ function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0
       margin-bottom: 20px;
     }
 
-    @media (min-width: 320px) and (max-width: 1024px) {
+    @media (min-width: 320px) and (max-width: 1024px) and (orientation: portrait) {
       .title {
         font-size: 1em;
       }
 
       :host {
-        width: 25vw;
+        width: 50vw;
         height: 30vh;
+        top: calc(50vh - 20vh);
+        left: calc(50vw - 30vw);
+      }
+    }
+
+    @media (min-width: 320px) and (max-width: 1024px) and (orientation: landscape) {
+      .title {
+        font-size: 1em;
+      }
+
+      :host {
+        width: 50vw;
+        height: 60vh;
+        top: 10vh;
+        left: calc(50vw - 30vw);
       }
     }
   `),customElements.define("game-menu",Menu);
