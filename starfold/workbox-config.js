@@ -8,9 +8,13 @@ module.exports = {
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
     "images/explosion.webp",
+    "images/menu.png",
+    "images/metal.jpg",
     "images/meteor.webp",
     "images/meteor2.webp",
     "images/ship.webp",
+    "images/right-controller.webp",
+    "images/left-controller.webp",
     "images/starfield-1024.webp",
     "web_modules/import-map.json",
     "dist/*.js"

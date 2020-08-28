@@ -60,3 +60,19 @@ This will update the `build` directory which is committed to the repository. Thi
     - License: Public Domain.
     - Source: https://opengameart.org/content/explosions
     - Author: GameProgrammingSlave, thank you!
+- Controller assets
+    - License: Public Domain.
+    - Source: https://opengameart.org/content/controller-input-icons
+    - Author: ElDuderino, thank you!
+- Menu Panel Asset
+    - License: Creative Commons BY-SA 3.0
+    - Source: https://opengameart.org/content/sci-fi-ui-panel
+    - Author: Bart, thank you!
+- Menu Buttons
+    - License: Creative Commons BY-SA 3.0/4.0
+    - Source: https://opengameart.org/content/buttons-with-hover
+    - Author: DontMind8, thank you!
+- Metal Texture
+    - License: Public Domain
+    - Source: https://opengameart.org/content/2048-stylized-tileable-metal-panel
+    - Author: txturs, thank you!
