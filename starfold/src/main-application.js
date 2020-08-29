@@ -95,13 +95,13 @@ export class MainApplication extends LitElement {
   _timeY;
   _velocity = 1;
   _paused = true;
-  _dead = false;
+  _dead = true;
   _spanning = false;
   _playAreaSize = undefined;
   _controllerArea = undefined;
   _enableDebug = false;
   _pointerDown = false;
-  _currentPointerTimeout;
+  _currentPointerTimeout = [];
   _pointerId;
 
   static get properties() {
@@ -174,6 +174,8 @@ export class MainApplication extends LitElement {
     this._controllerRightImage = this.shadowRoot.querySelector('#right-controller');
     document.addEventListener('keydown', this._handleKeyDown, false);
     this._canvas.onpointerdown = this._onPointerDown.bind(this);
+    this._canvas.onpointermove = this._onPointerMove.bind(this);
+    this._canvas.onpointercancel = this._onPointerUp.bind(this);
     this._canvas.onpointerup = this._onPointerUp.bind(this);
     this._timeSize = this._context.measureText('Elapsed Time : 2222s').width;
 
@@ -243,7 +245,7 @@ export class MainApplication extends LitElement {
       return;
     this._paused = true;
     this._dead = true;
-    clearTimeout(this._currentPointerTimeout);
+    this._clearPointerTimeout();
     this._lostMenu.open();
   }
 
@@ -413,7 +415,9 @@ export class MainApplication extends LitElement {
   }
 
   _onPointerDown = async (event) => {
-    clearTimeout(this._currentPointerTimeout);
+    if (this._paused || this._dead)
+      return;
+    this._clearPointerTimeout();
     const isTouchingLeftController = this._isTouchingLeftController(event);
     const isTouchingRightController = this._isTouchingRightController(event);
     if (isTouchingLeftController || isTouchingRightController) {
@@ -425,13 +429,27 @@ export class MainApplication extends LitElement {
         this._moveShipLeft();
       else
         this._moveShipRight();
-      this._currentPointerTimeout = setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 300);
+      this._currentPointerTimeout.push(
+        setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 300));
+    }
+  }
+
+  _onPointerMove = async (event) => {
+    if (this._paused || this._dead)
+      return;
+    const isTouchingLeftController = this._isTouchingLeftController(event);
+    const isTouchingRightController = this._isTouchingRightController(event);
+    if (!isTouchingLeftController && !isTouchingRightController) {
+      this._pointerDown = false;
+      this._clearPointerTimeout();
     }
   }
 
   _onPointerUp = async (event) => {
+    if (this._paused || this._dead)
+      return;
     this._pointerDown = false;
-    clearTimeout(this._currentPointerTimeout);
+    this._clearPointerTimeout();
     if (this._pointerId)
       this._canvas.releasePointerCapture(this._pointerId);
   }
@@ -443,7 +461,14 @@ export class MainApplication extends LitElement {
       this._moveShipLeft();
     else
       this._moveShipRight();
-    this._currentPointerTimeout = setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 50);
+    this._currentPointerTimeout.push(
+      setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 50));
+  }
+
+  _clearPointerTimeout() {
+    for (const timer of this._currentPointerTimeout)
+      clearTimeout(timer);
+    this._currentPointerTimeout = []
   }
 
   _drawCanvas = (event) => {
