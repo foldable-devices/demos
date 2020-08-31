@@ -173,7 +173,7 @@ function i(t,e,s){return e in t?Object.defineProperty(t,e,{value:s,enumerable:!0
     .score {
       color: white;
       font-family: 'Russo One', sans-serif;
-      font-size: 1.2em;
+      font-size: 1em;
       margin-bottom: 20px;
     }
 

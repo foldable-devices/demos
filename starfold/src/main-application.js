@@ -64,7 +64,7 @@ export class MainApplication extends LitElement {
     .score {
       color: white;
       font-family: 'Russo One', sans-serif;
-      font-size: 1.2em;
+      font-size: 1em;
       margin-bottom: 20px;
     }
 

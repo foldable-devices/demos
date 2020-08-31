@@ -73,10 +73,10 @@ export class Menu extends LitElement {
       }
 
       :host {
-        width: 50vw;
+        width: 60vw;
         height: 30vh;
         top: calc(50vh - 20vh);
-        left: calc(50vw - 30vw);
+        left: calc(50vw - 35vw);
       }
     }
 
