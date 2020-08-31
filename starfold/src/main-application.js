@@ -338,54 +338,37 @@ export class MainApplication extends LitElement {
     this._context.fillText(elapsedText, this._timeX, this._timeY);
   }
 
-  _drawController() {
+  _drawControllerSegment() {
     this._context.save();
     this._context.fillStyle = 'black';
-    this._context.fillRect(this._controllerArea.left, this._controllerArea.top, this._controllerArea.width, this._controllerArea.height)
+    this._context.fillRect(
+      this._controllerArea.left, this._controllerArea.top,
+      this._controllerArea.width, this._controllerArea.height);
     this._context.restore();
-    this._leftControllerPos = {
-      x: this._controllerArea.left + this._controllerArea.width / 2 - this._controllerSize,
-      y: this._controllerArea.top + this._controllerArea.height / 2 };
-    this._context.drawImage(this._controllerLeftImage,
-      this._leftControllerPos.x,
-      this._leftControllerPos.y,
-      this._controllerSize, this._controllerSize);
-    this._rightControllerPos = {
-        x: this._controllerArea.left + this._controllerArea.width / 2 + this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2};
-    this._context.drawImage(this._controllerRightImage,
-      this._rightControllerPos.x,
-      this._rightControllerPos.y,
-      this._controllerSize, this._controllerSize);
   }
 
-  _drawTouchController() {
-    this._leftControllerPos = {
-      x: 0,
-      y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
-    this._context.drawImage(this._controllerLeftImage,
-      this._leftControllerPos.x,
-      this._leftControllerPos.y,
-      this._controllerSizeTouch, this._controllerSizeTouch);
+  _drawController(size) {
     this._context.save();
+    this._context.drawImage(this._controllerLeftImage,
+      this._leftControllerPos.x, this._leftControllerPos.y, size, size);
+    this._drawMiddleController(size);
+    this._context.drawImage(this._controllerRightImage,
+      this._rightControllerPos.x, this._rightControllerPos.y, size, size);
+    this._context.restore();
+  }
+
+  _drawMiddleController(size) {
     this._context.fillStyle = 'white';
     this._context.strokeStyle = "#333333";
     this._context.lineWidth = "3";
-    this._context.fillRect(this._controllerSizeTouch,
-      this._playAreaSize.height - 2 * this._controllerSizeTouch + 1,
-      this._controllerSizeTouch, this._controllerSizeTouch - 2);
-    this._context.rect(this._controllerSizeTouch,
-      this._playAreaSize.height - 2 * this._controllerSizeTouch + 1,
-      this._controllerSizeTouch, this._controllerSizeTouch - 2);
+    this._context.fillRect(
+      this._leftControllerPos.x + size,
+      this._leftControllerPos.y + 1, size, size - 2);
+    this._context.beginPath()
+    this._context.rect(
+      this._leftControllerPos.x + size,
+      this._leftControllerPos.y + 1, size, size - 2);
     this._context.stroke();
-    this._context.restore();
-    this._rightControllerPos = {
-      x: 2 * this._controllerSizeTouch,
-      y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
-    this._context.drawImage(this._controllerRightImage,
-      this._rightControllerPos.x,
-      this._rightControllerPos.y,
-      this._controllerSizeTouch, this._controllerSizeTouch);
   }
 
   _handleKeyDown = (event) => {
@@ -409,9 +392,9 @@ export class MainApplication extends LitElement {
 
   _isTouchingRightController(event) {
     return event.clientX >= this._rightControllerPos.x &&
-      event.clientX <= this._rightControllerPos.x + this._controllerSize &&
+      event.clientX <= this._rightControllerPos.x + this._controllerSize + 10 &&
       event.clientY >= this._rightControllerPos.y &&
-      event.clientY <= this._rightControllerPos.y + this._controllerSize;
+      event.clientY <= this._rightControllerPos.y + this._controllerSize + 10;
   }
 
   _onPointerDown = async (event) => {
@@ -479,10 +462,24 @@ export class MainApplication extends LitElement {
     this._drawMeteors();
     this._drawShip();
     this._drawTime();
-    if (this._spanning)
-      this._drawController();
-    else
-      this._drawTouchController();
+    if (this._spanning) {
+      this._leftControllerPos = {
+        x: this._controllerArea.left + this._controllerArea.width / 2 - this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2 };
+      this._rightControllerPos = {
+        x: this._controllerArea.left + this._controllerArea.width / 2 + this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2};
+      this._drawControllerSegment();
+      this._drawController(this._controllerSize);
+    } else {
+      this._leftControllerPos = {
+        x: 0,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._rightControllerPos = {
+        x: 2 * this._controllerSizeTouch,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._drawController(this._controllerSizeTouch);
+    }
     let newTime =  Math.round(window.performance.now() / 1000) - this._startTime;
     if (this.currentTime == newTime) {
       requestAnimationFrame(this._drawCanvas);
