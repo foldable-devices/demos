@@ -67,6 +67,14 @@ export class MainApplication extends LitElement {
       font-size: 1.2em;
       margin-bottom: 20px;
     }
+
+    #pause-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+    }
   `;
 
   _snackbar;
@@ -76,9 +84,12 @@ export class MainApplication extends LitElement {
   _pauseMenu;
   _aboutMenu;
   _lostMenu;
+  _pauseButton;
+  _pauseButtonPos = {x: 0, y: 0};
+  _pauseButtonSize = 80;
   _ship;
   _shipSize = 80;
-  _controllerSize= 80;
+  _controllerSize= 70;
   _controllerSizeTouch = 60;
   _shipObject= {x: 0, y: 0};
   _background1Y = 0;
@@ -170,6 +181,7 @@ export class MainApplication extends LitElement {
     this._pauseMenu = this.shadowRoot.querySelector('#pause-menu');
     this._aboutMenu = this.shadowRoot.querySelector('#about-menu');
     this._lostMenu = this.shadowRoot.querySelector('#lost-menu');
+    this._pauseButton = this.shadowRoot.querySelector('#pause-button');
     this._ship = this.shadowRoot.querySelector('#ship');
     this._meteorImage = this.shadowRoot.querySelector('#meteor');
     this._meteorImage2 = this.shadowRoot.querySelector('#meteor2');
@@ -232,7 +244,17 @@ export class MainApplication extends LitElement {
     this._touchingUpController = this._touchingDownController = false;
     this._pointerDown = false;
     this._addNewMeteors();
+    if (!this._spanning)
+      this._showPauseButton();
     requestAnimationFrame(this._drawCanvas);
+  }
+
+  _hidePauseButton() {
+    this._pauseButton.classList.add("hidden");
+  }
+
+  _showPauseButton() {
+    this._pauseButton.classList.remove("hidden");
   }
 
   _pauseGame() {
@@ -241,6 +263,7 @@ export class MainApplication extends LitElement {
     this._paused = true;
     this._touchingLeftController = this._touchingRightController =
     this._touchingUpController = this._touchingDownController = false;
+    this._hidePauseButton();
     this._pauseMenu.open();
   }
 
@@ -249,6 +272,8 @@ export class MainApplication extends LitElement {
       return;
     this._paused = false;
     this._pauseMenu.close();
+    if (!this._spanning)
+      this._showPauseButton();
     requestAnimationFrame(this._drawCanvas);
   }
 
@@ -402,6 +427,13 @@ export class MainApplication extends LitElement {
     this._context.restore();
   }
 
+  _drawPauseButton() {
+    this._context.drawImage(this._pauseButton,
+      this._pauseButtonPos.x,
+      this._pauseButtonPos.y,
+      this._pauseButtonSize, this._pauseButtonSize);
+  }
+
   _handleKeyDown = (event) => {
     if (this._paused)
       return;
@@ -416,6 +448,13 @@ export class MainApplication extends LitElement {
     } else if (event.keyCode == 38) { // Up
       this._moveShipUp();
     }
+  }
+
+  _isTouchingPauseButton(event) {
+    return event.clientX >= this._pauseButtonPos.x - this._touchSensitivity &&
+      event.clientX <= this._pauseButtonPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientY >= this._pauseButtonPos.y - this._touchSensitivity &&
+      event.clientY <= this._pauseButtonPos.y + this._controllerSize + this._touchSensitivity;
   }
 
   _isTouchingAController(controller, event) {
@@ -438,6 +477,10 @@ export class MainApplication extends LitElement {
     if (this._paused || this._dead)
       return;
     this._clearPointerTimeout();
+    if(this._isTouchingPauseButton(event)) {
+      this._pauseGame();
+      return;
+    }
     this._touchingLeftController = this._isTouchingAController(this._leftControllerPos, event);
     this._touchingRightController  = this._isTouchingAController(this._rightControllerPos, event);
     this._touchingUpController  = this._isTouchingAController(this._upControllerPos, event);
@@ -523,6 +566,7 @@ export class MainApplication extends LitElement {
       this._drawControllerSegment();
       this._drawController(this._controllerSize);
       this._drawControllerHighlight(this._controllerSize);
+      this._drawPauseButton();
     } else {
       this._drawController(this._controllerSizeTouch);
       this._drawControllerHighlight(this._controllerSizeTouch);
@@ -577,6 +621,10 @@ export class MainApplication extends LitElement {
   _handleSpanning() {
     this._spanning = window.getWindowSegments().length > 1;
     this._updateGameLayout();
+    if (!this._spanning)
+      this._showPauseButton();
+    else
+      this._hidePauseButton();
     this._mainMenu.handleSpanning();
     this._pauseMenu.handleSpanning();
     this._aboutMenu.handleSpanning();
@@ -615,6 +663,7 @@ export class MainApplication extends LitElement {
       this._downControllerPos = {
         x: this._controllerSizeTouch,
         y: this._playAreaSize.height - this._controllerSizeTouch};
+      this._pauseButtonPos = {x: 0, y: 0};
     } else {
       this._playAreaSize = {
         left: segments[0].left,
@@ -626,18 +675,21 @@ export class MainApplication extends LitElement {
         top: segments[1].top,
         width: segments[1].width,
         height: segments[1].height };
+      this._pauseButtonPos = {
+        x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2};
       this._leftControllerPos = {
-        x: this._controllerArea.left + this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2 };
+        x: this._controllerArea.left,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2};
       this._rightControllerPos = {
-        x: this._controllerArea.left + 3 * this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2};
+        x: this._controllerArea.left + 2 * this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2};
       this._upControllerPos = {
-          x: this._controllerArea.left + 2 * this._controllerSize,
-          y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize};
+          x: this._controllerArea.left + this._controllerSize,
+          y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize * 3 / 2};
       this._downControllerPos = {
-          x: this._controllerArea.left + 2 * this._controllerSize,
-          y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize};
+          x: this._controllerArea.left + this._controllerSize,
+          y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize / 2};
     }
     if (oldPlayArea) {
       // Update ship position
@@ -680,6 +732,10 @@ export class MainApplication extends LitElement {
   render() {
     return html`
       <canvas id="canvas"></canvas>
+      <picture>
+        <source srcset="images/pause-button.webp" type="image/webp"/>
+        <img class="hidden" id="pause-button" src="images/pause-button.png" @click="${this._pauseGame}">
+      </picture>
       <picture class="hidden">
         <source srcset="images/ship.webp" type="image/webp"/>
         <img id="ship" src="images/ship.png">
