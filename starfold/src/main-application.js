@@ -103,6 +103,7 @@ export class MainApplication extends LitElement {
   _pointerDown = false;
   _currentPointerTimeout = [];
   _pointerId;
+  _touchSensitivity = 10;
 
   static get properties() {
     return { currentTime: { type: String} };
@@ -172,6 +173,8 @@ export class MainApplication extends LitElement {
     this._explosionImage = this.shadowRoot.querySelector('#explosion');
     this._controllerLeftImage = this.shadowRoot.querySelector('#left-controller');
     this._controllerRightImage = this.shadowRoot.querySelector('#right-controller');
+    this._controllerUpImage = this.shadowRoot.querySelector('#up-controller');
+    this._controllerDownImage = this.shadowRoot.querySelector('#down-controller');
     document.addEventListener('keydown', this._handleKeyDown, false);
     this._canvas.onpointerdown = this._onPointerDown.bind(this);
     this._canvas.onpointermove = this._onPointerMove.bind(this);
@@ -354,6 +357,10 @@ export class MainApplication extends LitElement {
     this._drawMiddleController(size);
     this._context.drawImage(this._controllerRightImage,
       this._rightControllerPos.x, this._rightControllerPos.y, size, size);
+    this._context.drawImage(this._controllerUpImage,
+      this._upControllerPos.x, this._upControllerPos.y, size, size);
+    this._context.drawImage(this._controllerDownImage,
+      this._downControllerPos.x, this._downControllerPos.y, size, size);
     this._context.restore();
   }
 
@@ -380,21 +387,48 @@ export class MainApplication extends LitElement {
       this._moveShipRight();
     } else if (event.keyCode == 27) { // Esc
       this._pauseGame();
+    } else if (event.keyCode == 40) { // Down
+      this._moveShipDown();
+    } else if (event.keyCode == 38) { // Up
+      this._moveShipUp();
     }
   }
 
   _isTouchingLeftController(event) {
-    return event.clientX >= this._leftControllerPos.x &&
-      event.clientX <= this._leftControllerPos.x + this._controllerSize &&
-      event.clientY >= this._leftControllerPos.y &&
-      event.clientY <= this._leftControllerPos.y + this._controllerSize;
+    return event.clientX >= this._leftControllerPos.x - this._touchSensitivity &&
+      event.clientX <= this._leftControllerPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientY >= this._leftControllerPos.y - this._touchSensitivity &&
+      event.clientY <= this._leftControllerPos.y + this._controllerSize + this._touchSensitivity;
   }
 
   _isTouchingRightController(event) {
-    return event.clientX >= this._rightControllerPos.x &&
-      event.clientX <= this._rightControllerPos.x + this._controllerSize + 10 &&
-      event.clientY >= this._rightControllerPos.y &&
-      event.clientY <= this._rightControllerPos.y + this._controllerSize + 10;
+    return event.clientX >= this._rightControllerPos.x - this._touchSensitivity &&
+      event.clientX <= this._rightControllerPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientY >= this._rightControllerPos.y - this._touchSensitivity &&
+      event.clientY <= this._rightControllerPos.y + this._controllerSize + this._touchSensitivity;
+  }
+
+  _isTouchingUpController(event) {
+    return event.clientX >= this._upControllerPos.x - this._touchSensitivity &&
+      event.clientX <= this._upControllerPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientY >= this._upControllerPos.y - this._touchSensitivity &&
+      event.clientY <= this._upControllerPos.y + this._controllerSize + this._touchSensitivity;
+  }
+
+  _isTouchingDownController(event) {
+    return event.clientX >= this._downControllerPos.x - this._touchSensitivity &&
+      event.clientX <= this._downControllerPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientY >= this._downControllerPos.y - this._touchSensitivity &&
+      event.clientY <= this._downControllerPos.y + this._controllerSize + this._touchSensitivity;
+  }
+
+  _isTouchingController(event) {
+    const isTouchingLeftController = this._isTouchingLeftController(event);
+    const isTouchingRightController = this._isTouchingRightController(event);
+    const isTouchingUpController = this._isTouchingUpController(event);
+    const isTouchingDownController = this.  _isTouchingDownController(event);
+    return isTouchingLeftController || isTouchingRightController ||
+    isTouchingUpController || isTouchingDownController;
   }
 
   _onPointerDown = async (event) => {
@@ -403,26 +437,35 @@ export class MainApplication extends LitElement {
     this._clearPointerTimeout();
     const isTouchingLeftController = this._isTouchingLeftController(event);
     const isTouchingRightController = this._isTouchingRightController(event);
-    if (isTouchingLeftController || isTouchingRightController) {
+    const isTouchingUpController = this._isTouchingUpController(event);
+    const isTouchingDownController = this._isTouchingDownController(event);
+    if (isTouchingLeftController || isTouchingRightController ||
+        isTouchingUpController || isTouchingDownController) {
       this._pointerDown = true;
       this._pointerId = event.pointerId;
       this._canvas.setPointerCapture(this._pointerId);
       event.preventDefault();
       if (isTouchingLeftController)
         this._moveShipLeft();
-      else
+      if (isTouchingRightController)
         this._moveShipRight();
+      if (isTouchingUpController)
+        this._moveShipUp();
+      if (isTouchingDownController)
+        this._moveShipDown();
       this._currentPointerTimeout.push(
-        setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 300));
+        setTimeout((direction) => this._simulateLongPress(
+          isTouchingLeftController,
+          isTouchingRightController,
+          isTouchingUpController,
+          isTouchingDownController), 300));
     }
   }
 
   _onPointerMove = async (event) => {
     if (this._paused || this._dead)
       return;
-    const isTouchingLeftController = this._isTouchingLeftController(event);
-    const isTouchingRightController = this._isTouchingRightController(event);
-    if (!isTouchingLeftController && !isTouchingRightController) {
+    if (!this._isTouchingController(event)) {
       this._pointerDown = false;
       this._clearPointerTimeout();
     }
@@ -437,15 +480,24 @@ export class MainApplication extends LitElement {
       this._canvas.releasePointerCapture(this._pointerId);
   }
 
-  _simulateLongPress = async (isTouchingLeftController) => {
+  _simulateLongPress = async (isTouchingLeftController, isTouchingRightController,
+    isTouchingUpController, isTouchingDownController) => {
     if(!this._pointerDown)
       return;
-    if (isTouchingLeftController)
+      if (isTouchingLeftController)
       this._moveShipLeft();
-    else
+    if (isTouchingRightController)
       this._moveShipRight();
+    if (isTouchingUpController)
+      this._moveShipUp();
+    if (isTouchingDownController)
+      this._moveShipDown();
     this._currentPointerTimeout.push(
-      setTimeout((direction) => this._simulateLongPress(isTouchingLeftController), 50));
+      setTimeout((direction) => this._simulateLongPress(
+        isTouchingLeftController,
+        isTouchingRightController,
+        isTouchingUpController,
+        isTouchingDownController), 50));
   }
 
   _clearPointerTimeout() {
@@ -463,21 +515,9 @@ export class MainApplication extends LitElement {
     this._drawShip();
     this._drawTime();
     if (this._spanning) {
-      this._leftControllerPos = {
-        x: this._controllerArea.left + this._controllerArea.width / 2 - this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2 };
-      this._rightControllerPos = {
-        x: this._controllerArea.left + this._controllerArea.width / 2 + this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2};
       this._drawControllerSegment();
       this._drawController(this._controllerSize);
     } else {
-      this._leftControllerPos = {
-        x: 0,
-        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
-      this._rightControllerPos = {
-        x: 2 * this._controllerSizeTouch,
-        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
       this._drawController(this._controllerSizeTouch);
     }
     let newTime =  Math.round(window.performance.now() / 1000) - this._startTime;
@@ -498,12 +538,24 @@ export class MainApplication extends LitElement {
     if (this._shipObject.x <= 10  || this._paused)
        return;
     this._shipObject.x -= 10;
- }
+  }
 
   _moveShipRight() {
-      if (this._shipObject.x + 10 >= this._playAreaSize.width - this._shipObject.size || this._paused)
-        return;
-      this._shipObject.x += 10;
+    if (this._shipObject.x + 10 >= this._playAreaSize.width - this._shipObject.size || this._paused)
+      return;
+    this._shipObject.x += 10;
+  }
+
+  _moveShipDown() {
+    if (this._shipObject.y + 10 >= this._playAreaSize.height - this._shipObject.size || this._paused)
+      return;
+    this._shipObject.y += 10;
+  }
+
+  _moveShipUp() {
+    if (this._shipObject.y <= 10 || this._paused)
+      return;
+    this._shipObject.y -= 10;
   }
 
   _onResize = async (event) => {
@@ -541,6 +593,21 @@ export class MainApplication extends LitElement {
     if (segments.length === 1) {
       this._playAreaSize = { width: this._canvas.width, height: this._canvas.height };
       this._controllerArea = { left: 0, top: 0, width: 0, height: 0 };
+      this._leftControllerPos = {
+        x: 0,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._rightControllerPos = {
+        x: 2 * this._controllerSizeTouch,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._upControllerPos = {
+        x: this._controllerSizeTouch,
+        y: this._playAreaSize.height - 3 * this._controllerSizeTouch};
+      this._rightControllerPos = {
+        x: 2 * this._controllerSizeTouch,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._downControllerPos = {
+        x: this._controllerSizeTouch,
+        y: this._playAreaSize.height - this._controllerSizeTouch};
     } else {
       this._playAreaSize = {
         left: segments[0].left,
@@ -552,6 +619,18 @@ export class MainApplication extends LitElement {
         top: segments[1].top,
         width: segments[1].width,
         height: segments[1].height };
+      this._leftControllerPos = {
+        x: this._controllerArea.left + this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2 };
+      this._rightControllerPos = {
+        x: this._controllerArea.left + 3 * this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2};
+      this._upControllerPos = {
+          x: this._controllerArea.left + 2 * this._controllerSize,
+          y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize};
+      this._downControllerPos = {
+          x: this._controllerArea.left + 2 * this._controllerSize,
+          y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize};
     }
     if (oldPlayArea) {
       // Update ship position
@@ -617,6 +696,14 @@ export class MainApplication extends LitElement {
       <picture class="hidden">
         <source srcset="images/right-controller.webp" type="image/webp"/>
         <img id="right-controller" src="images/right-controller.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/up-controller.webp" type="image/webp"/>
+        <img id="up-controller" src="images/up-controller.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/down-controller.webp" type="image/webp"/>
+        <img id="down-controller" src="images/down-controller.png">
       </picture>
       <picture class="hidden">
           <source media="(max-width: 767px)"

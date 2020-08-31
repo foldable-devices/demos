@@ -18,6 +18,8 @@ module.exports = {
     "images/ship.webp",
     "images/right-controller.webp",
     "images/left-controller.webp",
+    "images/up-controller.webp",
+    "images/down-controller.webp",
     "images/restart-button.webp",
     "images/resume-button.webp",
     "images/starfield-1024.webp",
