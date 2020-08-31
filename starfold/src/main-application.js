@@ -859,7 +859,7 @@ export class MainApplication extends LitElement {
       </game-menu>
       <game-menu id="lost-menu">
         <div slot="title">You Lost!</div>
-        <div slot="button" class="score">Your time was ${this.currentTime}</div>
+        <div slot="button" class="score">Your time was ${this.currentTime} seconds</div>
         <picture slot="button2">
           <source srcset="images/restart-button.webp" type="image/webp"/>
           <img alt="Image of a restart button" class="menu-button" src="images/restart-button.jpg" @click="${this._startGame}">
