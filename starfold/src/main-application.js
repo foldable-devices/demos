@@ -119,6 +119,9 @@ export class MainApplication extends LitElement {
   _touchingRightController = false;
   _touchingUpController = false;
   _touchingDownController = false;
+  _yButtonImage;
+  _yButtonSize = 100;
+  _yButtonPos = {x: 0, y: 0};
 
   static get properties() {
     return { currentTime: { type: String} };
@@ -191,6 +194,7 @@ export class MainApplication extends LitElement {
     this._controllerRightImage = this.shadowRoot.querySelector('#right-controller');
     this._controllerUpImage = this.shadowRoot.querySelector('#up-controller');
     this._controllerDownImage = this.shadowRoot.querySelector('#down-controller');
+    this._yButtonImage = this.shadowRoot.querySelector('#y-button');
     document.addEventListener('keydown', this._handleKeyDown, false);
     this._canvas.onpointerdown = this._onPointerDown.bind(this);
     this._canvas.onpointermove = this._onPointerMove.bind(this);
@@ -434,6 +438,13 @@ export class MainApplication extends LitElement {
       this._pauseButtonSize, this._pauseButtonSize);
   }
 
+  _drawYButton() {
+    this._context.drawImage(this._yButtonImage,
+      this._yButtonPos.x,
+      this._yButtonPos.y,
+      this._yButtonSize, this._yButtonSize);
+  }
+
   _handleKeyDown = (event) => {
     if (this._paused)
       return;
@@ -567,6 +578,7 @@ export class MainApplication extends LitElement {
       this._drawController(this._controllerSize);
       this._drawControllerHighlight(this._controllerSize);
       this._drawPauseButton();
+      this._drawYButton();
     } else {
       this._drawController(this._controllerSizeTouch);
       this._drawControllerHighlight(this._controllerSizeTouch);
@@ -664,6 +676,7 @@ export class MainApplication extends LitElement {
         x: this._controllerSizeTouch,
         y: this._playAreaSize.height - this._controllerSizeTouch};
       this._pauseButtonPos = {x: 0, y: 0};
+      this._yButtonPos = {x: 0, y: 0};
     } else {
       this._playAreaSize = {
         left: segments[0].left,
@@ -678,6 +691,9 @@ export class MainApplication extends LitElement {
       this._pauseButtonPos = {
         x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
         y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2};
+      this._yButtonPos = {
+          x: this._controllerArea.left + this._controllerArea.width - this._yButtonSize * 2,
+          y: this._controllerArea.top + this._controllerArea.height / 2 - this._yButtonSize / 2};
       this._leftControllerPos = {
         x: this._controllerArea.left,
         y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2};
@@ -767,6 +783,10 @@ export class MainApplication extends LitElement {
       <picture class="hidden">
         <source srcset="images/down-controller.webp" type="image/webp"/>
         <img id="down-controller" src="images/down-controller.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/y-button.webp" type="image/webp"/>
+        <img id="y-button" src="images/y-button.png">
       </picture>
       <picture class="hidden">
           <source media="(max-width: 767px)"
