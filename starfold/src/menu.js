@@ -11,6 +11,7 @@ export class Menu extends LitElement {
       left: calc(50vw - 12.5vw);
       z-index: 4;
       visibility: hidden;
+      user-select: none;
     }
 
     *,

@@ -23,6 +23,7 @@ function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0
       left: calc(50vw - 12.5vw);
       z-index: 4;
       visibility: hidden;
+      user-select: none;
     }
 
     *,
