@@ -535,16 +535,16 @@ export class MainApplication extends LitElement {
 
   _isTouchingPauseButton(event) {
     return event.clientX >= this._pauseButtonPos.x - this._touchSensitivity &&
-      event.clientX <= this._pauseButtonPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientX <= this._pauseButtonPos.x + this._pauseButtonSize + this._touchSensitivity &&
       event.clientY >= this._pauseButtonPos.y - this._touchSensitivity &&
-      event.clientY <= this._pauseButtonPos.y + this._controllerSize + this._touchSensitivity;
+      event.clientY <= this._pauseButtonPos.y + this._pauseButtonSize + this._touchSensitivity;
   }
 
   _isTouchingYButton(event) {
     return event.clientX >= this._yButtonPos.x - this._touchSensitivity &&
-      event.clientX <= this._yButtonPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientX <= this._yButtonPos.x + this._yButtonSize + this._touchSensitivity &&
       event.clientY >= this._yButtonPos.y - this._touchSensitivity &&
-      event.clientY <= this._yButtonPos.y + this._controllerSize + this._touchSensitivity;
+      event.clientY <= this._yButtonPos.y + this._yButtonSize + this._touchSensitivity;
   }
 
   _isTouchingAController(controller, event) {
@@ -781,7 +781,7 @@ export class MainApplication extends LitElement {
         x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
         y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2};
       this._yButtonPos = {
-          x: this._controllerArea.left + this._controllerArea.width - this._yButtonSize * 2,
+          x: this._controllerArea.left + this._controllerArea.width - this._yButtonSize * 1.5,
           y: this._controllerArea.top + this._controllerArea.height / 2 - this._yButtonSize / 2};
       this._leftControllerPos = {
         x: this._controllerArea.left,
