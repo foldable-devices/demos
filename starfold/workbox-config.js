@@ -24,6 +24,7 @@ module.exports = {
     "images/resume-button.webp",
     "images/pause-button.webp",
     "images/y-button.webp",
+    "images/missile.webp",
     "images/starfield-1024.webp",
     "web_modules/import-map.json",
     "dist/*.js"

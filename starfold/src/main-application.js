@@ -74,6 +74,7 @@ export class MainApplication extends LitElement {
       left: 20px;
       width: 60px;
       height: 60px;
+      user-select: none;
     }
   `;
 
@@ -122,6 +123,11 @@ export class MainApplication extends LitElement {
   _yButtonImage;
   _yButtonSize = 100;
   _yButtonPos = {x: 0, y: 0};
+  _touchingYButton = false;
+   _missileImage;
+  _missileWidth = 20;
+  _missileHeight = 30;
+  _missiles = [];
 
   static get properties() {
     return { currentTime: { type: String} };
@@ -194,6 +200,7 @@ export class MainApplication extends LitElement {
     this._controllerRightImage = this.shadowRoot.querySelector('#right-controller');
     this._controllerUpImage = this.shadowRoot.querySelector('#up-controller');
     this._controllerDownImage = this.shadowRoot.querySelector('#down-controller');
+    this._missileImage = this.shadowRoot.querySelector('#missile');
     this._yButtonImage = this.shadowRoot.querySelector('#y-button');
     document.addEventListener('keydown', this._handleKeyDown, false);
     this._canvas.onpointerdown = this._onPointerDown.bind(this);
@@ -236,6 +243,7 @@ export class MainApplication extends LitElement {
     this._paused = false;
     this._dead = false;
     this._meteors = [];
+    this._missiles = [];
     this.currentTime = 0;
     this._velocity = 2;
     this._startTime = Math.round(window.performance.now() / 1000);
@@ -244,7 +252,7 @@ export class MainApplication extends LitElement {
       y: this._playAreaSize.height - this._shipSize, size: this._shipSize};
     this._background2Y = -this._playAreaSize.height;
     this._background1Y = -this._playAreaSize.height;
-    this._touchingLeftController = this._touchingRightController =
+    this._touchingYButton = this._touchingLeftController = this._touchingRightController =
     this._touchingUpController = this._touchingDownController = false;
     this._pointerDown = false;
     this._addNewMeteors();
@@ -265,8 +273,9 @@ export class MainApplication extends LitElement {
     if (this._paused)
       return;
     this._paused = true;
-    this._touchingLeftController = this._touchingRightController =
-    this._touchingUpController = this._touchingDownController = false;
+    this._touchingYButton = this._touchingLeftController =
+    this._touchingRightController = this._touchingUpController =
+    this._touchingDownController = false;
     this._hidePauseButton();
     this._pauseMenu.open();
   }
@@ -313,7 +322,20 @@ export class MainApplication extends LitElement {
       if (this._checkCollision(meteor, {x: x, y: y, size: this._meteorSize}))
         return this._addRandomMeteor();
     }
-    this._meteors.push({x: x, y: y, size: this._meteorSize, spriteId: Math.random() >= 0.5})
+    this._meteors.push({x: x, y: y, destroyed: false,
+        size: this._meteorSize, spriteId: Math.random() >= 0.5})
+  }
+
+  _removeMeteor(meteorToRemove) {
+    for (let i = this._meteors.length; i--; ) {
+      const meteor = this._meteors[i];
+      if (meteor.destroyed &&
+          meteorToRemove.y ==  meteor.y &&
+          meteorToRemove.x ==  meteor.x) {
+        this._meteors.splice(i, 1);
+        break;
+      }
+    }
   }
 
   _getRandomInt(min, max) {
@@ -344,22 +366,58 @@ export class MainApplication extends LitElement {
   _drawMeteors() {
     for (const meteor of this._meteors) {
       const imagePath = meteor.spriteId ? this._meteorImage : this._meteorImage2;
-      this._context.drawImage(imagePath, meteor.x, meteor.y, meteor.size, meteor.size);
+      if (meteor.destroyed)
+        this._context.drawImage(this._explosionImage, meteor.x, meteor.y, meteor.size, meteor.size);
+      else
+        this._context.drawImage(imagePath, meteor.x, meteor.y, meteor.size, meteor.size);
       if (this._enableDebug) {
-        let coord = meteor.x + ' ' + meteor.y;
-        this._context.font = '20px Russo One';
+        this._context.save();
+        const coord = meteor.x + ' ' + meteor.y;
+        this._context.font = '20px serif';
         this._context.strokeStyle = '#ffffff';
-        this._context.strokeText(coord, meteor.x, meteor.y + meteor.size / 2)
+        this._context.strokeText(coord, meteor.x, meteor.y + meteor.size / 2);
+        this._context.restore();
       }
-      meteor.y += this._velocity;
-      if (this._checkCollision(meteor, this._shipObject))
+      if (!meteor.destroyed && this._checkCollision(meteor, this._shipObject))
          this._lostGame();
+      meteor.y += this._velocity;
     }
     // Get rid of out of bounds meteors
     for (let i = this._meteors.length; i--; ) {
-      let meteor = this._meteors[i];
+      const meteor = this._meteors[i];
       if (meteor.y > this._playAreaSize.height) {
         this._meteors.splice(i, 1);
+      }
+    }
+  }
+
+  _drawMissiles() {
+    for (let i = this._missiles.length; i--; ) {
+      const missile = this._missiles[i];
+      this._context.drawImage(this._missileImage, missile.x, missile.y, this._missileWidth, this._missileHeight);
+      if (this._enableDebug) {
+        this._context.save();
+        const coord = missile.x + ' ' + missile.y;
+        this._context.font = '20px serif';
+        this._context.strokeStyle = '#ffffff';
+        this._context.strokeText(coord, missile.x, missile.y + this._missileWidth / 2);
+        this._context.restore();
+      }
+      for (const meteor of this._meteors) {
+        if (this._checkCollision(missile, meteor)) {
+          meteor.destroyed = true;
+          this._missiles.splice(i, 1);
+          setTimeout(() => this._removeMeteor(meteor), 300);
+          break;
+        }
+      }
+      missile.y -= 10;
+    }
+    // Get rid of out of bounds missiles
+    for (let i = this._missiles.length; i--; ) {
+      let missile = this._missiles[i];
+      if (missile.y < 0) {
+        this._missiles.splice(i, 1);
       }
     }
   }
@@ -443,6 +501,18 @@ export class MainApplication extends LitElement {
       this._yButtonPos.x,
       this._yButtonPos.y,
       this._yButtonSize, this._yButtonSize);
+    if(this._touchingYButton) {
+      this._context.save();
+      this._context.globalAlpha = 0.7;
+      this._context.beginPath();
+      this._context.arc(this._yButtonPos.x + this._yButtonSize / 2,
+        this._yButtonPos.y + this._yButtonSize / 2, this._yButtonSize  / 2, 0, 2 * Math.PI);
+      this._context.strokeStyle = 'black';
+      this._context.stroke();
+      this._context.fillStyle = 'black';
+      this._context.fill();
+      this._context.restore();
+    }
   }
 
   _handleKeyDown = (event) => {
@@ -458,6 +528,8 @@ export class MainApplication extends LitElement {
       this._moveShipDown();
     } else if (event.keyCode == 38) { // Up
       this._moveShipUp();
+    } else if (event.keyCode == 32) { // Space
+      this._fireMissile();
     }
   }
 
@@ -466,6 +538,13 @@ export class MainApplication extends LitElement {
       event.clientX <= this._pauseButtonPos.x + this._controllerSize + this._touchSensitivity &&
       event.clientY >= this._pauseButtonPos.y - this._touchSensitivity &&
       event.clientY <= this._pauseButtonPos.y + this._controllerSize + this._touchSensitivity;
+  }
+
+  _isTouchingYButton(event) {
+    return event.clientX >= this._yButtonPos.x - this._touchSensitivity &&
+      event.clientX <= this._yButtonPos.x + this._controllerSize + this._touchSensitivity &&
+      event.clientY >= this._yButtonPos.y - this._touchSensitivity &&
+      event.clientY <= this._yButtonPos.y + this._controllerSize + this._touchSensitivity;
   }
 
   _isTouchingAController(controller, event) {
@@ -517,6 +596,9 @@ export class MainApplication extends LitElement {
           this._touchingUpController,
           this._touchingDownController), 300));
     }
+    this._touchingYButton = this._isTouchingYButton(event);
+    if (this._touchingYButton)
+      this._fireMissile();
   }
 
   _onPointerMove = async (event) => {
@@ -533,7 +615,8 @@ export class MainApplication extends LitElement {
       return;
     this._pointerDown = false;
     this._touchingLeftController = this._touchingRightController =
-    this._touchingUpController = this._touchingDownController = false;
+    this._touchingUpController = this._touchingDownController =
+    this._touchingYButton = false;
     this._clearPointerTimeout();
     if (this._pointerId)
       this._canvas.releasePointerCapture(this._pointerId);
@@ -571,6 +654,7 @@ export class MainApplication extends LitElement {
     this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
     this._drawBackground();
     this._drawMeteors();
+    this._drawMissiles();
     this._drawShip();
     this._drawTime();
     if (this._spanning) {
@@ -578,11 +662,11 @@ export class MainApplication extends LitElement {
       this._drawController(this._controllerSize);
       this._drawControllerHighlight(this._controllerSize);
       this._drawPauseButton();
-      this._drawYButton();
     } else {
       this._drawController(this._controllerSizeTouch);
       this._drawControllerHighlight(this._controllerSizeTouch);
     }
+    this._drawYButton();
     let newTime =  Math.round(window.performance.now() / 1000) - this._startTime;
     if (this.currentTime == newTime) {
       requestAnimationFrame(this._drawCanvas);
@@ -619,6 +703,10 @@ export class MainApplication extends LitElement {
     if (this._shipObject.y <= 10 || this._paused)
       return;
     this._shipObject.y -= 10;
+  }
+
+  _fireMissile() {
+    this._missiles.push({x: this._shipObject.x, y: this._shipObject.y - 10, size: this._missileWidth});
   }
 
   _onResize = async (event) => {
@@ -676,7 +764,8 @@ export class MainApplication extends LitElement {
         x: this._controllerSizeTouch,
         y: this._playAreaSize.height - this._controllerSizeTouch};
       this._pauseButtonPos = {x: 0, y: 0};
-      this._yButtonPos = {x: 0, y: 0};
+      this._yButtonPos = {x: this._playAreaSize.width - this._yButtonSize - 10,
+        y: this._playAreaSize.height - this._yButtonSize - 10};
     } else {
       this._playAreaSize = {
         left: segments[0].left,
@@ -787,6 +876,10 @@ export class MainApplication extends LitElement {
       <picture class="hidden">
         <source srcset="images/y-button.webp" type="image/webp"/>
         <img id="y-button" src="images/y-button.png">
+      </picture>
+      <picture class="hidden">
+        <source srcset="images/missile.webp" type="image/webp"/>
+        <img id="missile" src="images/missile.png">
       </picture>
       <picture class="hidden">
           <source media="(max-width: 767px)"
