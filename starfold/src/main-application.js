@@ -706,7 +706,9 @@ export class MainApplication extends LitElement {
   }
 
   _fireMissile() {
-    this._missiles.push({x: this._shipObject.x, y: this._shipObject.y - 10, size: this._missileWidth});
+    this._missiles.push({
+      x: this._shipObject.x + this._shipSize / 2 - this._missileWidth / 2,
+      y: this._shipObject.y - 10, size: this._missileWidth});
   }
 
   _onResize = async (event) => {
