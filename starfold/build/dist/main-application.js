@@ -165,6 +165,7 @@ function i(t,e,s){return e in t?Object.defineProperty(t,e,{value:s,enumerable:!0
 
     .menu-button:hover {
       filter: drop-shadow(5px 5px 5px black) contrast(150%);
+      cursor: pointer;
     }
 
     .detail-about {
@@ -188,5 +189,6 @@ function i(t,e,s){return e in t?Object.defineProperty(t,e,{value:s,enumerable:!0
       width: 60px;
       height: 60px;
       user-select: none;
+      cursor: pointer;
     }
   `),customElements.define("main-application",MainApplication);

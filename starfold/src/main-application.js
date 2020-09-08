@@ -52,6 +52,7 @@ export class MainApplication extends LitElement {
 
     .menu-button:hover {
       filter: drop-shadow(5px 5px 5px black) contrast(150%);
+      cursor: pointer;
     }
 
     .detail-about {
@@ -75,6 +76,7 @@ export class MainApplication extends LitElement {
       width: 60px;
       height: 60px;
       user-select: none;
+      cursor: pointer;
     }
   `;
 
