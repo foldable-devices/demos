@@ -1,10 +1,10 @@
-import { LitElement, html, css } from '/web_modules/lit-element.js';
-import { FoldablesFeature } from '/web_modules/windowsegments-polyfill.js';
-import '/web_modules/@material/mwc-button.js';
-import '/web_modules/@material/mwc-icon-button.js';
-import '/web_modules/@material/mwc-snackbar.js';
-import { Workbox, messageSW} from '/web_modules/workbox-window.js';
-import '/web_modules/foldable-device-configurator.js';
+import { LitElement, html, css } from 'lit-element';
+import { FoldablesFeature } from 'windowsegments-polyfill';
+import '@material/mwc-button';
+import '@material/mwc-icon-button';
+import '@material/mwc-snackbar';
+import { Workbox, messageSW} from 'workbox-window';
+import 'foldable-device-configurator';
 import "./menu.js"
 
 export class MainApplication extends LitElement {
