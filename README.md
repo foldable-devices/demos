@@ -7,5 +7,7 @@ Links :
 
 - FoldNews: Navigate [here](https://foldable-devices.github.io/demos/foldnews).
 
+- StarFold: Navigate [here](https://foldable-devices.github.io/demos/starfold).
+
 # How to build/develop the demos
 Enter a directory and run follow the README.md.
