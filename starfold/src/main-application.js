@@ -211,12 +211,14 @@ export class MainApplication extends LitElement {
     this._canvas.onpointerup = this._onPointerUp.bind(this);
     this._timeSize = this._context.measureText('Elapsed Time : 2222s').width;
 
-    this._updateGameLayout();
+    this._handleSpanning();
     this._background.onload = this._drawBackground.bind(this);
 
-    const foldablesFeat = new FoldablesFeature;
-    // This is specific for the polyfill, the browser window won't be resized.
-    foldablesFeat.onchange = () => this._handleSpanning();
+    if (typeof FoldablesFeature != 'undefined') {
+      const foldablesFeat = new FoldablesFeature;
+      // This is specific for the polyfill, the browser window won't be resized.
+      foldablesFeat.onchange = () => this._handleSpanning();
+    }
 
     window.onorientationchange = (event) => this._handleOrientationChange(event);
   }
