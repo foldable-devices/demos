@@ -1,5 +1,5 @@
-import { LitElement, html, css } from '/web_modules/lit-element.js';
-import { FoldablesFeature } from '/web_modules/windowsegments-polyfill.js';
+import { LitElement, html, css } from 'lit-element';
+import { FoldablesFeature } from 'windowsegments-polyfill';
 
 export class Menu extends LitElement {
   static styles = css`
