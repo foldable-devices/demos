@@ -209,7 +209,7 @@ export class MainApplication extends LitElement {
 
     @media (min-width: 320px) and (max-width: 1024px) {
       .header {
-        font-size: 1.6em;
+        font-size: 1.7em;
       }
 
       .weather-picture {
@@ -235,6 +235,10 @@ export class MainApplication extends LitElement {
     }
 
     @media (spanning: single-fold-vertical) {
+      .header {
+        font-size: 2.5em;
+      }
+
       .fold {
         width: env(fold-width);
       }
