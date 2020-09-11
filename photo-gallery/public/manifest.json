@@ -1,8 +1,8 @@
 {
   "name": "Photo Gallery Demo for Foldable Devices",
   "short_name": "Photo Gallery",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
+  "theme_color": "#aaccff",
+  "background_color": "#000000",
   "display": "standalone",
   "orientation": "any",
   "start_url": "index.html",
