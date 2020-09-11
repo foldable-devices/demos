@@ -70,11 +70,13 @@ export class MainApplication extends LitElement {
     .enemy-fleet {
       width: 50%;
       height: 100%;
+      z-index: 1;
     }
 
     .fleet {
       width: 50%;
       height: 100%;
+      z-index: 1;
     }
 
     mwc-snackbar {
@@ -143,6 +145,10 @@ export class MainApplication extends LitElement {
       #infobox {
         visibility: visible;
       }
+
+      .background {
+        z-index: 0;
+      }
     }
 
     @media (spanning: single-fold-vertical) {
@@ -170,6 +176,10 @@ export class MainApplication extends LitElement {
 
       #fullscreen-rotate {
         display: none;
+      }
+
+      .background {
+        z-index: 0;
       }
 
       #infobox {
@@ -202,6 +212,10 @@ export class MainApplication extends LitElement {
 
       #fullscreen-rotate {
         display: none;
+      }
+
+      .background {
+        z-index: 0;
       }
 
       #infobox {
@@ -241,6 +255,10 @@ export class MainApplication extends LitElement {
 
       #fullscreen-rotate {
         display: block;
+      }
+
+      .background {
+        z-index: 5;
       }
 
       .enemy-fleet {

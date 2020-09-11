@@ -106,11 +106,13 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
     .enemy-fleet {
       width: 50%;
       height: 100%;
+      z-index: 1;
     }
 
     .fleet {
       width: 50%;
       height: 100%;
+      z-index: 1;
     }
 
     mwc-snackbar {
@@ -179,6 +181,10 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
       #infobox {
         visibility: visible;
       }
+
+      .background {
+        z-index: 0;
+      }
     }
 
     @media (spanning: single-fold-vertical) {
@@ -206,6 +212,10 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
 
       #fullscreen-rotate {
         display: none;
+      }
+
+      .background {
+        z-index: 0;
       }
 
       #infobox {
@@ -238,6 +248,10 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
 
       #fullscreen-rotate {
         display: none;
+      }
+
+      .background {
+        z-index: 0;
       }
 
       #infobox {
@@ -277,6 +291,10 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
 
       #fullscreen-rotate {
         display: block;
+      }
+
+      .background {
+        z-index: 5;
       }
 
       .enemy-fleet {
