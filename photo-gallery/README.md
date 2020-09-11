@@ -45,3 +45,13 @@ $ npm run build
 ```
 
 This will update the `build` directory which is committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
+
+## Assets
+- Pictures
+  - License: Public Domain
+  - Source: https://www.pexels.com/public-domain-images/
+
+- Icon
+  - License: CC Attribution 3.0 Unported, https://creativecommons.org/licenses/by/3.0/
+  - Source: https://www.iconfinder.com/icons/3246767/eog_image_photo_software_icon
+  - Author: Goescat Wei, thanks!
