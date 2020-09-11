@@ -349,7 +349,7 @@ function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0
 
     @media (min-width: 320px) and (max-width: 1024px) {
       .header {
-        font-size: 1.7em;
+        font-size: 1.6em;
       }
 
       .weather-picture {
@@ -394,7 +394,6 @@ function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0
       .grow-right {
         display: block;
         flex-grow: 2;
-        border: solid 1px green;
       }
 
       .date-grow {

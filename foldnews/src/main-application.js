@@ -209,7 +209,7 @@ export class MainApplication extends LitElement {
 
     @media (min-width: 320px) and (max-width: 1024px) {
       .header {
-        font-size: 1.7em;
+        font-size: 1.6em;
       }
 
       .weather-picture {
@@ -254,7 +254,6 @@ export class MainApplication extends LitElement {
       .grow-right {
         display: block;
         flex-grow: 2;
-        border: solid 1px green;
       }
 
       .date-grow {
