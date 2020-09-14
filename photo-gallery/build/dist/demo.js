@@ -1,8 +1,33 @@
-function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0,configurable:!0,writable:!0}):b[c]=d,b}import{LitElement as f,html as e,css as k}from"../web_modules/lit-element.js";import{classMap as l}from"../web_modules/lit-html/directives/class-map.js";import"../web_modules/@material/mwc-button.js";import"../web_modules/@material/mwc-checkbox.js";import"../web_modules/@material/mwc-drawer.js";import"../web_modules/@material/mwc-icon-button.js";import"../web_modules/@material/mwc-snackbar.js";import{adjustCSS as m,observe as n}from"../web_modules/spanning-css-polyfill.js";import{Workbox as o,messageSW as p}from"../web_modules/workbox-window.js";const g=(b,...c)=>{const d=m(b[0],"main-application");return k([d],...c)};class j extends f{render(){return e`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
+import { classMap } from '../web_modules/lit-html/directives/class-map.js';
+import '../web_modules/@material/mwc-button.js';
+import '../web_modules/@material/mwc-checkbox.js';
+import '../web_modules/@material/mwc-drawer.js';
+import '../web_modules/@material/mwc-icon-button.js';
+import '../web_modules/@material/mwc-snackbar.js';
+import '../web_modules/foldable-device-configurator.js';
+import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+import { Workbox, messageSW } from '../web_modules/workbox-window.js';
+
+const css = (strings, ...values) => {
+  const string = adjustCSS(strings[0], "main-application");
+  return litCSS([string], ...values);
+};
+
+class MaterialSpinner extends LitElement {
+  render() {
+    return html`
       <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
         <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
       </svg>
-    `}}a(j,"styles",g`
+    `;
+  }
+
+}
+
+_defineProperty(MaterialSpinner, "styles", css`
     .spinner {
       width: 65px;
       height: 65px;
@@ -44,13 +69,56 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
         transform: rotate(450deg);
       }
     }
-  `),customElements.define("mwc-circular-progress",j);class h extends f{constructor(...b){super(...b);a(this,"_spinner",void 0),a(this,"_image",void 0),a(this,"_legend",void 0)}firstUpdated(){this._spinner=this.shadowRoot.querySelector("mwc-circular-progress"),this._image=this.shadowRoot.querySelector("img"),this._legend=this.shadowRoot.querySelector("#text")}updated(b){b.has("src")&&(this._spinner.style.visibility="visible",this._image.addEventListener("load",()=>{this._spinner.style.visibility="hidden",this.style.visibility="visible",this._legend.innerText=this.description},{once:!0}),this._image.src=this.src)}render(){return e`
+  `);
+
+customElements.define("mwc-circular-progress", MaterialSpinner);
+
+class DetailImage extends LitElement {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "_spinner", void 0);
+
+    _defineProperty(this, "_image", void 0);
+
+    _defineProperty(this, "_legend", void 0);
+  }
+
+  firstUpdated() {
+    this._spinner = this.shadowRoot.querySelector('mwc-circular-progress');
+    this._image = this.shadowRoot.querySelector('img');
+    this._legend = this.shadowRoot.querySelector('#text');
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("src")) {
+      this._spinner.style.visibility = 'visible';
+
+      this._image.addEventListener('load', () => {
+        this._spinner.style.visibility = 'hidden';
+        this.style.visibility = 'visible';
+        this._legend.innerText = this.description;
+      }, {
+        once: true
+      });
+
+      this._image.src = this.src;
+    }
+  }
+
+  render() {
+    return html`
       <div id="wrapper">
         <img/>
         <div id="text"></div>
         <mwc-circular-progress></mwc-circular-progress>
       </div>
-    `}}a(h,"styles",g`
+    `;
+  }
+
+}
+
+_defineProperty(DetailImage, "styles", css`
     :host {
       width: 100%;
       height: 100%;
@@ -88,7 +156,329 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
       position: absolute;
       top: 50%;
     }
-  `),a(h,"properties",{src:{type:String},description:{type:String}}),customElements.define("detail-img",h);export class MainApplication extends f{firstUpdated(){this._gallery=this.shadowRoot.querySelector(".gallery"),this._full_img=this.shadowRoot.querySelector("#full-img"),this._detail_img=this.shadowRoot.querySelector("detail-img"),this._detail_container=this.shadowRoot.querySelector(".detail-container"),this._detail=this.shadowRoot.querySelector(".detail"),this._detail_select=this.shadowRoot.querySelector(".detail-select"),this._spinner=this.shadowRoot.querySelector("mwc-circular-progress"),this._drawer=this.shadowRoot.querySelector("#drawer"),this._snackbar=this.shadowRoot.querySelector("#snackbar"),this._fold=this.shadowRoot.querySelector(".fold"),this._styleCheckbox=this.shadowRoot.querySelector("mwc-checkbox"),this._styleCheckbox.addEventListener("change",this._styleChanged),this._fullview_container=this.shadowRoot.querySelector(".fullview-container"),this._snackbar.addEventListener("MDCSnackbar:closed",b=>{b.detail.reason==="action"&&(this._wb.addEventListener("controlling",c=>{console.log("reloading"),window.location.reload(),this._wbRegistration=void 0}),this._wbRegistration&&this._wbRegistration.waiting&&p(this._wbRegistration.waiting,{type:"SKIP_WAITING"}))}),"serviceWorker"in navigator&&window.addEventListener("load",async()=>{this._wb=new o("./sw.js"),this._wb.addEventListener("waiting",()=>this._showSnackbar()),this._wb.addEventListener("externalwaiting",()=>this._showSnackbar()),this._wbRegistration=await this._wb.register()})}constructor(){super();a(this,"_full_img",void 0),a(this,"_detail_img",void 0),a(this,"_detail_container",void 0),a(this,"_detail",void 0),a(this,"_detail_select",void 0),a(this,"_drawer",void 0),a(this,"_spinner",void 0),a(this,"_styleCheckbox",void 0),a(this,"_fold",void 0),a(this,"_gallery",void 0),a(this,"_fullview_container",void 0),a(this,"_snackbar",void 0),a(this,"_wb",void 0),a(this,"_wbRegistration",void 0),a(this,"_styleChanged",b=>{if(this._styleCheckbox.checked)this._fullview_container.style.height="100vh",this._detail_container.style.display="flex",this._fold.style.display="flex";else{let c=window.getComputedStyle(this._gallery).getPropertyValue("height");this._fullview_container.style.height=c,this._detail_container.style.display="none",this._fold.style.display="none",this._gallery.style.height="100vh",this._gallery.style.width="100vw"}}),this._full_view_container_classes={hidden:!0}}connectedCallback(){super.connectedCallback(),n(this)}_openDrawer(){this._drawer.open=!0}_showSnackbar(){this._snackbar.show()}_openPicture(b){const c=b.currentTarget.children[1].currentSrc,d=c.replace("-l","");if(window.getComputedStyle(this._detail_container).width!="0px"&&this._styleCheckbox.checked){this._detail_select.style.display="none",this._detail.style.visibility="visible";if(this._detail_img.src===d)return;this._detail_img.description=b.currentTarget.children[1].alt,this._detail_img.src=d,this._detail_img.style.visibility="hidden"}else this._full_view_container_classes={hidden:!1},this._full_img.setAttribute("src",d),this._spinner.style.visibility="visible",this._full_img.addEventListener("load",()=>{this._spinner.style.visibility="hidden"},{once:!0}),this._current_image=b.currentTarget}_closePicture(){this._full_view_container_classes={hidden:!0}}_previousPicture(b){b.stopPropagation();if(this._current_image.parentNode.previousElementSibling){const c=this._current_image.parentNode.previousElementSibling.children[0];let d=c.children[1].currentSrc;const i=d.replace("-l","");this._full_img.setAttribute("src",i),this._current_image=c}}_nextPicture(b){b.stopPropagation();if(this._current_image.parentNode.nextElementSibling){const c=this._current_image.parentNode.nextElementSibling.children[0];let d=c.children[1].currentSrc;const i=d.replace("-l","");this._full_img.setAttribute("src",i),this._current_image=c}}render(){const b=[{name:"images/air-balloon-l",alt:"This is a beautiful picture of an air balloon in the sky."},{name:"images/asia-l",alt:"This photo depicts a woman on a boat somewhere in Asia."},{name:"images/china-l",alt:"Architecture in China, a tower of a building."},{name:"images/church-l",alt:"A black church in the middle of nowhere."},{name:"images/city-l",alt:"A modern city somewhere in Asia."},{name:"images/waterfall2-l",alt:"River with a tiny waterfall."},{name:"images/cloud-l",alt:"Clouds in the sky, view from high altitude."},{name:"images/desert-l",alt:"A desert with cactus."},{name:"images/river2-l",alt:"A river inside a canyon."},{name:"images/disney-l",alt:"The Disney castle in Orlando"},{name:"images/forest-l",alt:"A road crossing a green forest"},{name:"images/greece-l",alt:"Greece architecture"},{name:"images/city2-l",alt:"A city street with an arch"},{name:"images/lake-l",alt:"Women coming out of a lake somewhere lost in the nature"},{name:"images/mountain-l",alt:"Peak of a high mountain and a cloudy sky"},{name:"images/new-york-l",alt:"A street in New York"},{name:"images/pool-l",alt:"Relaxing pool in a luxury hotel"},{name:"images/restaurant-l",alt:"Restaurant on the edge of a river somewhere in France"},{name:"images/river-l",alt:"River with people kayaking"},{name:"images/road-l",alt:"Long straight road somewhere in USA"},{name:"images/sand-l",alt:"Desert with rocky mountains on the background"},{name:"images/sea-l",alt:"Beautiful transparent sea water somewhere in the pacific"},{name:"images/sfo-l",alt:"Golden gate in San Francisco"},{name:"images/stars-l",alt:"Wonderful astronomy shot of stars in the sky"},{name:"images/tents-l",alt:"Camping tents hanging on a cliff"},{name:"images/waterfall-l",alt:"Picture of a waterfall between big rocks"},{name:"images/mountain2-l",alt:"Beautiful picture of a mountain landscape"},{name:"images/wave-l",alt:"This is a picture from a wave in the ocean"},{name:"images/aerial-l",alt:"This is an aerial picture of a city"},{name:"images/building-l",alt:"This is a picture from inside a building"},{name:"images/catamaran-l",alt:"This is a picture of a catamaran with blue water"},{name:"images/cats-l",alt:"Thisa picture of two cats sleeping"},{name:"images/egypt-l",alt:"This is a picture from somewhere in Egypt"},{name:"images/feather-l",alt:"This is a picture of colorful feathers"},{name:"images/fruits-l",alt:"This is a picture of a water bottle and fruits"},{name:"images/golden-gate-l",alt:"This is a picture of the Golden Gate"},{name:"images/marocco-l",alt:"This is a picture of ancient building in Marocco"},{name:"images/milky-way-l",alt:"This is a picture from the Milky Way"},{name:"images/palm-tree-l",alt:"This is a picture of palm trees with beautiful weather"},{name:"images/rainbow-l",alt:"This is a picture of a rainbow from a light"},{name:"images/road2-l",alt:"This is a picture from a road with a lot of trees"},{name:"images/surf-l",alt:"This is a picture of a surfer"},{name:"images/volcano-l",alt:"This is an aerial picture of a volcano"}];return e`
+  `);
+
+_defineProperty(DetailImage, "properties", {
+  src: {
+    type: String
+  },
+  description: {
+    type: String
+  }
+});
+
+customElements.define('detail-img', DetailImage);
+export class MainApplication extends LitElement {
+  firstUpdated() {
+    this._gallery = this.shadowRoot.querySelector('.gallery');
+    this._full_img = this.shadowRoot.querySelector('#full-img');
+    this._detail_img = this.shadowRoot.querySelector('detail-img');
+    this._detail_container = this.shadowRoot.querySelector('.detail-container');
+    this._detail = this.shadowRoot.querySelector('.detail');
+    this._detail_select = this.shadowRoot.querySelector('.detail-select');
+    this._spinner = this.shadowRoot.querySelector('mwc-circular-progress');
+    this._drawer = this.shadowRoot.querySelector('#drawer');
+    this._snackbar = this.shadowRoot.querySelector('#snackbar');
+    this._fold = this.shadowRoot.querySelector('.fold');
+    this._styleCheckbox = this.shadowRoot.querySelector('mwc-checkbox');
+
+    this._styleCheckbox.addEventListener('change', this._styleChanged);
+
+    this._fullview_container = this.shadowRoot.querySelector('.fullview-container');
+
+    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
+      if (event.detail.reason === "action") {
+        this._wb.addEventListener('controlling', event => {
+          console.log("reloading");
+          window.location.reload();
+          this._wbRegistration = undefined;
+        }); // Send a message to the waiting service worker instructing
+        // it to skip waiting, which will trigger the `controlling`
+        // event listener above.
+
+
+        if (this._wbRegistration && this._wbRegistration.waiting) messageSW(this._wbRegistration.waiting, {
+          type: 'SKIP_WAITING'
+        });
+      }
+    }); // Check that service workers are supported
+
+
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', async () => {
+        this._wb = new Workbox('./sw.js');
+
+        this._wb.addEventListener('waiting', () => this._showSnackbar());
+
+        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
+
+        this._wbRegistration = await this._wb.register();
+      });
+    }
+  }
+
+  constructor() {
+    super();
+
+    _defineProperty(this, "_full_img", void 0);
+
+    _defineProperty(this, "_detail_img", void 0);
+
+    _defineProperty(this, "_detail_container", void 0);
+
+    _defineProperty(this, "_detail", void 0);
+
+    _defineProperty(this, "_detail_select", void 0);
+
+    _defineProperty(this, "_drawer", void 0);
+
+    _defineProperty(this, "_spinner", void 0);
+
+    _defineProperty(this, "_styleCheckbox", void 0);
+
+    _defineProperty(this, "_fold", void 0);
+
+    _defineProperty(this, "_gallery", void 0);
+
+    _defineProperty(this, "_fullview_container", void 0);
+
+    _defineProperty(this, "_snackbar", void 0);
+
+    _defineProperty(this, "_wb", void 0);
+
+    _defineProperty(this, "_wbRegistration", undefined);
+
+    _defineProperty(this, "_styleChanged", event => {
+      if (this._styleCheckbox.checked) {
+        this._fullview_container.style.height = '100vh';
+        this._detail_container.style.display = 'flex';
+        this._fold.style.display = 'flex';
+      } else {
+        let height = window.getComputedStyle(this._gallery).getPropertyValue('height');
+        this._fullview_container.style.height = height;
+        this._detail_container.style.display = 'none';
+        this._fold.style.display = 'none';
+        this._gallery.style.height = '100vh';
+        this._gallery.style.width = '100vw';
+      }
+    });
+
+    this._full_view_container_classes = {
+      hidden: true
+    };
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    observe(this);
+  }
+
+  _openDrawer() {
+    this._drawer.open = true;
+  }
+
+  _showSnackbar() {
+    this._snackbar.show();
+  }
+
+  _openPicture(e) {
+    const source_image = e.currentTarget.children[1].currentSrc;
+    const path = source_image.replace('-l', '');
+
+    if (window.getComputedStyle(this._detail_container).width != '0px' && this._styleCheckbox.checked) {
+      this._detail_select.style.display = 'none';
+      this._detail.style.visibility = 'visible';
+      if (this._detail_img.src === path) return;
+      this._detail_img.description = e.currentTarget.children[1].alt;
+      this._detail_img.src = path;
+      this._detail_img.style.visibility = 'hidden';
+    } else {
+      this._full_view_container_classes = {
+        hidden: false
+      };
+
+      this._full_img.setAttribute('src', path);
+
+      this._spinner.style.visibility = 'visible';
+
+      this._full_img.addEventListener('load', () => {
+        this._spinner.style.visibility = 'hidden';
+      }, {
+        once: true
+      });
+
+      this._current_image = e.currentTarget;
+    }
+  }
+
+  _closePicture() {
+    this._full_view_container_classes = {
+      hidden: true
+    };
+  }
+
+  _previousPicture(event) {
+    event.stopPropagation();
+
+    if (this._current_image.parentNode.previousElementSibling) {
+      const previous_node_image = this._current_image.parentNode.previousElementSibling.children[0];
+      let previous_image = previous_node_image.children[1].currentSrc;
+      const path = previous_image.replace('-l', '');
+
+      this._full_img.setAttribute('src', path);
+
+      this._current_image = previous_node_image;
+    }
+  }
+
+  _nextPicture(event) {
+    event.stopPropagation();
+
+    if (this._current_image.parentNode.nextElementSibling) {
+      const next_node_image = this._current_image.parentNode.nextElementSibling.children[0];
+      let next_image = next_node_image.children[1].currentSrc;
+      const path = next_image.replace('-l', '');
+
+      this._full_img.setAttribute('src', path);
+
+      this._current_image = next_node_image;
+    }
+  }
+
+  render() {
+    const images = [{
+      name: "images/air-balloon-l",
+      alt: "This is a beautiful picture of an air balloon in the sky."
+    }, {
+      name: "images/asia-l",
+      alt: "This photo depicts a woman on a boat somewhere in Asia."
+    }, {
+      name: "images/china-l",
+      alt: "Architecture in China, a tower of a building."
+    }, {
+      name: "images/church-l",
+      alt: "A black church in the middle of nowhere."
+    }, {
+      name: "images/city-l",
+      alt: "A modern city somewhere in Asia."
+    }, {
+      name: "images/waterfall2-l",
+      alt: "River with a tiny waterfall."
+    }, {
+      name: "images/cloud-l",
+      alt: "Clouds in the sky, view from high altitude."
+    }, {
+      name: "images/desert-l",
+      alt: "A desert with cactus."
+    }, {
+      name: "images/river2-l",
+      alt: "A river inside a canyon."
+    }, {
+      name: "images/disney-l",
+      alt: "The Disney castle in Orlando"
+    }, {
+      name: "images/forest-l",
+      alt: "A road crossing a green forest"
+    }, {
+      name: "images/greece-l",
+      alt: "Greece architecture"
+    }, {
+      name: "images/city2-l",
+      alt: "A city street with an arch"
+    }, {
+      name: "images/lake-l",
+      alt: "Women coming out of a lake somewhere lost in the nature"
+    }, {
+      name: "images/mountain-l",
+      alt: "Peak of a high mountain and a cloudy sky"
+    }, {
+      name: "images/new-york-l",
+      alt: "A street in New York"
+    }, {
+      name: "images/pool-l",
+      alt: "Relaxing pool in a luxury hotel"
+    }, {
+      name: "images/restaurant-l",
+      alt: "Restaurant on the edge of a river somewhere in France"
+    }, {
+      name: "images/river-l",
+      alt: "River with people kayaking"
+    }, {
+      name: "images/road-l",
+      alt: "Long straight road somewhere in USA"
+    }, {
+      name: "images/sand-l",
+      alt: "Desert with rocky mountains on the background"
+    }, {
+      name: "images/sea-l",
+      alt: "Beautiful transparent sea water somewhere in the pacific"
+    }, {
+      name: "images/sfo-l",
+      alt: "Golden gate in San Francisco"
+    }, {
+      name: "images/stars-l",
+      alt: "Wonderful astronomy shot of stars in the sky"
+    }, {
+      name: "images/tents-l",
+      alt: "Camping tents hanging on a cliff"
+    }, {
+      name: "images/waterfall-l",
+      alt: "Picture of a waterfall between big rocks"
+    }, {
+      name: "images/mountain2-l",
+      alt: "Beautiful picture of a mountain landscape"
+    }, {
+      name: "images/wave-l",
+      alt: "This is a picture from a wave in the ocean"
+    }, {
+      name: "images/aerial-l",
+      alt: "This is an aerial picture of a city"
+    }, {
+      name: "images/building-l",
+      alt: "This is a picture from inside a building"
+    }, {
+      name: "images/catamaran-l",
+      alt: "This is a picture of a catamaran with blue water"
+    }, {
+      name: "images/cats-l",
+      alt: "Thisa picture of two cats sleeping"
+    }, {
+      name: "images/egypt-l",
+      alt: "This is a picture from somewhere in Egypt"
+    }, {
+      name: "images/feather-l",
+      alt: "This is a picture of colorful feathers"
+    }, {
+      name: "images/fruits-l",
+      alt: "This is a picture of a water bottle and fruits"
+    }, {
+      name: "images/golden-gate-l",
+      alt: "This is a picture of the Golden Gate"
+    }, {
+      name: "images/marocco-l",
+      alt: "This is a picture of ancient building in Marocco"
+    }, {
+      name: "images/milky-way-l",
+      alt: "This is a picture from the Milky Way"
+    }, {
+      name: "images/palm-tree-l",
+      alt: "This is a picture of palm trees with beautiful weather"
+    }, {
+      name: "images/rainbow-l",
+      alt: "This is a picture of a rainbow from a light"
+    }, {
+      name: "images/road2-l",
+      alt: "This is a picture from a road with a lot of trees"
+    }, {
+      name: "images/surf-l",
+      alt: "This is a picture of a surfer"
+    }, {
+      name: "images/volcano-l",
+      alt: "This is an aerial picture of a volcano"
+    }];
+    return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <mwc-drawer type="modal" hasHeader id="drawer">
         <span slot="title">Configuration</span>
         <div class="drawer">
@@ -101,11 +491,11 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
           </mwc-snackbar>
           <mwc-icon-button icon="menu" class="menu-icon" @click="${this._openDrawer}"></mwc-icon-button>
           <div class="gallery">
-            ${b.map(c=>e`
+            ${images.map(images => html`
               <figure class="gallery-item">
                 <picture @click="${this._openPicture}">
-                  <source srcset="${c.name}.webp" type="image/webp">
-                  <img src="${c.name}.jpg" class="gallery-img" alt=${c.alt}>
+                  <source srcset="${images.name}.webp" type="image/webp">
+                  <img src="${images.name}.jpg" class="gallery-img" alt=${images.alt}>
                 </picture>
               </figure>
             `)}
@@ -120,7 +510,7 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
             </div>
           </div>
 
-          <div class="fullview-container ${l(this._full_view_container_classes)}" @click="${this._closePicture}">
+          <div class="fullview-container ${classMap(this._full_view_container_classes)}" @click="${this._closePicture}">
             <div class="close" @click="${this._closePicture}"></div>
             <div class="arrow-left" @click="${this._previousPicture}"></div>
             <mwc-circular-progress></mwc-circular-progress>
@@ -129,7 +519,12 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
           </div>
         </div>
       </mwc-drawer>
-    `}}a(MainApplication,"styles",g`
+    `;
+  }
+
+}
+
+_defineProperty(MainApplication, "styles", css`
     :host {
       width: 100vw;
       height: 100vh;
@@ -362,7 +757,7 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
       margin-left: 12px;
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       .gallery {
         width: env(fold-left);
         height: 100vh;
@@ -383,7 +778,7 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: single-fold-horizontal) {
+    @media (screen-spanning: single-fold-horizontal) {
       .gallery {
         width: 100vw;
         height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
@@ -404,7 +799,7 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: none) {
+    @media (screen-spanning: none) {
       .gallery {
         width: 100vw;
         height: 100vh;
@@ -432,4 +827,12 @@ function a(b,c,d){return c in b?Object.defineProperty(b,c,{value:d,enumerable:!0
         height: 100vh;
       }
     }
-  `),a(MainApplication,"properties",{_full_view_container_classes:{type:String}}),customElements.define("main-application",MainApplication);
+  `);
+
+_defineProperty(MainApplication, "properties", {
+  _full_view_container_classes: {
+    type: String
+  }
+});
+
+customElements.define("main-application", MainApplication);

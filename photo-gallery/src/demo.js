@@ -1,12 +1,13 @@
-import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
-import { classMap } from '/web_modules/lit-html/directives/class-map.js';
-import '/web_modules/@material/mwc-button.js';
-import '/web_modules/@material/mwc-checkbox.js';
-import '/web_modules/@material/mwc-drawer.js';
-import '/web_modules/@material/mwc-icon-button.js';
-import '/web_modules/@material/mwc-snackbar.js';
-import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
-import { Workbox, messageSW} from '/web_modules/workbox-window.js';
+import { LitElement, html, css as litCSS } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
+import '@material/mwc-button';
+import '@material/mwc-checkbox';
+import '@material/mwc-drawer';
+import '@material/mwc-icon-button';
+import '@material/mwc-snackbar';
+import 'foldable-device-configurator';
+import { adjustCSS, observe } from "spanning-css-polyfill";
+import { Workbox, messageSW} from 'workbox-window';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -382,7 +383,7 @@ export class MainApplication extends LitElement {
       margin-left: 12px;
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       .gallery {
         width: env(fold-left);
         height: 100vh;
@@ -403,7 +404,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: single-fold-horizontal) {
+    @media (screen-spanning: single-fold-horizontal) {
       .gallery {
         width: 100vw;
         height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
@@ -424,7 +425,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: none) {
+    @media (screen-spanning: none) {
       .gallery {
         width: 100vw;
         height: 100vh;
@@ -647,6 +648,7 @@ export class MainApplication extends LitElement {
     ];
 
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <mwc-drawer type="modal" hasHeader id="drawer">
         <span slot="title">Configuration</span>
         <div class="drawer">
