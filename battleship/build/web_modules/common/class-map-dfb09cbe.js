@@ -1,4 +1,4 @@
-import { L as LitElement, d as directive, A as AttributePart, P as PropertyPart } from './lit-element-9c695caa.js';
+import { L as LitElement, d as directive, A as AttributePart, P as PropertyPart } from './lit-element-aad803a2.js';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -92,7 +92,7 @@ const standardCustomElement = (tagName, descriptor) => {
  *   }
  * }
  * ```
- *
+ * @category Decorator
  * @param tagName The name of the custom element to define.
  */
 const customElement = (tagName) => (classOrDescriptor) => (typeof classOrDescriptor === 'function') ?
@@ -143,19 +143,20 @@ const legacyProperty = (options, proto, name) => {
 };
 /**
  * A property decorator which creates a LitElement property which reflects a
- * corresponding attribute value. A `PropertyDeclaration` may optionally be
+ * corresponding attribute value. A [[`PropertyDeclaration`]] may optionally be
  * supplied to configure property features.
  *
  * This decorator should only be used for public fields. Private or protected
- * fields should use the internalProperty decorator.
+ * fields should use the [[`internalProperty`]] decorator.
  *
  * @example
- *
- *     class MyElement {
- *       @property({ type: Boolean })
- *       clicked = false;
- *     }
- *
+ * ```ts
+ * class MyElement {
+ *   @property({ type: Boolean })
+ *   clicked = false;
+ * }
+ * ```
+ * @category Decorator
  * @ExportDecoratedItems
  */
 function property(options) {
@@ -171,6 +172,7 @@ function property(options) {
  * Properties declared this way must not be used from HTML or HTML templating
  * systems, they're solely for properties internal to the element. These
  * properties may be renamed by optimization tools like closure compiler.
+ * @category Decorator
  */
 function internalProperty(options) {
     return property({ attribute: false, hasChanged: options === null || options === void 0 ? void 0 : options.hasChanged });
@@ -180,25 +182,29 @@ function internalProperty(options) {
  * executes a querySelector on the element's renderRoot.
  *
  * @param selector A DOMString containing one or more selectors to match.
+ * @param cache An optional boolean which when true performs the DOM query only
+ * once and caches the result.
  *
  * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
  *
  * @example
  *
- *     class MyElement {
- *       @query('#first')
- *       first;
+ * ```ts
+ * class MyElement {
+ *   @query('#first')
+ *   first;
  *
- *       render() {
- *         return html`
- *           <div id="first"></div>
- *           <div id="second"></div>
- *         `;
- *       }
- *     }
- *
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
+ * ```
+ * @category Decorator
  */
-function query(selector) {
+function query(selector, cache) {
     return (protoOrDescriptor, 
     // tslint:disable-next-line:no-any decorator
     name) => {
@@ -209,6 +215,16 @@ function query(selector) {
             enumerable: true,
             configurable: true,
         };
+        if (cache) {
+            const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+            descriptor.get = function () {
+                if (this[key] === undefined) {
+                    (this[key] =
+                        this.renderRoot.querySelector(selector));
+                }
+                return this[key];
+            };
+        }
         return (name !== undefined) ?
             legacyQuery(descriptor, protoOrDescriptor, name) :
             standardQuery(descriptor, protoOrDescriptor);
@@ -232,23 +248,25 @@ function query(selector) {
  * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
  *
  * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAsync('#first')
+ *   first;
  *
- *     class MyElement {
- *       @queryAsync('#first')
- *       first;
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
  *
- *       render() {
- *         return html`
- *           <div id="first"></div>
- *           <div id="second"></div>
- *         `;
- *       }
- *     }
- *
- *     // external usage
- *     async doSomethingWithFirst() {
- *      (await aMyElement.first).doSomething();
- *     }
+ * // external usage
+ * async doSomethingWithFirst() {
+ *  (await aMyElement.first).doSomething();
+ * }
+ * ```
+ * @category Decorator
  */
 function queryAsync(selector) {
     return (protoOrDescriptor, 
@@ -297,23 +315,25 @@ const legacyEventOptions =
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters
  *
  * @example
+ * ```ts
+ * class MyElement {
+ *   clicked = false;
  *
- *     class MyElement {
- *       clicked = false;
+ *   render() {
+ *     return html`
+ *       <div @click=${this._onClick}`>
+ *         <button></button>
+ *       </div>
+ *     `;
+ *   }
  *
- *       render() {
- *         return html`
- *           <div @click=${this._onClick}`>
- *             <button></button>
- *           </div>
- *         `;
- *       }
- *
- *       @eventOptions({capture: true})
- *       _onClick(e) {
- *         this.clicked = true;
- *       }
- *     }
+ *   @eventOptions({capture: true})
+ *   _onClick(e) {
+ *     this.clicked = true;
+ *   }
+ * }
+ * ```
+ * @category Decorator
  */
 function eventOptions(options) {
     // Return value typed as any to prevent TypeScript from complaining that
