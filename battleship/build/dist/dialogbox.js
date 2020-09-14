@@ -63,7 +63,7 @@ function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
       filter: drop-shadow(5px 5px 5px black) saturate(30%);
     }
 
-    @media (spanning: single-fold-horizontal) {
+    @media (screen-spanning: single-fold-horizontal) {
       :host {
         width: 15vw;
         height: 15vh;
@@ -72,7 +72,7 @@ function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
       }
     }
 
-    @media (spanning: none) {
+    @media (screen-spanning: none) {
       :host {
         width: 15vw;
         height: 15vh;
@@ -81,7 +81,7 @@ function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
       }
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       :host {
         width: 15vw;
         height: 15vh;

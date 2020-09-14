@@ -101,6 +101,7 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
     .fold {
       height: 100%;
       width: 15px;
+      z-index: 2;
     }
 
     .enemy-fleet {
@@ -187,7 +188,7 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
@@ -223,7 +224,7 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: single-fold-horizontal) {
+    @media (screen-spanning: single-fold-horizontal) {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
@@ -259,7 +260,7 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: none) and (orientation:landscape) {
+    @media (screen-spanning: none) and (orientation:landscape) {
       .fold {
         height: 100%;
         width: 15px;
@@ -287,7 +288,7 @@ function b(a,c,d){return c in a?Object.defineProperty(a,c,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: none) and (orientation:portrait) {
+    @media (screen-spanning: none) and (orientation:portrait) {
 
       #fullscreen-rotate {
         display: block;

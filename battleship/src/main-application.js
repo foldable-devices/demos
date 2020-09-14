@@ -65,6 +65,7 @@ export class MainApplication extends LitElement {
     .fold {
       height: 100%;
       width: 15px;
+      z-index: 2;
     }
 
     .enemy-fleet {
@@ -151,7 +152,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
@@ -187,7 +188,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: single-fold-horizontal) {
+    @media (screen-spanning: single-fold-horizontal) {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
@@ -223,7 +224,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: none) and (orientation:landscape) {
+    @media (screen-spanning: none) and (orientation:landscape) {
       .fold {
         height: 100%;
         width: 15px;
@@ -251,7 +252,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: none) and (orientation:portrait) {
+    @media (screen-spanning: none) and (orientation:portrait) {
 
       #fullscreen-rotate {
         display: block;
