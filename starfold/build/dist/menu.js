@@ -1,4 +1,51 @@
-function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0,configurable:!0,writable:!0}):t[e]=i,t}import{LitElement as o,html as s,css as a}from"../web_modules/lit-element.js";export class Menu extends o{firstUpdated(){}constructor(){super();n(this,"_spanning",!1)}handleSpanning(){this._spanning=window.getWindowSegments().length>1;let t=this.shadowRoot.host.style;if(this._spanning){const e=window.getWindowSegments()[0];e.width>e.height?(t.top="calc(25vh - 12.5vh)",t.left="calc(50vw - 20vw)",t.width="40vw",t.height=e.height/2+"px"):(t.top="calc(50vh - 12.5vh)",t.width="25vw",t.left="calc(25vw - 12.5vw)",t.height=window.getWindowSegments()[0].height/3+"px")}else t.top="",t.left="",t.width="",t.height=""}close(){this.shadowRoot.host.style.visibility="hidden"}open(){this.shadowRoot.host.style.visibility="visible"}render(){return s`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+import { LitElement, html, css } from '../web_modules/lit-element.js';
+export class Menu extends LitElement {
+  firstUpdated() {}
+
+  constructor() {
+    super();
+
+    _defineProperty(this, "_spanning", false);
+  }
+
+  handleSpanning() {
+    this._spanning = window.getWindowSegments().length > 1;
+    let rootStyle = this.shadowRoot.host.style;
+
+    if (this._spanning) {
+      const segment = window.getWindowSegments()[0];
+
+      if (segment.width > segment.height) {
+        rootStyle.top = 'calc(25vh - 12.5vh)';
+        rootStyle.left = 'calc(50vw - 20vw)';
+        rootStyle.width = '40vw';
+        rootStyle.height = segment.height / 2 + 'px';
+      } else {
+        rootStyle.top = 'calc(50vh - 12.5vh)';
+        rootStyle.width = '25vw';
+        rootStyle.left = 'calc(25vw - 12.5vw)';
+        rootStyle.height = window.getWindowSegments()[0].height / 3 + 'px';
+      }
+    } else {
+      rootStyle.top = '';
+      rootStyle.left = '';
+      rootStyle.width = '';
+      rootStyle.height = '';
+    }
+  }
+
+  close() {
+    this.shadowRoot.host.style.visibility = 'hidden';
+  }
+
+  open() {
+    this.shadowRoot.host.style.visibility = 'visible';
+  }
+
+  render() {
+    return html`
       <div id="content">
           <div id="menu">
             <div class="title">
@@ -14,7 +61,12 @@ function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0
             <div class="grow last-item"></div>
           </div>
       </div>
-    `}}n(Menu,"styles",a`
+    `;
+  }
+
+}
+
+_defineProperty(Menu, "styles", css`
     :host {
       width: 25vw;
       height: 30vh;
@@ -104,4 +156,6 @@ function n(t,e,i){return e in t?Object.defineProperty(t,e,{value:i,enumerable:!0
         left: calc(50vw - 30vw);
       }
     }
-  `),customElements.define("game-menu",Menu);
+  `);
+
+customElements.define("game-menu", Menu);

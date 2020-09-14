@@ -1,4 +1,6 @@
-import{L as f,d as y,A as g,P as b}from"./lit-element-aad803a2.js";/*! *****************************************************************************
+import { L as LitElement, d as directive, A as AttributePart, P as PropertyPart } from './lit-element-aad803a2.js';
+
+/*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -11,7 +13,41 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */var c=function(t,e){return c=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(o,s){o.__proto__=s}||function(o,s){for(var r in s)s.hasOwnProperty(r)&&(o[r]=s[r])},c(t,e)};function E(t,e){c(t,e);function o(){this.constructor=t}t.prototype=e===null?Object.create(e):(o.prototype=e.prototype,new o)}var l=function(){return l=Object.assign||function(e){for(var o,s=1,r=arguments.length;s<r;s++){o=arguments[s];for(var n in o)Object.prototype.hasOwnProperty.call(o,n)&&(e[n]=o[n])}return e},l.apply(this,arguments)};function T(t,e,o,s){var r=arguments.length,n=r<3?e:s===null?s=Object.getOwnPropertyDescriptor(e,o):s,i;if(typeof Reflect=="object"&&typeof Reflect.decorate=="function")n=Reflect.decorate(t,e,o,s);else for(var a=t.length-1;a>=0;a--)(i=t[a])&&(n=(r<3?i(n):r>3?i(e,o,n):i(e,o))||n);return r>3&&n&&Object.defineProperty(e,o,n),n}/**
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __decorate(decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+/**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at
@@ -23,7 +59,294 @@ PERFORMANCE OF THIS SOFTWARE.
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */const A=(t,e)=>(window.customElements.define(t,e),e),S=(t,e)=>{const{kind:o,elements:s}=e;return{kind:o,elements:s,finisher(r){window.customElements.define(t,r)}}},O=t=>e=>typeof e=="function"?A(t,e):S(t,e),I=(t,e)=>e.kind==="method"&&e.descriptor&&!("value"in e.descriptor)?Object.assign(Object.assign({},e),{finisher(o){o.createProperty(e.key,t)}}):{kind:"field",key:Symbol(),placement:"own",descriptor:{},initializer(){typeof e.initializer=="function"&&(this[e.key]=e.initializer.call(this))},finisher(o){o.createProperty(e.key,t)}},R=(t,e,o)=>{e.constructor.createProperty(o,t)};function d(t){return(e,o)=>o!==void 0?R(t,e,o):I(t,e)}function v(t){return d({attribute:!1,hasChanged:t==null?void 0:t.hasChanged})}function C(t,e){return(o,s)=>{const r={get(){return this.renderRoot.querySelector(t)},enumerable:!0,configurable:!0};if(e){const n=typeof s=="symbol"?Symbol():`__${s}`;r.get=function(){return this[n]===void 0&&(this[n]=this.renderRoot.querySelector(t)),this[n]}}return s!==void 0?u(r,o,s):h(r,o)}}function N(t){return(e,o)=>{const s={async get(){return await this.updateComplete,this.renderRoot.querySelector(t)},enumerable:!0,configurable:!0};return o!==void 0?u(s,e,o):h(s,e)}}const u=(t,e,o)=>{Object.defineProperty(e,o,t)},h=(t,e)=>({kind:"method",placement:"prototype",key:e.key,descriptor:t}),w=(t,e)=>Object.assign(Object.assign({},e),{finisher(o){Object.assign(o.prototype[e.key],t)}}),L=(t,e,o)=>{Object.assign(e[o],t)};function P(t){return(e,o)=>o!==void 0?L(t,e,o):w(t,e)}/**
+ */
+const legacyCustomElement = (tagName, clazz) => {
+    window.customElements.define(tagName, clazz);
+    // Cast as any because TS doesn't recognize the return type as being a
+    // subtype of the decorated class when clazz is typed as
+    // `Constructor<HTMLElement>` for some reason.
+    // `Constructor<HTMLElement>` is helpful to make sure the decorator is
+    // applied to elements however.
+    // tslint:disable-next-line:no-any
+    return clazz;
+};
+const standardCustomElement = (tagName, descriptor) => {
+    const { kind, elements } = descriptor;
+    return {
+        kind,
+        elements,
+        // This callback is called once the class is otherwise fully defined
+        finisher(clazz) {
+            window.customElements.define(tagName, clazz);
+        }
+    };
+};
+/**
+ * Class decorator factory that defines the decorated class as a custom element.
+ *
+ * ```
+ * @customElement('my-element')
+ * class MyElement {
+ *   render() {
+ *     return html``;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ * @param tagName The name of the custom element to define.
+ */
+const customElement = (tagName) => (classOrDescriptor) => (typeof classOrDescriptor === 'function') ?
+    legacyCustomElement(tagName, classOrDescriptor) :
+    standardCustomElement(tagName, classOrDescriptor);
+const standardProperty = (options, element) => {
+    // When decorating an accessor, pass it through and add property metadata.
+    // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
+    // stomp over the user's accessor.
+    if (element.kind === 'method' && element.descriptor &&
+        !('value' in element.descriptor)) {
+        return Object.assign(Object.assign({}, element), { finisher(clazz) {
+                clazz.createProperty(element.key, options);
+            } });
+    }
+    else {
+        // createProperty() takes care of defining the property, but we still
+        // must return some kind of descriptor, so return a descriptor for an
+        // unused prototype field. The finisher calls createProperty().
+        return {
+            kind: 'field',
+            key: Symbol(),
+            placement: 'own',
+            descriptor: {},
+            // When @babel/plugin-proposal-decorators implements initializers,
+            // do this instead of the initializer below. See:
+            // https://github.com/babel/babel/issues/9260 extras: [
+            //   {
+            //     kind: 'initializer',
+            //     placement: 'own',
+            //     initializer: descriptor.initializer,
+            //   }
+            // ],
+            initializer() {
+                if (typeof element.initializer === 'function') {
+                    this[element.key] = element.initializer.call(this);
+                }
+            },
+            finisher(clazz) {
+                clazz.createProperty(element.key, options);
+            }
+        };
+    }
+};
+const legacyProperty = (options, proto, name) => {
+    proto.constructor
+        .createProperty(name, options);
+};
+/**
+ * A property decorator which creates a LitElement property which reflects a
+ * corresponding attribute value. A [[`PropertyDeclaration`]] may optionally be
+ * supplied to configure property features.
+ *
+ * This decorator should only be used for public fields. Private or protected
+ * fields should use the [[`internalProperty`]] decorator.
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @property({ type: Boolean })
+ *   clicked = false;
+ * }
+ * ```
+ * @category Decorator
+ * @ExportDecoratedItems
+ */
+function property(options) {
+    // tslint:disable-next-line:no-any decorator
+    return (protoOrDescriptor, name) => (name !== undefined) ?
+        legacyProperty(options, protoOrDescriptor, name) :
+        standardProperty(options, protoOrDescriptor);
+}
+/**
+ * Declares a private or protected property that still triggers updates to the
+ * element when it changes.
+ *
+ * Properties declared this way must not be used from HTML or HTML templating
+ * systems, they're solely for properties internal to the element. These
+ * properties may be renamed by optimization tools like closure compiler.
+ * @category Decorator
+ */
+function internalProperty(options) {
+    return property({ attribute: false, hasChanged: options === null || options === void 0 ? void 0 : options.hasChanged });
+}
+/**
+ * A property decorator that converts a class property into a getter that
+ * executes a querySelector on the element's renderRoot.
+ *
+ * @param selector A DOMString containing one or more selectors to match.
+ * @param cache An optional boolean which when true performs the DOM query only
+ * once and caches the result.
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+ *
+ * @example
+ *
+ * ```ts
+ * class MyElement {
+ *   @query('#first')
+ *   first;
+ *
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ */
+function query(selector, cache) {
+    return (protoOrDescriptor, 
+    // tslint:disable-next-line:no-any decorator
+    name) => {
+        const descriptor = {
+            get() {
+                return this.renderRoot.querySelector(selector);
+            },
+            enumerable: true,
+            configurable: true,
+        };
+        if (cache) {
+            const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+            descriptor.get = function () {
+                if (this[key] === undefined) {
+                    (this[key] =
+                        this.renderRoot.querySelector(selector));
+                }
+                return this[key];
+            };
+        }
+        return (name !== undefined) ?
+            legacyQuery(descriptor, protoOrDescriptor, name) :
+            standardQuery(descriptor, protoOrDescriptor);
+    };
+}
+// Note, in the future, we may extend this decorator to support the use case
+// where the queried element may need to do work to become ready to interact
+// with (e.g. load some implementation code). If so, we might elect to
+// add a second argument defining a function that can be run to make the
+// queried element loaded/updated/ready.
+/**
+ * A property decorator that converts a class property into a getter that
+ * returns a promise that resolves to the result of a querySelector on the
+ * element's renderRoot done after the element's `updateComplete` promise
+ * resolves. When the queried property may change with element state, this
+ * decorator can be used instead of requiring users to await the
+ * `updateComplete` before accessing the property.
+ *
+ * @param selector A DOMString containing one or more selectors to match.
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAsync('#first')
+ *   first;
+ *
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
+ *
+ * // external usage
+ * async doSomethingWithFirst() {
+ *  (await aMyElement.first).doSomething();
+ * }
+ * ```
+ * @category Decorator
+ */
+function queryAsync(selector) {
+    return (protoOrDescriptor, 
+    // tslint:disable-next-line:no-any decorator
+    name) => {
+        const descriptor = {
+            async get() {
+                await this.updateComplete;
+                return this.renderRoot.querySelector(selector);
+            },
+            enumerable: true,
+            configurable: true,
+        };
+        return (name !== undefined) ?
+            legacyQuery(descriptor, protoOrDescriptor, name) :
+            standardQuery(descriptor, protoOrDescriptor);
+    };
+}
+const legacyQuery = (descriptor, proto, name) => {
+    Object.defineProperty(proto, name, descriptor);
+};
+const standardQuery = (descriptor, element) => ({
+    kind: 'method',
+    placement: 'prototype',
+    key: element.key,
+    descriptor,
+});
+const standardEventOptions = (options, element) => {
+    return Object.assign(Object.assign({}, element), { finisher(clazz) {
+            Object.assign(clazz.prototype[element.key], options);
+        } });
+};
+const legacyEventOptions = 
+// tslint:disable-next-line:no-any legacy decorator
+(options, proto, name) => {
+    Object.assign(proto[name], options);
+};
+/**
+ * Adds event listener options to a method used as an event listener in a
+ * lit-html template.
+ *
+ * @param options An object that specifies event listener options as accepted by
+ * `EventTarget#addEventListener` and `EventTarget#removeEventListener`.
+ *
+ * Current browsers support the `capture`, `passive`, and `once` options. See:
+ * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   clicked = false;
+ *
+ *   render() {
+ *     return html`
+ *       <div @click=${this._onClick}`>
+ *         <button></button>
+ *       </div>
+ *     `;
+ *   }
+ *
+ *   @eventOptions({capture: true})
+ *   _onClick(e) {
+ *     this.clicked = true;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ */
+function eventOptions(options) {
+    // Return value typed as any to prevent TypeScript from complaining that
+    // standard decorator function signature does not match TypeScript decorator
+    // signature
+    // TODO(kschaaf): unclear why it was only failing on this decorator and not
+    // the others
+    return ((protoOrDescriptor, name) => (name !== undefined) ?
+        legacyEventOptions(options, protoOrDescriptor, name) :
+        standardEventOptions(options, protoOrDescriptor));
+}
+
+/**
 @license
 Copyright 2018 Google Inc. All Rights Reserved.
 
@@ -38,7 +361,28 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/function D(t){return{addClass:e=>{t.classList.add(e)},removeClass:e=>{t.classList.remove(e)},hasClass:e=>t.classList.contains(e)}}const p=()=>{},F={get passive(){return!1}};document.addEventListener("x",p,F),document.removeEventListener("x",p);/**
+*/
+function addHasRemoveClass(element) {
+    return {
+        addClass: (className) => {
+            element.classList.add(className);
+        },
+        removeClass: (className) => {
+            element.classList.remove(className);
+        },
+        hasClass: (className) => element.classList.contains(className),
+    };
+}
+const fn = () => { };
+const optionsBlock = {
+    get passive() {
+        return false;
+    }
+};
+document.addEventListener('x', fn, optionsBlock);
+document.removeEventListener('x', fn);
+
+/**
 @license
 Copyright 2018 Google Inc. All Rights Reserved.
 
@@ -53,7 +397,27 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/class H extends f{createFoundation(){this.mdcFoundation!==void 0&&this.mdcFoundation.destroy(),this.mdcFoundationClass&&(this.mdcFoundation=new this.mdcFoundationClass(this.createAdapter()),this.mdcFoundation.init())}firstUpdated(){this.createFoundation()}}/**
+*/
+/** @soyCompatible */
+class BaseElement extends LitElement {
+    /**
+     * Create and attach the MDC Foundation to the instance
+     */
+    createFoundation() {
+        if (this.mdcFoundation !== undefined) {
+            this.mdcFoundation.destroy();
+        }
+        if (this.mdcFoundationClass) {
+            this.mdcFoundation = new this.mdcFoundationClass(this.createAdapter());
+            this.mdcFoundation.init();
+        }
+    }
+    firstUpdated() {
+        this.createFoundation();
+    }
+}
+
+/**
  * @license
  * Copyright 2016 Google Inc.
  *
@@ -74,7 +438,59 @@ limitations under the License.
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- */var x=function(){function t(e){e===void 0&&(e={}),this.adapter=e}return Object.defineProperty(t,"cssClasses",{get:function(){return{}},enumerable:!0,configurable:!0}),Object.defineProperty(t,"strings",{get:function(){return{}},enumerable:!0,configurable:!0}),Object.defineProperty(t,"numbers",{get:function(){return{}},enumerable:!0,configurable:!0}),Object.defineProperty(t,"defaultAdapter",{get:function(){return{}},enumerable:!0,configurable:!0}),t.prototype.init=function(){},t.prototype.destroy=function(){},t}();/**
+ */
+var MDCFoundation = /** @class */ (function () {
+    function MDCFoundation(adapter) {
+        if (adapter === void 0) { adapter = {}; }
+        this.adapter = adapter;
+    }
+    Object.defineProperty(MDCFoundation, "cssClasses", {
+        get: function () {
+            // Classes extending MDCFoundation should implement this method to return an object which exports every
+            // CSS class the foundation class needs as a property. e.g. {ACTIVE: 'mdc-component--active'}
+            return {};
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCFoundation, "strings", {
+        get: function () {
+            // Classes extending MDCFoundation should implement this method to return an object which exports all
+            // semantic strings as constants. e.g. {ARIA_ROLE: 'tablist'}
+            return {};
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCFoundation, "numbers", {
+        get: function () {
+            // Classes extending MDCFoundation should implement this method to return an object which exports all
+            // of its semantic numbers as constants. e.g. {ANIMATION_DELAY_MS: 350}
+            return {};
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCFoundation, "defaultAdapter", {
+        get: function () {
+            // Classes extending MDCFoundation may choose to implement this getter in order to provide a convenient
+            // way of viewing the necessary methods of an adapter. In the future, this could also be used for adapter
+            // validation.
+            return {};
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MDCFoundation.prototype.init = function () {
+        // Subclasses should override this method to perform initialization routines (registering events, etc.)
+    };
+    MDCFoundation.prototype.destroy = function () {
+        // Subclasses should override this method to perform de-initialization routines (de-registering events, etc.)
+    };
+    return MDCFoundation;
+}());
+
+/**
  * @license
  * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at
@@ -86,4 +502,92 @@ limitations under the License.
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */class M{constructor(t){this.classes=new Set,this.changed=!1,this.element=t;const e=(t.getAttribute("class")||"").split(/\s+/);for(const o of e)this.classes.add(o)}add(t){this.classes.add(t),this.changed=!0}remove(t){this.classes.delete(t),this.changed=!0}commit(){if(this.changed){let t="";this.classes.forEach(e=>t+=e+" "),this.element.setAttribute("class",t)}}}const m=new WeakMap,j=y(t=>e=>{if(!(e instanceof g)||e instanceof b||e.committer.name!=="class"||e.committer.parts.length>1)throw new Error("The `classMap` directive must be used in the `class` attribute and must be the only part in the attribute.");const{committer:o}=e,{element:s}=o;let r=m.get(e);r===void 0&&(s.setAttribute("class",o.strings.join(" ")),m.set(e,r=new Set));const n=s.classList||new M(s);r.forEach(i=>{i in t||(n.remove(i),r.delete(i))});for(const i in t){const a=t[i];a!=r.has(i)&&(a?(n.add(i),r.add(i)):(n.remove(i),r.delete(i)))}typeof n.commit=="function"&&n.commit()});export{H as B,x as M,T as _,N as a,j as b,O as c,E as d,P as e,l as f,D as g,v as i,d as p,C as q};
+ */
+// IE11 doesn't support classList on SVG elements, so we emulate it with a Set
+class ClassList {
+    constructor(element) {
+        this.classes = new Set();
+        this.changed = false;
+        this.element = element;
+        const classList = (element.getAttribute('class') || '').split(/\s+/);
+        for (const cls of classList) {
+            this.classes.add(cls);
+        }
+    }
+    add(cls) {
+        this.classes.add(cls);
+        this.changed = true;
+    }
+    remove(cls) {
+        this.classes.delete(cls);
+        this.changed = true;
+    }
+    commit() {
+        if (this.changed) {
+            let classString = '';
+            this.classes.forEach((cls) => classString += cls + ' ');
+            this.element.setAttribute('class', classString);
+        }
+    }
+}
+/**
+ * Stores the ClassInfo object applied to a given AttributePart.
+ * Used to unset existing values when a new ClassInfo object is applied.
+ */
+const previousClassesCache = new WeakMap();
+/**
+ * A directive that applies CSS classes. This must be used in the `class`
+ * attribute and must be the only part used in the attribute. It takes each
+ * property in the `classInfo` argument and adds the property name to the
+ * element's `class` if the property value is truthy; if the property value is
+ * falsey, the property name is removed from the element's `class`. For example
+ * `{foo: bar}` applies the class `foo` if the value of `bar` is truthy.
+ * @param classInfo {ClassInfo}
+ */
+const classMap = directive((classInfo) => (part) => {
+    if (!(part instanceof AttributePart) || (part instanceof PropertyPart) ||
+        part.committer.name !== 'class' || part.committer.parts.length > 1) {
+        throw new Error('The `classMap` directive must be used in the `class` attribute ' +
+            'and must be the only part in the attribute.');
+    }
+    const { committer } = part;
+    const { element } = committer;
+    let previousClasses = previousClassesCache.get(part);
+    if (previousClasses === undefined) {
+        // Write static classes once
+        // Use setAttribute() because className isn't a string on SVG elements
+        element.setAttribute('class', committer.strings.join(' '));
+        previousClassesCache.set(part, previousClasses = new Set());
+    }
+    const classList = (element.classList || new ClassList(element));
+    // Remove old classes that no longer apply
+    // We use forEach() instead of for-of so that re don't require down-level
+    // iteration.
+    previousClasses.forEach((name) => {
+        if (!(name in classInfo)) {
+            classList.remove(name);
+            previousClasses.delete(name);
+        }
+    });
+    // Add or remove classes based on their classMap value
+    for (const name in classInfo) {
+        const value = classInfo[name];
+        if (value != previousClasses.has(name)) {
+            // We explicitly want a loose truthy check of `value` because it seems
+            // more convenient that '' and 0 are skipped.
+            if (value) {
+                classList.add(name);
+                previousClasses.add(name);
+            }
+            else {
+                classList.remove(name);
+                previousClasses.delete(name);
+            }
+        }
+    }
+    if (typeof classList.commit === 'function') {
+        classList.commit();
+    }
+});
+
+export { BaseElement as B, MDCFoundation as M, __decorate as _, queryAsync as a, classMap as b, customElement as c, __extends as d, eventOptions as e, __assign as f, addHasRemoveClass as g, internalProperty as i, property as p, query as q };

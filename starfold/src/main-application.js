@@ -842,6 +842,7 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <canvas id="canvas"></canvas>
       <picture>
         <source srcset="images/pause-button.webp" type="image/webp"/>
