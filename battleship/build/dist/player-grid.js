@@ -1,14 +1,359 @@
-function w(a,c,b){return c in a?Object.defineProperty(a,c,{value:b,enumerable:!0,configurable:!0,writable:!0}):a[c]=b,a}function q(a,c,b){return typeof Reflect!=="undefined"&&Reflect.get?q=Reflect.get:q=function d(e,h,k){var i=z(e,h);if(!i)return;var l=Object.getOwnPropertyDescriptor(i,h);return l.get?l.get.call(k):l.value},q(a,c,b||a)}function z(a,c){for(;!Object.prototype.hasOwnProperty.call(a,c);){a=r(a);if(a===null)break}return a}function r(a){return r=Object.setPrototypeOf?Object.getPrototypeOf:function c(b){return b.__proto__||Object.getPrototypeOf(b)},r(a)}import{html as x,css as A}from"../web_modules/lit-element.js";import{GameGrid as B}from"./game-grid.js";import*as f from"./ship.js";export const GridDirection={Top:"Top",Bottom:"Bottom",Left:"Left",Right:"Right"};export class PlayerGrid extends B{firstUpdated(){super.firstUpdated(),this.generateRandomGrid(),this._boatsToSink=[f.ShipType.Carrier,f.ShipType.Battleship,f.ShipType.Submarine,f.ShipType.Destroyer,f.ShipType.Rescue]}constructor(){super();w(this,"_pendingSanks",[]),w(this,"_boatsToSink",[]),this._previousShot={x:0,y:0}}restart(){super.restart(),this._previousShot={x:0,y:0},this._pendingSanks=[],this._boatsToSink=[f.ShipType.Carrier,f.ShipType.Battleship,f.ShipType.Submarine,f.ShipType.Destroyer,f.ShipType.Rescue]}isCellAPreviouslyMissedShot(a){return a.shot&&a.type===void 0}isCellABoatPreviouslyShot(a){return a.shot&&a.type!=void 0&&a.type===this.grid[this._previousShot.x][this._previousShot.y].type}biggestBoatLeft(){return f.getShipSize(this._boatsToSink[0])}smallestBoatLeft(){return f.getShipSize(this._boatsToSink[this._boatsToSink.length-1])}boatsLeftFitAround(a,c){let b=this.biggestBoatLeft();const d={x:a,y:c},e=this.walkGridAndCountEmptySpaces(GridDirection.Left,d,b-1,0),h=this.walkGridAndCountEmptySpaces(GridDirection.Right,d,b-1,0),k=this.walkGridAndCountEmptySpaces(GridDirection.Top,d,b-1,0),i=this.walkGridAndCountEmptySpaces(GridDirection.Bottom,d,b-1,0);return e+1===b||h+1===b||k+1===b||i+1===b||e+h+1>=b||k+i+1>=b?!0:!1}walkGridAndCountEmptySpaces(a,c,b,d){if(this.isCellAtTheEge(a,c))return d;const e=this.getNeighborCell(a,c);return this.grid[e.x][e.y].shot===!0?d:(d++,d===b?d:this.walkGridAndCountEmptySpaces(a,e,b,d))}isCellAtTheEge(a,c){return a===GridDirection.Left&&c.y-1===0||a===GridDirection.Right&&c.y+1===11||a===GridDirection.Top&&c.x-1===0||a===GridDirection.Bottom&&c.x+1===11}getNeighborCell(a,c){let b=c;switch(a){case GridDirection.Left:b={x:c.x,y:Math.max(c.y-1,1)};break;case GridDirection.Right:b={x:c.x,y:Math.min(c.y+1,10)};break;case GridDirection.Top:b={x:Math.max(c.x-1,1),y:c.y};break;case GridDirection.Bottom:b={x:Math.min(c.x+1,10),y:c.y};break;default:console.error("wrong direction");return}return b}walkGridToFindEmptyCell(a,c){if(this.isCellAtTheEge(a,c))return null;const b=this.getNeighborCell(a,c);return this.isCellAPreviouslyMissedShot(this.grid[b.x][b.y])?null:this.isCellABoatPreviouslyShot(this.grid[b.x][b.y])?this.walkGridToFindEmptyCell(a,b):this.grid[b.x][b.y].shot===!0?null:b}walkGridToFindCandidateToShoot(a,c,b,d){if(this.isCellAtTheEge(a,c))return d;const e=this.getNeighborCell(a,c);return this.isCellAPreviouslyMissedShot(this.grid[e.x][e.y])?d:this.isCellABoatPreviouslyShot(this.grid[e.x][e.y])?this.walkGridToFindCandidateToShoot(a,e,b,++d):this.grid[e.x][e.y].shot===!0?d:(d++,d>=b?d:this.walkGridToFindCandidateToShoot(a,e,b,d))}isBoatHorizontal(a){let c=null;if(!this.isCellAtTheEge(GridDirection.Left,a)){let b=this.getNeighborCell(GridDirection.Left,a);this.isCellABoatPreviouslyShot(this.grid[b.x][b.y])&&(c=!0)}if(!this.isCellAtTheEge(GridDirection.Right,a)){let b=this.getNeighborCell(GridDirection.Right,a);this.isCellABoatPreviouslyShot(this.grid[b.x][b.y])&&(c=!0)}return c}isBoatVertical(a){let c=null;if(!this.isCellAtTheEge(GridDirection.Top,a)){let b=this.getNeighborCell(GridDirection.Top,a);this.isCellABoatPreviouslyShot(this.grid[b.x][b.y])&&(c=!0)}if(!this.isCellAtTheEge(GridDirection.Bottom,a)){let b=this.getNeighborCell(GridDirection.Bottom,a);this.isCellABoatPreviouslyShot(this.grid[b.x][b.y])&&(c=!0)}return c}enemyShoot(){if(this.isGameOver())return;let a,c;if(this._previousShot.x!=0&&this._previousShot.y!=0){let b,d,e,h,k=!1,i=!1,l=!1,p=!1,m,g=this.smallestBoatLeft();const s=this.walkGridToFindCandidateToShoot(GridDirection.Left,this._previousShot,g-1,0),t=this.walkGridToFindCandidateToShoot(GridDirection.Right,this._previousShot,g-1,0),u=this.walkGridToFindCandidateToShoot(GridDirection.Top,this._previousShot,g-1,0),v=this.walkGridToFindCandidateToShoot(GridDirection.Bottom,this._previousShot,g-1,0);let n=this.isBoatVertical(this._previousShot),o=this.isBoatHorizontal(this._previousShot);s>0&&(o===null||o)&&(s+1===g||t+s+1>=g)&&(b=this.walkGridToFindEmptyCell(GridDirection.Left,this._previousShot),b&&(k=!0)),t>0&&(o===null||o)&&(t+1===g||t+s+1>=g)&&(d=this.walkGridToFindEmptyCell(GridDirection.Right,this._previousShot),d&&(i=!0)),u>0&&(n===null||n)&&(u+1===g||u+v+1>=g)&&(e=this.walkGridToFindEmptyCell(GridDirection.Top,this._previousShot),e&&(l=!0)),v>0&&(n===null||n)&&(v+1===g||u+v+1>=g)&&(h=this.walkGridToFindEmptyCell(GridDirection.Bottom,this._previousShot),h&&(p=!0)),n===null&&o===null?m=Math.random()>=.5:o?m=!1:n&&(m=!0),m&&!p&&!l&&(m=!1),!m&&!k&&!i&&(m=!0);if(m&&(l||p)){if(l&&p){const y=Math.random()>=.5;y?a=e.x:a=h.x}else l?a=e.x:p&&(a=h.x);c=this._previousShot.y}else{if(k&&i){const y=Math.random()>=.5;y?c=b.y:c=d.y}else i?c=d.y:k&&(c=b.y);a=this._previousShot.x}}else for(a=this.getRandomCoordinate(),c=this.getRandomCoordinate();this.grid[a][c].shot===!0||this.grid[a][c].shot===!1&&!this.boatsLeftFitAround(a,c);)a=this.getRandomCoordinate(),c=this.getRandomCoordinate();if(this.isShip(this.grid[a][c])){const b=this.shadowRoot.querySelector("#"+this.grid[a][c].type);b.enemyShootAt(a,c),this.grid[a][c].shot=!0,this.grid[a][c].type!=this._previousShot.type&&this._previousShot.type!=void 0&&this._pendingSanks.push(Object.create(this._previousShot)),this._previousShot={x:a,y:c,type:b.type},b.destroyed&&(this._pendingSanks.length>0?this._previousShot=this._pendingSanks.pop():this._previousShot={x:0,y:0}),setTimeout(()=>this.enemyShoot(),2e3);return}this.grid[a][c].shot=!0,this.updateGrid(),this.playerPlayed(a,c)}shipDestroyed(a){this._boatsToSink=this._boatsToSink.filter(c=>c!=a.detail.type),this.playerSankShip(a.detail.type)}shipHit(a){this.playerHitShip(a.detail.type)}render(){return x`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+import { html, css } from '../web_modules/lit-element.js';
+import { GameGrid } from './game-grid.js';
+import * as Ship from './ship.js';
+export const GridDirection = {
+  Top: 'Top',
+  Bottom: 'Bottom',
+  Left: 'Left',
+  Right: 'Right'
+};
+export class PlayerGrid extends GameGrid {
+  firstUpdated() {
+    super.firstUpdated();
+    this.generateRandomGrid(); // Ordered by size so it makes it easier to find the biggest boat left.
+
+    this._boatsToSink = [Ship.ShipType.Carrier, Ship.ShipType.Battleship, Ship.ShipType.Submarine, Ship.ShipType.Destroyer, Ship.ShipType.Rescue];
+  }
+
+  constructor() {
+    super();
+
+    _defineProperty(this, "_pendingSanks", []);
+
+    _defineProperty(this, "_boatsToSink", []);
+
+    this._previousShot = {
+      x: 0,
+      y: 0
+    };
+  }
+
+  restart() {
+    super.restart();
+    this._previousShot = {
+      x: 0,
+      y: 0
+    };
+    this._pendingSanks = [];
+    this._boatsToSink = [Ship.ShipType.Carrier, Ship.ShipType.Battleship, Ship.ShipType.Submarine, Ship.ShipType.Destroyer, Ship.ShipType.Rescue];
+  }
+
+  isCellAPreviouslyMissedShot(cell) {
+    return cell.shot && cell.type === undefined;
+  }
+
+  isCellABoatPreviouslyShot(cell) {
+    // cell.shot is important because the computer can't cheat :p.
+    return cell.shot && cell.type != undefined && cell.type === this.grid[this._previousShot.x][this._previousShot.y].type;
+  }
+
+  biggestBoatLeft() {
+    return Ship.getShipSize(this._boatsToSink[0]);
+  }
+
+  smallestBoatLeft() {
+    return Ship.getShipSize(this._boatsToSink[this._boatsToSink.length - 1]);
+  }
+
+  boatsLeftFitAround(x, y) {
+    let biggestBoatLeft = this.biggestBoatLeft();
+    const cell = {
+      x: x,
+      y: y
+    };
+    const emptySpotsLeft = this.walkGridAndCountEmptySpaces(GridDirection.Left, cell, biggestBoatLeft - 1, 0);
+    const emptySpotsRight = this.walkGridAndCountEmptySpaces(GridDirection.Right, cell, biggestBoatLeft - 1, 0);
+    const emptySpotsTop = this.walkGridAndCountEmptySpaces(GridDirection.Top, cell, biggestBoatLeft - 1, 0);
+    const emptySpotsBottom = this.walkGridAndCountEmptySpaces(GridDirection.Bottom, cell, biggestBoatLeft - 1, 0);
+
+    if (emptySpotsLeft + 1 === biggestBoatLeft || emptySpotsRight + 1 === biggestBoatLeft || emptySpotsTop + 1 === biggestBoatLeft || emptySpotsBottom + 1 === biggestBoatLeft || emptySpotsLeft + emptySpotsRight + 1 >= biggestBoatLeft || emptySpotsTop + emptySpotsBottom + 1 >= biggestBoatLeft) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  walkGridAndCountEmptySpaces(direction, cell, maxWalk, currentSpaceNumber) {
+    if (this.isCellAtTheEge(direction, cell)) return currentSpaceNumber;
+    const nextCell = this.getNeighborCell(direction, cell);
+
+    if (this.grid[nextCell.x][nextCell.y].shot === true) {
+      return currentSpaceNumber;
+    }
+
+    currentSpaceNumber++;
+
+    if (currentSpaceNumber === maxWalk) {
+      return currentSpaceNumber;
+    } else return this.walkGridAndCountEmptySpaces(direction, nextCell, maxWalk, currentSpaceNumber);
+  }
+
+  isCellAtTheEge(direction, cell) {
+    return direction === GridDirection.Left && cell.y - 1 === 0 || direction === GridDirection.Right && cell.y + 1 === 11 || direction === GridDirection.Top && cell.x - 1 === 0 || direction === GridDirection.Bottom && cell.x + 1 === 11;
+  }
+
+  getNeighborCell(direction, cell) {
+    let candidateCell = cell;
+
+    switch (direction) {
+      case GridDirection.Left:
+        candidateCell = {
+          x: cell.x,
+          y: Math.max(cell.y - 1, 1)
+        };
+        break;
+
+      case GridDirection.Right:
+        candidateCell = {
+          x: cell.x,
+          y: Math.min(cell.y + 1, 10)
+        };
+        break;
+
+      case GridDirection.Top:
+        candidateCell = {
+          x: Math.max(cell.x - 1, 1),
+          y: cell.y
+        };
+        break;
+
+      case GridDirection.Bottom:
+        candidateCell = {
+          x: Math.min(cell.x + 1, 10),
+          y: cell.y
+        };
+        break;
+
+      default:
+        console.error("wrong direction");
+        return;
+    }
+
+    return candidateCell;
+  }
+
+  walkGridToFindEmptyCell(direction, cell) {
+    if (this.isCellAtTheEge(direction, cell)) return null;
+    const nextCell = this.getNeighborCell(direction, cell); // If we shot there then bail out, we can't shoot there.
+
+    if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) {
+      return null;
+    } // If it's the current boat let's continue.
+
+
+    if (this.isCellABoatPreviouslyShot(this.grid[nextCell.x][nextCell.y])) {
+      // We continue to walk.
+      return this.walkGridToFindEmptyCell(direction, nextCell);
+    } // Spot has been shot previously (other boat).
+
+
+    if (this.grid[nextCell.x][nextCell.y].shot === true) return null;
+    return nextCell;
+  }
+
+  walkGridToFindCandidateToShoot(direction, cell, maxWalk, currentSpaceNumber) {
+    if (this.isCellAtTheEge(direction, cell)) return currentSpaceNumber;
+    const nextCell = this.getNeighborCell(direction, cell);
+    if (this.isCellAPreviouslyMissedShot(this.grid[nextCell.x][nextCell.y])) return currentSpaceNumber; // If it's the current boat let's continue.
+
+    if (this.isCellABoatPreviouslyShot(this.grid[nextCell.x][nextCell.y])) {
+      // We continue to walk.
+      return this.walkGridToFindCandidateToShoot(direction, nextCell, maxWalk, ++currentSpaceNumber);
+    } // Spot has been shot previously (other boat).
+
+
+    if (this.grid[nextCell.x][nextCell.y].shot === true) return currentSpaceNumber;
+    currentSpaceNumber++;
+    if (currentSpaceNumber >= maxWalk) return currentSpaceNumber;else return this.walkGridToFindCandidateToShoot(direction, nextCell, maxWalk, currentSpaceNumber);
+  }
+
+  isBoatHorizontal(cell) {
+    let isHorizontal = null;
+
+    if (!this.isCellAtTheEge(GridDirection.Left, cell)) {
+      let leftCell = this.getNeighborCell(GridDirection.Left, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[leftCell.x][leftCell.y])) isHorizontal = true;
+    }
+
+    if (!this.isCellAtTheEge(GridDirection.Right, cell)) {
+      let rightCell = this.getNeighborCell(GridDirection.Right, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[rightCell.x][rightCell.y])) isHorizontal = true;
+    }
+
+    return isHorizontal;
+  }
+
+  isBoatVertical(cell) {
+    let isVertical = null;
+
+    if (!this.isCellAtTheEge(GridDirection.Top, cell)) {
+      let topCell = this.getNeighborCell(GridDirection.Top, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[topCell.x][topCell.y])) isVertical = true;
+    }
+
+    if (!this.isCellAtTheEge(GridDirection.Bottom, cell)) {
+      let bottomCell = this.getNeighborCell(GridDirection.Bottom, cell);
+      if (this.isCellABoatPreviouslyShot(this.grid[bottomCell.x][bottomCell.y])) isVertical = true;
+    }
+
+    return isVertical;
+  }
+
+  enemyShoot() {
+    if (this.isGameOver()) return;
+    let x;
+    let y; //Successful shot, we'll try around.
+
+    if (this._previousShot.x != 0 && this._previousShot.y != 0) {
+      let leftCell;
+      let rightCell;
+      let topCell;
+      let bottomCell;
+      let leftCandidate = false;
+      let rightCandidate = false;
+      let topCandidate = false;
+      let bottomCandidate = false;
+      let tryVertical;
+      let smallestBoatLeft = this.smallestBoatLeft();
+      const leftSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Left, this._previousShot, smallestBoatLeft - 1, 0);
+      const rightSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Right, this._previousShot, smallestBoatLeft - 1, 0);
+      const topSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Top, this._previousShot, smallestBoatLeft - 1, 0);
+      const bottomSpaces = this.walkGridToFindCandidateToShoot(GridDirection.Bottom, this._previousShot, smallestBoatLeft - 1, 0);
+      let boatIsVertical = this.isBoatVertical(this._previousShot);
+      let boatIsHorizontal = this.isBoatHorizontal(this._previousShot);
+
+      if (leftSpaces > 0 && (boatIsHorizontal === null || boatIsHorizontal) && (leftSpaces + 1 === smallestBoatLeft || rightSpaces + leftSpaces + 1 >= smallestBoatLeft)) {
+        leftCell = this.walkGridToFindEmptyCell(GridDirection.Left, this._previousShot);
+        if (leftCell) leftCandidate = true;
+      }
+
+      if (rightSpaces > 0 && (boatIsHorizontal === null || boatIsHorizontal) && (rightSpaces + 1 === smallestBoatLeft || rightSpaces + leftSpaces + 1 >= smallestBoatLeft)) {
+        rightCell = this.walkGridToFindEmptyCell(GridDirection.Right, this._previousShot);
+        if (rightCell) rightCandidate = true;
+      }
+
+      if (topSpaces > 0 && (boatIsVertical === null || boatIsVertical) && (topSpaces + 1 === smallestBoatLeft || topSpaces + bottomSpaces + 1 >= smallestBoatLeft)) {
+        topCell = this.walkGridToFindEmptyCell(GridDirection.Top, this._previousShot);
+        if (topCell) topCandidate = true;
+      }
+
+      if (bottomSpaces > 0 && (boatIsVertical === null || boatIsVertical) && (bottomSpaces + 1 === smallestBoatLeft || topSpaces + bottomSpaces + 1 >= smallestBoatLeft)) {
+        bottomCell = this.walkGridToFindEmptyCell(GridDirection.Bottom, this._previousShot);
+        if (bottomCell) bottomCandidate = true;
+      } // We can't figure out yet if the boat is vertical or horizontal, let's
+      // try random.
+
+
+      if (boatIsVertical === null && boatIsHorizontal === null) tryVertical = Math.random() >= 0.5;else if (boatIsHorizontal) tryVertical = false;else if (boatIsVertical) tryVertical = true; // tryVertical can be random in case we have no previous shots but we need
+      // to make sure we can actually shoot there (e.g. edges)
+
+      if (tryVertical && !bottomCandidate && !topCandidate) tryVertical = false;
+      if (!tryVertical && !leftCandidate && !rightCandidate) tryVertical = true;
+
+      if (tryVertical && (topCandidate || bottomCandidate)) {
+        if (topCandidate && bottomCandidate) {
+          const top = Math.random() >= 0.5;
+          if (top) x = topCell.x;else x = bottomCell.x;
+        } else if (topCandidate) x = topCell.x;else if (bottomCandidate) x = bottomCell.x;
+
+        y = this._previousShot.y;
+      } else {
+        if (leftCandidate && rightCandidate) {
+          const left = Math.random() >= 0.5;
+          if (left) y = leftCell.y;else y = rightCell.y;
+        } else if (rightCandidate) y = rightCell.y;else if (leftCandidate) y = leftCell.y;
+
+        x = this._previousShot.x;
+      }
+    } else {
+      x = this.getRandomCoordinate();
+      y = this.getRandomCoordinate();
+
+      while (this.grid[x][y].shot === true || this.grid[x][y].shot === false && !this.boatsLeftFitAround(x, y)) {
+        x = this.getRandomCoordinate();
+        y = this.getRandomCoordinate();
+      }
+    }
+
+    if (this.isShip(this.grid[x][y])) {
+      //Fire at the boat.
+      const ship = this.shadowRoot.querySelector('#' + this.grid[x][y].type);
+      ship.enemyShootAt(x, y);
+      this.grid[x][y].shot = true; // By chance we found another boat around. Let's remember it so we can come back to it.
+
+      if (this.grid[x][y].type != this._previousShot.type && this._previousShot.type != undefined) {
+        //Object.create is used to make sure we get a copy of the shot, not a reference.
+        this._pendingSanks.push(Object.create(this._previousShot));
+      }
+
+      this._previousShot = {
+        x: x,
+        y: y,
+        type: ship.type
+      };
+
+      if (ship.destroyed) {
+        if (this._pendingSanks.length > 0) {
+          this._previousShot = this._pendingSanks.pop();
+        } else this._previousShot = {
+          x: 0,
+          y: 0
+        };
+      }
+
+      setTimeout(() => this.enemyShoot(), 2000);
+      return;
+    }
+
+    this.grid[x][y].shot = true;
+    this.updateGrid();
+    this.playerPlayed(x, y);
+  }
+
+  shipDestroyed(event) {
+    this._boatsToSink = this._boatsToSink.filter(item => item != event.detail.type);
+    this.playerSankShip(event.detail.type);
+  }
+
+  shipHit(event) {
+    this.playerHitShip(event.detail.type);
+  }
+
+  render() {
+    return html`
       <div class="title">Your fleet</div>
       <div class="grid">
-          ${this.grid.map((a,c)=>a.map((b,d)=>{if(this.isShip(this.grid[c][d])){if(!this.isShipPlaced(b.type))return this._shipPlaced.push(b.type),x`
-                      <ship-element id="${b.type}" x="${b.x}" y="${b.y}"
-                        type="${b.type}" orientation="${b.orientation}" @ship-hit="${this.shipHit}"
+          ${this.grid.map((row, x) => row.map((cell, y) => {
+      if (this.isShip(this.grid[x][y])) {
+        if (!this.isShipPlaced(cell.type)) {
+          this._shipPlaced.push(cell.type);
+
+          return html`
+                      <ship-element id="${cell.type}" x="${cell.x}" y="${cell.y}"
+                        type="${cell.type}" orientation="${cell.orientation}" @ship-hit="${this.shipHit}"
                         @ship-destroyed="${this.shipDestroyed}">
-                      </ship-element>`}else return x`<empty-cell ?hit="${b.shot}">${b.text}</empty-cell>`}))}
+                      </ship-element>`;
+        }
+      } else return html`<empty-cell ?hit="${cell.shot}">${cell.text}</empty-cell>`;
+    }))}
       </div>
-    `}}w(PlayerGrid,"styles",[q(r(PlayerGrid),"styles",PlayerGrid),A`
+    `;
+  }
+
+}
+
+_defineProperty(PlayerGrid, "styles", [_get(_getPrototypeOf(PlayerGrid), "styles", PlayerGrid), css`
     :host {
       pointer-events:none;
     }
-  `]),customElements.define("player-grid",PlayerGrid);
+  `]);
+
+customElements.define("player-grid", PlayerGrid);

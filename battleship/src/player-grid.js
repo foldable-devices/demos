@@ -1,4 +1,4 @@
-import { html, css } from '/web_modules/lit-element.js';
+import { html, css } from 'lit-element';
 import { GameGrid } from './game-grid.js';
 import * as Ship from './ship.js';
 

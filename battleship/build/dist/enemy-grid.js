@@ -1,14 +1,75 @@
-function k(a,c,b){return c in a?Object.defineProperty(a,c,{value:b,enumerable:!0,configurable:!0,writable:!0}):a[c]=b,a}function d(a,c,b){return typeof Reflect!=="undefined"&&Reflect.get?d=Reflect.get:d=function h(o,i,p){var j=l(o,i);if(!j)return;var g=Object.getOwnPropertyDescriptor(j,i);return g.get?g.get.call(p):g.value},d(a,c,b||a)}function l(a,c){for(;!Object.prototype.hasOwnProperty.call(a,c);){a=e(a);if(a===null)break}return a}function e(a){return e=Object.setPrototypeOf?Object.getPrototypeOf:function c(b){return b.__proto__||Object.getPrototypeOf(b)},e(a)}import{html as f,css as m}from"../web_modules/lit-element.js";import{GameGrid as n}from"./game-grid.js";import"./enemy-ship.js";export class EnemyGrid extends n{firstUpdated(){super.firstUpdated(),this.generateRandomGrid()}constructor(){super()}fireAt(a,c){let b=this.grid[a][c];if(this.isShip(b)||b.text!="")return;if(b.shot===!0){console.log("You shot there already.");return}b.shot=!0,this.updateGrid(),this.playerPlayed(a,c)}shipDestroyed(a){this.playerSankShip(a.detail.type),this.dispatchGameOverIfNecessary()}shipHit(a){this.playerHitShip(a.detail.type)}render(){return f`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+import { html, css } from '../web_modules/lit-element.js';
+import { GameGrid } from './game-grid.js';
+import './enemy-ship.js';
+export class EnemyGrid extends GameGrid {
+  firstUpdated() {
+    super.firstUpdated();
+    this.generateRandomGrid();
+  }
+
+  constructor() {
+    super();
+  }
+
+  fireAt(x, y) {
+    let element = this.grid[x][y];
+    if (this.isShip(element) || element.text != '') return;
+
+    if (element.shot === true) {
+      // TODO : Show a dialog.
+      console.log('You shot there already.');
+      return;
+    }
+
+    element.shot = true;
+    this.updateGrid();
+    this.playerPlayed(x, y);
+  }
+
+  shipDestroyed(event) {
+    this.playerSankShip(event.detail.type);
+    this.dispatchGameOverIfNecessary();
+  }
+
+  shipHit(event) {
+    this.playerHitShip(event.detail.type);
+  }
+
+  render() {
+    return html`
       <div class="title">Enemy's fleet</div>
       <div class="grid">
-          ${this.grid.map((a,c)=>a.map((b,h)=>{if(this.isShip(this.grid[c][h])){if(!this.isShipPlaced(b.type))return this._shipPlaced.push(b.type),f`
-                      <enemy-ship id="${b.type}" x="${b.x}" y="${b.y}"
-                        type="${b.type}" orientation="${b.orientation}" @ship-destroyed="${this.shipDestroyed}"
+          ${this.grid.map((row, x) => row.map((cell, y) => {
+      if (this.isShip(this.grid[x][y])) {
+        if (!this.isShipPlaced(cell.type)) {
+          this._shipPlaced.push(cell.type);
+
+          return html`
+                      <enemy-ship id="${cell.type}" x="${cell.x}" y="${cell.y}"
+                        type="${cell.type}" orientation="${cell.orientation}" @ship-destroyed="${this.shipDestroyed}"
                         @ship-hit="${this.shipHit}">
-                      </enemy-ship>`}else return f`<empty-cell ?hit="${b.shot}" @click="${()=>this.fireAt(c,h)}">${b.text}</empty-cell>`}))}
+                      </enemy-ship>`;
+        }
+      } else return html`<empty-cell ?hit="${cell.shot}" @click="${() => this.fireAt(x, y)}">${cell.text}</empty-cell>`;
+    }))}
       </div>
-    `}}k(EnemyGrid,"styles",[d(e(EnemyGrid),"styles",EnemyGrid),m`
+    `;
+  }
+
+}
+
+_defineProperty(EnemyGrid, "styles", [_get(_getPrototypeOf(EnemyGrid), "styles", EnemyGrid), css`
     .cell {
       cursor:pointer;
     }
-  `]),customElements.define("enemy-grid",EnemyGrid);
+  `]);
+
+customElements.define("enemy-grid", EnemyGrid);

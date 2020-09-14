@@ -1,14 +1,249 @@
-function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0,configurable:!0,writable:!0}):a[b]=c,a}import{LitElement as f,html as e,css as g}from"../web_modules/lit-element.js";export const Orientation={Horizontal:"horizontal",Vertical:"vertical"},ShipType={Submarine:"submarine",Carrier:"carrier",Rescue:"rescue",Battleship:"battleship",Destroyer:"destroyer"};export function getShipSize(a){switch(a){case ShipType.Submarine:return 3;case ShipType.Carrier:return 5;case ShipType.Battleship:return 4;case ShipType.Destroyer:return 3;case ShipType.Rescue:return 2;default:return 0}}export class Ship extends f{static get properties(){return{type:{type:String,reflectToAttribute:!0,attribute:!0},orientation:{type:String,reflectToAttribute:!0,attribute:!0},x:{type:Number,reflectToAttribute:!0,attribute:!0},y:{type:Number,reflectToAttribute:!0,attribute:!0},size:{type:Number},hitCount:{type:Number},destroyed:{type:Boolean,reflectToAttribute:!0,attribute:!0}}}set type(a){let b=this._type;this._type=a,this.requestUpdate("type",b),this.size=getShipSize(this._type),this.shadowRoot.host.style.setProperty("--size",this._size)}get type(){return this._type}set destroyed(a){let b=this._destroyed;this._destroyed=a,this.requestUpdate("destroyed",b)}get destroyed(){return this._destroyed}set hitCount(a){let b=this._hitCount;this._hitCount=a,this.requestUpdate("hitCount",b)}get hitCount(){return this._hitCount}set orientation(a){let b=this._orientation;this._orientation=a,this.requestUpdate("orientation",b),a==Orientation.Horizontal?(this.shadowRoot.host.classList.add("horizontal"),this.shadowRoot.host.classList.remove("vertical")):(this.shadowRoot.host.classList.remove("horizontal"),this.shadowRoot.host.classList.add("vertical"))}get orientation(){return this._orientation}set x(a){let b=this._x;this._x=a,this.requestUpdate("x",b),this.shadowRoot.host.style.setProperty("--x",this.x+1)}get x(){return this._x}set y(a){let b=this._y;this._y=a,this.requestUpdate("y",b),this.shadowRoot.host.style.setProperty("--y",a+1)}get y(){return this._y}set size(a){let b=this._size;this._size=a,this.requestUpdate("size",b),this.shadowRoot.host.style.setProperty("--size",this._size)}get size(){return this._size}firstUpdated(){this._image=this.shadowRoot.querySelector("#image"),this.size=getShipSize(this._type)}constructor(){super();d(this,"_image",void 0),this._x=0,this._y=0,this._orientation=Orientation.Horizontal,this._type=ShipType.Submarine,this._size=0,this._destroyed=!1,this._hitCount=0}reset(){Array.from({length:this.size}).map((a,b)=>{const c=this.shadowRoot.querySelector("#hit-"+b);c.classList.remove("hit")}),this.hitCount=0,this.destroyed=!1}enemyShootAt(a,b){let c;this.orientation===Orientation.Horizontal?c=b-this.y:c=a-this.x;const h=this.shadowRoot.querySelector("#hit-"+c);h.classList.add("hit"),this.hitCount++,this.hitCount===this.size?this.shipDestroyed():this.shipHit()}shipDestroyed(){this.destroyed=!0;let a=new CustomEvent("ship-destroyed",{detail:{message:"Ship Destroyed",type:this.type},bubbles:!0,composed:!0});this.dispatchEvent(a)}shipHit(){let a=new CustomEvent("ship-hit",{detail:{message:"Ship Hit",type:this.type},bubbles:!0,composed:!0});this.dispatchEvent(a)}render(){return e`
-      <div class="hit-zone ${this.orientation===Orientation.Horizontal?"hit-zone-horizontal":"hit-zone-vertical"}">
-        ${Array.from({length:this.size}).map((a,b)=>e`
-            <div class="cell"><div class="hit-area" id="hit-${b}"></div></div>
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+import { LitElement, html, css } from '../web_modules/lit-element.js';
+export const Orientation = {
+  Horizontal: 'horizontal',
+  Vertical: 'vertical'
+};
+export const ShipType = {
+  Submarine: 'submarine',
+  Carrier: 'carrier',
+  Rescue: 'rescue',
+  Battleship: 'battleship',
+  Destroyer: 'destroyer'
+};
+export function getShipSize(type) {
+  switch (type) {
+    case ShipType.Submarine:
+      return 3;
+
+    case ShipType.Carrier:
+      return 5;
+
+    case ShipType.Battleship:
+      return 4;
+
+    case ShipType.Destroyer:
+      return 3;
+
+    case ShipType.Rescue:
+      return 2;
+
+    default:
+      return 0;
+  }
+}
+export class Ship extends LitElement {
+  static get properties() {
+    return {
+      type: {
+        type: String,
+        reflectToAttribute: true,
+        attribute: true
+      },
+      orientation: {
+        type: String,
+        reflectToAttribute: true,
+        attribute: true
+      },
+      x: {
+        type: Number,
+        reflectToAttribute: true,
+        attribute: true
+      },
+      y: {
+        type: Number,
+        reflectToAttribute: true,
+        attribute: true
+      },
+      size: {
+        type: Number
+      },
+      hitCount: {
+        type: Number
+      },
+      destroyed: {
+        type: Boolean,
+        reflectToAttribute: true,
+        attribute: true
+      }
+    };
+  }
+
+  set type(type) {
+    let oldType = this._type;
+    this._type = type;
+    this.requestUpdate('type', oldType);
+    this.size = getShipSize(this._type);
+    this.shadowRoot.host.style.setProperty('--size', this._size);
+  }
+
+  get type() {
+    return this._type;
+  }
+
+  set destroyed(isDestroyed) {
+    let oldVal = this._destroyed;
+    this._destroyed = isDestroyed;
+    this.requestUpdate('destroyed', oldVal);
+  }
+
+  get destroyed() {
+    return this._destroyed;
+  }
+
+  set hitCount(hitCount) {
+    let oldVal = this._hitCount;
+    this._hitCount = hitCount;
+    this.requestUpdate('hitCount', oldVal);
+  }
+
+  get hitCount() {
+    return this._hitCount;
+  }
+
+  set orientation(orientation) {
+    let oldOrientation = this._orientation;
+    this._orientation = orientation;
+    this.requestUpdate('orientation', oldOrientation);
+
+    if (orientation == Orientation.Horizontal) {
+      this.shadowRoot.host.classList.add('horizontal');
+      this.shadowRoot.host.classList.remove('vertical');
+    } else {
+      this.shadowRoot.host.classList.remove('horizontal');
+      this.shadowRoot.host.classList.add('vertical');
+    }
+  }
+
+  get orientation() {
+    return this._orientation;
+  }
+
+  set x(x) {
+    let oldX = this._x;
+    this._x = x;
+    this.requestUpdate('x', oldX); // +1 because grid do not start at 0.
+
+    this.shadowRoot.host.style.setProperty('--x', this.x + 1);
+  }
+
+  get x() {
+    return this._x;
+  }
+
+  set y(y) {
+    let oldY = this._y;
+    this._y = y;
+    this.requestUpdate('y', oldY); // +1 because grid do not start at 0.
+
+    this.shadowRoot.host.style.setProperty('--y', y + 1);
+  }
+
+  get y() {
+    return this._y;
+  }
+
+  set size(size) {
+    let oldSize = this._size;
+    this._size = size;
+    this.requestUpdate('size', oldSize);
+    this.shadowRoot.host.style.setProperty('--size', this._size);
+  }
+
+  get size() {
+    return this._size;
+  }
+
+  firstUpdated() {
+    this._image = this.shadowRoot.querySelector('#image');
+    this.size = getShipSize(this._type);
+  }
+
+  constructor() {
+    super();
+
+    _defineProperty(this, "_image", void 0);
+
+    this._x = 0;
+    this._y = 0;
+    this._orientation = Orientation.Horizontal;
+    this._type = ShipType.Submarine;
+    this._size = 0;
+    this._destroyed = false;
+    this._hitCount = 0;
+  }
+
+  reset() {
+    Array.from({
+      length: this.size
+    }).map((_, pos) => {
+      const hitArea = this.shadowRoot.querySelector('#hit-' + pos);
+      hitArea.classList.remove('hit');
+    });
+    this.hitCount = 0;
+    this.destroyed = false;
+  }
+
+  enemyShootAt(x, y) {
+    let hitZoneId;
+
+    if (this.orientation === Orientation.Horizontal) {
+      hitZoneId = y - this.y;
+    } else {
+      hitZoneId = x - this.x;
+    }
+
+    const hitArea = this.shadowRoot.querySelector('#hit-' + hitZoneId);
+    hitArea.classList.add('hit');
+    this.hitCount++;
+    if (this.hitCount === this.size) this.shipDestroyed();else this.shipHit();
+  }
+
+  shipDestroyed() {
+    this.destroyed = true;
+    let event = new CustomEvent('ship-destroyed', {
+      detail: {
+        message: 'Ship Destroyed',
+        type: this.type
+      },
+      bubbles: true,
+      composed: true
+    });
+    this.dispatchEvent(event);
+  }
+
+  shipHit() {
+    let event = new CustomEvent('ship-hit', {
+      detail: {
+        message: 'Ship Hit',
+        type: this.type
+      },
+      bubbles: true,
+      composed: true
+    });
+    this.dispatchEvent(event);
+  }
+
+  render() {
+    return html`
+      <div class="hit-zone ${this.orientation === Orientation.Horizontal ? "hit-zone-horizontal" : "hit-zone-vertical"}">
+        ${Array.from({
+      length: this.size
+    }).map((_, pos) => html`
+            <div class="cell"><div class="hit-area" id="hit-${pos}"></div></div>
         `)}
       </div>
       <picture>
           <source srcset="images/${this.type}-top-${this.orientation}.webp" type="image/webp">
           <img id="image" src="images/${this.type}-top-${this.orientation}.png" alt="${this.type}"/>
       </picture>
-    `}}d(Ship,"styles",g`
+    `;
+  }
+
+}
+
+_defineProperty(Ship, "styles", css`
     :host {
       overflow: hidden;
       position: relative;
@@ -77,4 +312,6 @@ function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
     .hit-zone-vertical {
       flex-direction: column;
     }
-  `),customElements.define("ship-element",Ship);
+  `);
+
+customElements.define("ship-element", Ship);

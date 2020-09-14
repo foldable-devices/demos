@@ -1,4 +1,4 @@
-import { LitElement, html, css } from '/web_modules/lit-element.js';
+import { LitElement, html, css } from 'lit-element';
 
 export const Orientation = {
   Horizontal: 'horizontal',

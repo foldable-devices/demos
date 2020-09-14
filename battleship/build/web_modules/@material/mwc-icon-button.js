@@ -1,10 +1,48 @@
-import{_ as a,p as e,q as i,a as j,i as k,e as g,c as l}from"../common/class-map-d7725032.js";import{L as m,h as f,c as n}from"../common/lit-element-9c695caa.js";import{R as o}from"../common/ripple-handlers-1e83c4d8.js";class b extends m{constructor(){super(...arguments);this.disabled=!1,this.icon="",this.label="",this.shouldRenderRipple=!1,this.rippleHandlers=new o(()=>(this.shouldRenderRipple=!0,this.ripple))}renderRipple(){return f`${this.shouldRenderRipple?f`
+import { _ as __decorate, p as property, q as query, a as queryAsync, i as internalProperty, e as eventOptions, c as customElement } from '../common/class-map-d7725032.js';
+import { L as LitElement, h as html, c as css } from '../common/lit-element-9c695caa.js';
+import { R as RippleHandlers } from '../common/ripple-handlers-1e83c4d8.js';
+
+/** @soyCompatible */
+class IconButtonBase extends LitElement {
+    constructor() {
+        super(...arguments);
+        this.disabled = false;
+        this.icon = '';
+        this.label = '';
+        this.shouldRenderRipple = false;
+        this.rippleHandlers = new RippleHandlers(() => {
+            this.shouldRenderRipple = true;
+            return this.ripple;
+        });
+    }
+    /** @soyCompatible */
+    renderRipple() {
+        return html `${this.shouldRenderRipple ? html `
             <mwc-ripple
                 .disabled="${this.disabled}"
                 unbounded>
-            </mwc-ripple>`:""}`}focus(){const c=this.buttonElement;c&&(this.rippleHandlers.startFocus(),c.focus())}blur(){const c=this.buttonElement;c&&(this.rippleHandlers.endFocus(),c.blur())}render(){return f`<button
+            </mwc-ripple>` :
+            ''}`;
+    }
+    focus() {
+        const buttonElement = this.buttonElement;
+        if (buttonElement) {
+            this.rippleHandlers.startFocus();
+            buttonElement.focus();
+        }
+    }
+    blur() {
+        const buttonElement = this.buttonElement;
+        if (buttonElement) {
+            this.rippleHandlers.endFocus();
+            buttonElement.blur();
+        }
+    }
+    /** @soyCompatible */
+    render() {
+        return html `<button
         class="mdc-icon-button"
-        aria-label="${this.label||this.icon}"
+        aria-label="${this.label || this.icon}"
         ?disabled="${this.disabled}"
         @focus="${this.handleRippleFocus}"
         @blur="${this.handleRippleBlur}"
@@ -17,7 +55,61 @@ import{_ as a,p as e,q as i,a as j,i as k,e as g,c as l}from"../common/class-map
       ${this.renderRipple()}
     <i class="material-icons">${this.icon}</i>
     <slot></slot>
-  </button>`}handleRippleMouseDown(c){const h=()=>{window.removeEventListener("mouseup",h),this.handleRippleDeactivate()};window.addEventListener("mouseup",h),this.rippleHandlers.startPress(c)}handleRippleTouchStart(c){this.rippleHandlers.startPress(c)}handleRippleDeactivate(){this.rippleHandlers.endPress()}handleRippleMouseEnter(){this.rippleHandlers.startHover()}handleRippleMouseLeave(){this.rippleHandlers.endHover()}handleRippleFocus(){this.rippleHandlers.startFocus()}handleRippleBlur(){this.rippleHandlers.endFocus()}}a([e({type:Boolean,reflect:!0})],b.prototype,"disabled",void 0),a([e({type:String})],b.prototype,"icon",void 0),a([e({type:String})],b.prototype,"label",void 0),a([i("button")],b.prototype,"buttonElement",void 0),a([j("mwc-ripple")],b.prototype,"ripple",void 0),a([k()],b.prototype,"shouldRenderRipple",void 0),a([g({passive:!0})],b.prototype,"handleRippleMouseDown",null),a([g({passive:!0})],b.prototype,"handleRippleTouchStart",null);/**
+  </button>`;
+    }
+    handleRippleMouseDown(event) {
+        const onUp = () => {
+            window.removeEventListener('mouseup', onUp);
+            this.handleRippleDeactivate();
+        };
+        window.addEventListener('mouseup', onUp);
+        this.rippleHandlers.startPress(event);
+    }
+    handleRippleTouchStart(event) {
+        this.rippleHandlers.startPress(event);
+    }
+    handleRippleDeactivate() {
+        this.rippleHandlers.endPress();
+    }
+    handleRippleMouseEnter() {
+        this.rippleHandlers.startHover();
+    }
+    handleRippleMouseLeave() {
+        this.rippleHandlers.endHover();
+    }
+    handleRippleFocus() {
+        this.rippleHandlers.startFocus();
+    }
+    handleRippleBlur() {
+        this.rippleHandlers.endFocus();
+    }
+}
+__decorate([
+    property({ type: Boolean, reflect: true })
+], IconButtonBase.prototype, "disabled", void 0);
+__decorate([
+    property({ type: String })
+], IconButtonBase.prototype, "icon", void 0);
+__decorate([
+    property({ type: String })
+], IconButtonBase.prototype, "label", void 0);
+__decorate([
+    query('button')
+], IconButtonBase.prototype, "buttonElement", void 0);
+__decorate([
+    queryAsync('mwc-ripple')
+], IconButtonBase.prototype, "ripple", void 0);
+__decorate([
+    internalProperty()
+], IconButtonBase.prototype, "shouldRenderRipple", void 0);
+__decorate([
+    eventOptions({ passive: true })
+], IconButtonBase.prototype, "handleRippleMouseDown", null);
+__decorate([
+    eventOptions({ passive: true })
+], IconButtonBase.prototype, "handleRippleTouchStart", null);
+
+/**
 @license
 Copyright 2018 Google Inc. All Rights Reserved.
 
@@ -32,7 +124,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/const p=n`.material-icons{font-family:var(--mdc-icon-font, "Material Icons");font-weight:normal;font-style:normal;font-size:var(--mdc-icon-size, 24px);line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-moz-osx-font-smoothing:grayscale;font-feature-settings:"liga"}.mdc-icon-button{display:inline-block;position:relative;box-sizing:border-box;border:none;outline:none;background-color:transparent;fill:currentColor;color:inherit;font-size:24px;text-decoration:none;cursor:pointer;user-select:none;width:48px;height:48px;padding:12px}.mdc-icon-button svg,.mdc-icon-button img{width:24px;height:24px}.mdc-icon-button:disabled{color:rgba(0,0,0,.38);color:var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38))}.mdc-icon-button:disabled{cursor:default;pointer-events:none}.mdc-icon-button__icon{display:inline-block}.mdc-icon-button__icon.mdc-icon-button__icon--on{display:none}.mdc-icon-button--on .mdc-icon-button__icon{display:none}.mdc-icon-button--on .mdc-icon-button__icon.mdc-icon-button__icon--on{display:inline-block}:host{display:inline-block;outline:none;--mdc-ripple-color: currentcolor}:host([disabled]){pointer-events:none}:host,.mdc-icon-button{vertical-align:top}.mdc-icon-button{width:var(--mdc-icon-button-size, 48px);height:var(--mdc-icon-button-size, 48px);padding:calc((var(--mdc-icon-button-size, 48px) - var(--mdc-icon-size, 24px)) / 2)}.mdc-icon-button>i{position:absolute;top:0;padding-top:inherit}.mdc-icon-button i,.mdc-icon-button svg,.mdc-icon-button img,.mdc-icon-button ::slotted(*){display:block;width:var(--mdc-icon-size, 24px);height:var(--mdc-icon-size, 24px)}`;/**
+*/
+const style = css `.material-icons{font-family:var(--mdc-icon-font, "Material Icons");font-weight:normal;font-style:normal;font-size:var(--mdc-icon-size, 24px);line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-moz-osx-font-smoothing:grayscale;font-feature-settings:"liga"}.mdc-icon-button{display:inline-block;position:relative;box-sizing:border-box;border:none;outline:none;background-color:transparent;fill:currentColor;color:inherit;font-size:24px;text-decoration:none;cursor:pointer;user-select:none;width:48px;height:48px;padding:12px}.mdc-icon-button svg,.mdc-icon-button img{width:24px;height:24px}.mdc-icon-button:disabled{color:rgba(0,0,0,.38);color:var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38))}.mdc-icon-button:disabled{cursor:default;pointer-events:none}.mdc-icon-button__icon{display:inline-block}.mdc-icon-button__icon.mdc-icon-button__icon--on{display:none}.mdc-icon-button--on .mdc-icon-button__icon{display:none}.mdc-icon-button--on .mdc-icon-button__icon.mdc-icon-button__icon--on{display:inline-block}:host{display:inline-block;outline:none;--mdc-ripple-color: currentcolor}:host([disabled]){pointer-events:none}:host,.mdc-icon-button{vertical-align:top}.mdc-icon-button{width:var(--mdc-icon-button-size, 48px);height:var(--mdc-icon-button-size, 48px);padding:calc((var(--mdc-icon-button-size, 48px) - var(--mdc-icon-size, 24px)) / 2)}.mdc-icon-button>i{position:absolute;top:0;padding-top:inherit}.mdc-icon-button i,.mdc-icon-button svg,.mdc-icon-button img,.mdc-icon-button ::slotted(*){display:block;width:var(--mdc-icon-size, 24px);height:var(--mdc-icon-size, 24px)}`;
+
+/**
 @license
 Copyright 2018 Google Inc. All Rights Reserved.
 
@@ -47,4 +142,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/let d=class c extends b{};d.styles=p,d=a([l("mwc-icon-button")],d);export{d as IconButton};
+*/
+/** @soyCompatible */
+let IconButton = class IconButton extends IconButtonBase {
+};
+IconButton.styles = style;
+IconButton = __decorate([
+    customElement('mwc-icon-button')
+], IconButton);
+
+export { IconButton };

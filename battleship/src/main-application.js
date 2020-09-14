@@ -1,14 +1,15 @@
-import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
-import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
-import '/web_modules/@material/mwc-button.js';
-import '/web_modules/@material/mwc-icon-button.js';
-import '/web_modules/@material/mwc-snackbar.js';
+import { LitElement, html, css as litCSS } from 'lit-element';
+import { adjustCSS, observe } from "spanning-css-polyfill";
+import '@material/mwc-button';
+import '@material/mwc-icon-button';
+import '@material/mwc-snackbar';
 import "./player-grid.js";
 import "./enemy-grid.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
-import '/web_modules/@material/mwc-snackbar.js';
-import { Workbox, messageSW} from '/web_modules/workbox-window.js';
+import '@material/mwc-snackbar';
+import 'foldable-device-configurator';
+import { Workbox, messageSW} from 'workbox-window';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -403,6 +404,7 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <picture>
           <source media="(max-width: 767px)"

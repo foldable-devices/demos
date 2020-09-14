@@ -23,8 +23,8 @@
     "eslint": "^7.9.0",
     "eslint-plugin-lit": "1.2.2",
     "rimraf": "^3.0.2",
-    "snowpack": "^2.7.6",
-    "@snowpack/plugin-babel": "^2.0.2",
+    "snowpack": "^2.11.1",
+    "@snowpack/plugin-babel": "^2.1.0",
     "workbox-cli": "^5.1.4"
   },
   "keywords": [],

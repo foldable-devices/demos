@@ -1,4 +1,54 @@
-function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0,configurable:!0,writable:!0}):a[b]=c,a}import{LitElement as e,html as f,css as g}from"../web_modules/lit-element.js";import{adjustCSS as h,observe as i}from"../web_modules/spanning-css-polyfill.js";const j=(a,...b)=>{const c=h(a[0],"dialog-box");return g([c],...b)};export class DialogBox extends e{constructor(){super()}connectedCallback(){super.connectedCallback(),i(this)}firstUpdated(){this._label=this.shadowRoot.querySelector(".label")}showMessage(a){this._label.innerHTML=a,this.open()}close(){this.shadowRoot.host.style.visibility="hidden"}open(){this.shadowRoot.host.style.visibility="visible"}buttonClicked(){let a=new CustomEvent("button-clicked",{detail:{message:"Button clicked."},bubbles:!0,composed:!0});this.dispatchEvent(a),this.close()}render(){return f`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
+import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+
+const css = (strings, ...values) => {
+  const string = adjustCSS(strings[0], "dialog-box");
+  return litCSS([string], ...values);
+};
+
+export class DialogBox extends LitElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    observe(this);
+  }
+
+  firstUpdated() {
+    this._label = this.shadowRoot.querySelector('.label');
+  }
+
+  showMessage(text) {
+    this._label.innerHTML = text;
+    this.open();
+  }
+
+  close() {
+    this.shadowRoot.host.style.visibility = 'hidden';
+  }
+
+  open() {
+    this.shadowRoot.host.style.visibility = 'visible';
+  }
+
+  buttonClicked() {
+    let event = new CustomEvent('button-clicked', {
+      detail: {
+        message: 'Button clicked.'
+      },
+      bubbles: true,
+      composed: true
+    });
+    this.dispatchEvent(event);
+    this.close();
+  }
+
+  render() {
+    return html`
       <div class="content">
         <div class="text">
           <div class="label">You won!</div>
@@ -8,7 +58,12 @@ function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
           </picture>
         </div>
       </div>
-    `}}d(DialogBox,"styles",j`
+    `;
+  }
+
+}
+
+_defineProperty(DialogBox, "styles", css`
     :host {
       width: 15vw;
       height: 15vh;
@@ -90,4 +145,6 @@ function d(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
       }
     }
 
-  `),customElements.define("dialog-box",DialogBox);
+  `);
+
+customElements.define("dialog-box", DialogBox);

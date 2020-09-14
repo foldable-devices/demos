@@ -1,5 +1,5 @@
-import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
-import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
+import { LitElement, html, css as litCSS } from 'lit-element';
+import { adjustCSS, observe } from "spanning-css-polyfill";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "dialog-box");
