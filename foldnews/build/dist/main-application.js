@@ -1,4 +1,83 @@
-function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0,configurable:!0,writable:!0}):a[b]=d,a}import{LitElement as e,html as f,css as g}from"../web_modules/lit-element.js";import{adjustCSS as h,observe as i}from"../web_modules/spanning-css-polyfill.js";import"./news-article.js";import"../web_modules/@material/mwc-button.js";import"../web_modules/@material/mwc-icon-button.js";import"../web_modules/@material/mwc-snackbar.js";import{Workbox as j,messageSW as k}from"../web_modules/workbox-window.js";const l=(a,...b)=>{const d=h(a[0],"main-application");return g([d],...b)};export class MainApplication extends e{firstUpdated(){this._snackbar=this.shadowRoot.querySelector("#snackbar"),this._snackbar.addEventListener("MDCSnackbar:closed",a=>{a.detail.reason==="action"&&(this._wb.addEventListener("controlling",()=>{window.location.reload(),this._wbRegistration=void 0}),this._wbRegistration&&this._wbRegistration.waiting&&k(this._wbRegistration.waiting,{type:"SKIP_WAITING"}))}),"serviceWorker"in navigator&&window.addEventListener("load",async()=>{this._wb=new j("./sw.js"),this._wb.addEventListener("waiting",()=>this._showSnackbar()),this._wb.addEventListener("externalwaiting",()=>this._showSnackbar()),this._wbRegistration=await this._wb.register()})}constructor(){super();c(this,"_snackbar",void 0),c(this,"_wb",void 0),c(this,"_wbRegistration",void 0)}connectedCallback(){super.connectedCallback(),i(this)}_showSnackbar(){this._snackbar.show()}_deviceSupportsSpanningMQs(){const a=window.matchMedia("(spanning: single-fold-horizontal)").matches||window.matchMedia("(spanning: single-fold-vertical)").matches||window.matchMedia("(spanning: none)").matches||!1;return a}render(){return f`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
+import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+import "./news-article.js";
+import '../web_modules/@material/mwc-button.js';
+import '../web_modules/@material/mwc-icon-button.js';
+import '../web_modules/@material/mwc-snackbar.js';
+import '../web_modules/foldable-device-configurator.js';
+import { Workbox, messageSW } from '../web_modules/workbox-window.js';
+
+const css = (strings, ...values) => {
+  const string = adjustCSS(strings[0], "main-application");
+  return litCSS([string], ...values);
+};
+
+export class MainApplication extends LitElement {
+  firstUpdated() {
+    this._snackbar = this.shadowRoot.querySelector('#snackbar');
+
+    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
+      if (event.detail.reason === "action") {
+        this._wb.addEventListener('controlling', () => {
+          window.location.reload();
+          this._wbRegistration = undefined;
+        }); // Send a message to the waiting service worker instructing
+        // it to skip waiting, which will trigger the `controlling`
+        // event listener above.
+
+
+        if (this._wbRegistration && this._wbRegistration.waiting) {
+          messageSW(this._wbRegistration.waiting, {
+            type: 'SKIP_WAITING'
+          });
+        }
+      }
+    }); // Check that service workers are supported
+
+
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', async () => {
+        this._wb = new Workbox('./sw.js');
+
+        this._wb.addEventListener('waiting', () => this._showSnackbar());
+
+        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
+
+        this._wbRegistration = await this._wb.register();
+      });
+    }
+  }
+
+  constructor() {
+    super();
+
+    _defineProperty(this, "_snackbar", void 0);
+
+    _defineProperty(this, "_wb", void 0);
+
+    _defineProperty(this, "_wbRegistration", undefined);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    observe(this);
+  }
+
+  _showSnackbar() {
+    this._snackbar.show();
+  }
+
+  _deviceSupportsSpanningMQs() {
+    const hasBrowserSupport = window.matchMedia('(screen-spanning: single-fold-horizontal)').matches || window.matchMedia('(screen-spanning: single-fold-vertical)').matches || window.matchMedia('(screen-spanning: none)').matches || false;
+    return hasBrowserSupport;
+  }
+
+  render() {
+    return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <div class="header">
           <div class="header-main">
@@ -152,7 +231,12 @@ function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0
         <mwc-button slot="action">RELOAD</mwc-button>
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
-    `}}c(MainApplication,"styles",l`
+    `;
+  }
+
+}
+
+_defineProperty(MainApplication, "styles", css`
     :host {
       width: 100vw;
       height: 100vh;
@@ -374,7 +458,7 @@ function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       .header {
         font-size: 2.5em;
       }
@@ -437,7 +521,7 @@ function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0
       }
     }
 
-    @media (spanning: none) {
+    @media (screen-spanning: none) {
       .fold {
         width: 0;
       }
@@ -494,10 +578,12 @@ function c(a,b,d){return b in a?Object.defineProperty(a,b,{value:d,enumerable:!0
       }
     }
 
-    @media (min-width: 320px) and (max-width: 1024px) and (spanning: none) {
+    @media (min-width: 320px) and (max-width: 1024px) and (screen-spanning: none) {
       .frontpage {
         display: flex;
         flex-direction: column;
       }
     }
-  `),customElements.define("main-application",MainApplication);
+  `);
+
+customElements.define("main-application", MainApplication);

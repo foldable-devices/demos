@@ -343,9 +343,9 @@ export class MainApplication extends LitElement {
 
   _deviceSupportsSpanningMQs() {
     const hasBrowserSupport =
-      window.matchMedia('(spanning: single-fold-horizontal)').matches ||
-      window.matchMedia('(spanning: single-fold-vertical)').matches ||
-      window.matchMedia('(spanning: none)').matches || false;
+      window.matchMedia('(screen-spanning: single-fold-horizontal)').matches ||
+      window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
+      window.matchMedia('(screen-spanning: none)').matches || false;
     return hasBrowserSupport;
   }
 

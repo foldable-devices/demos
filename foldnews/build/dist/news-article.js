@@ -1,4 +1,92 @@
-function e(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0,configurable:!0,writable:!0}):a[b]=c,a}import{LitElement as f,html as g,css as h}from"../web_modules/lit-element.js";import{adjustCSS as i,observe as j}from"../web_modules/spanning-css-polyfill.js";const k=(a,...b)=>{const c=i(a[0],"news-article");return h([c],...b)};class d extends f{static get properties(){return{picturePosition:{type:String,reflectToAttribute:!0,attribute:!0}}}set picturePosition(a){let b=this._picturePosition;this._picturePosition=a;const c=window.matchMedia("(min-width: 320px) and (max-width: 1024px)").matches||!1;c&&(this._picturePosition="top"),this.requestUpdate("picturePosition",b),this._text&&this._togglePicturePosition()}get picturePosition(){return this._picturePosition}constructor(){super();this._picturePosition="top"}firstUpdated(){this._text=this.shadowRoot.querySelector("#text"),this._content=this.shadowRoot.querySelector("#content"),this._togglePicturePosition()}_togglePicturePosition(){switch(this._picturePosition){case"left":this._text.classList.add("large-text"),this._content.style.flexDirection="row";break;case"right":this._text.classList.add("large-text"),this._content.style.flexDirection="row-reverse";break;case"top":this._text.classList.remove("large-text"),this._content.style.flexDirection="column";break;case"bottom":this._text.classList.remove("large-text"),this._content.style.flexDirection="column-reverse";break}}connectedCallback(){super.connectedCallback(),j(this)}render(){return g`
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
+import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+
+const css = (strings, ...values) => {
+  const string = adjustCSS(strings[0], "news-article");
+  return litCSS([string], ...values);
+};
+
+class NewsArticle extends LitElement {
+  static get properties() {
+    return {
+      picturePosition: {
+        type: String,
+        reflectToAttribute: true,
+        attribute: true
+      }
+    };
+  }
+
+  set picturePosition(position) {
+    let oldPosition = this._picturePosition;
+    this._picturePosition = position;
+    const isMobile = window.matchMedia('(min-width: 320px) and (max-width: 1024px)').matches || false;
+    if (isMobile) this._picturePosition = 'top';
+    this.requestUpdate('picturePosition', oldPosition);
+    if (this._text) this._togglePicturePosition();
+  }
+
+  get picturePosition() {
+    return this._picturePosition;
+  }
+
+  constructor() {
+    super();
+    this._picturePosition = 'top';
+  }
+
+  firstUpdated() {
+    this._text = this.shadowRoot.querySelector('#text');
+    this._content = this.shadowRoot.querySelector('#content');
+
+    this._togglePicturePosition();
+  }
+
+  _togglePicturePosition() {
+    switch (this._picturePosition) {
+      case 'left':
+        {
+          this._text.classList.add('large-text');
+
+          this._content.style.flexDirection = 'row';
+        }
+        break;
+
+      case 'right':
+        {
+          this._text.classList.add('large-text');
+
+          this._content.style.flexDirection = 'row-reverse';
+        }
+        break;
+
+      case 'top':
+        {
+          this._text.classList.remove('large-text');
+
+          this._content.style.flexDirection = 'column';
+        }
+        break;
+
+      case 'bottom':
+        {
+          this._text.classList.remove('large-text');
+
+          this._content.style.flexDirection = 'column-reverse';
+        }
+        break;
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    observe(this);
+  }
+
+  render() {
+    return html`
       <div class="item">
         <div class="article-title">
           <slot name="title"></slot>
@@ -15,7 +103,12 @@ function e(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
           </div>
         </div>
       </div>
-    `}}e(d,"styles",k`
+    `;
+  }
+
+}
+
+_defineProperty(NewsArticle, "styles", css`
     .item {
       min-height: 200px;
       height: 100%;
@@ -83,4 +176,6 @@ function e(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0
       }
     }
 
-  `),customElements.define("news-article",d);
+  `);
+
+customElements.define("news-article", NewsArticle);

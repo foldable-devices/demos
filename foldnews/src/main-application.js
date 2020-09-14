@@ -1,10 +1,11 @@
-import { LitElement, html, css as litCSS } from '/web_modules/lit-element.js';
-import { adjustCSS, observe } from "/web_modules/spanning-css-polyfill.js";
+import { LitElement, html, css as litCSS } from 'lit-element';
+import { adjustCSS, observe } from "spanning-css-polyfill";
 import "./news-article.js";
-import '/web_modules/@material/mwc-button.js';
-import '/web_modules/@material/mwc-icon-button.js';
-import '/web_modules/@material/mwc-snackbar.js';
-import { Workbox, messageSW} from '/web_modules/workbox-window.js';
+import '@material/mwc-button';
+import '@material/mwc-icon-button';
+import '@material/mwc-snackbar';
+import 'foldable-device-configurator';
+import { Workbox, messageSW} from 'workbox-window';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -234,7 +235,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: single-fold-vertical) {
+    @media (screen-spanning: single-fold-vertical) {
       .header {
         font-size: 2.5em;
       }
@@ -297,7 +298,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (spanning: none) {
+    @media (screen-spanning: none) {
       .fold {
         width: 0;
       }
@@ -354,7 +355,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (min-width: 320px) and (max-width: 1024px) and (spanning: none) {
+    @media (min-width: 320px) and (max-width: 1024px) and (screen-spanning: none) {
       .frontpage {
         display: flex;
         flex-direction: column;
@@ -410,14 +411,15 @@ export class MainApplication extends LitElement {
 
   _deviceSupportsSpanningMQs() {
     const hasBrowserSupport =
-      window.matchMedia('(spanning: single-fold-horizontal)').matches ||
-      window.matchMedia('(spanning: single-fold-vertical)').matches ||
-      window.matchMedia('(spanning: none)').matches || false;
+      window.matchMedia('(screen-spanning: single-fold-horizontal)').matches ||
+      window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
+      window.matchMedia('(screen-spanning: none)').matches || false;
     return hasBrowserSupport;
   }
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <div class="header">
           <div class="header-main">
