@@ -686,27 +686,27 @@ export class MainApplication extends LitElement {
   }
 
   _moveShipLeft() {
-    if (this._shipObject.x <= 10  || this._paused)
+    if (this._shipObject.x <= 5  || this._paused)
        return;
-    this._shipObject.x -= 10;
+    this._shipObject.x -= 5;
   }
 
   _moveShipRight() {
-    if (this._shipObject.x + 10 >= this._playAreaSize.width - this._shipObject.size || this._paused)
+    if (this._shipObject.x + 5 >= this._playAreaSize.width - this._shipObject.size || this._paused)
       return;
-    this._shipObject.x += 10;
+    this._shipObject.x += 5;
   }
 
   _moveShipDown() {
-    if (this._shipObject.y + 10 >= this._playAreaSize.height - this._shipObject.size || this._paused)
+    if (this._shipObject.y + 5 >= this._playAreaSize.height - this._shipObject.size || this._paused)
       return;
-    this._shipObject.y += 10;
+    this._shipObject.y += 5;
   }
 
   _moveShipUp() {
-    if (this._shipObject.y <= 10 || this._paused)
+    if (this._shipObject.y <= 5 || this._paused)
       return;
-    this._shipObject.y -= 10;
+    this._shipObject.y -= 5;
   }
 
   _fireMissile() {
