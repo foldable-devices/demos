@@ -478,7 +478,6 @@ export class MainApplication extends LitElement {
       alt: "This is an aerial picture of a volcano"
     }];
     return html`
-      <foldable-device-configurator></foldable-device-configurator>
       <mwc-drawer type="modal" hasHeader id="drawer">
         <span slot="title">Configuration</span>
         <div class="drawer">

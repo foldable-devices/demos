@@ -161,7 +161,6 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
-      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <picture>
           <source media="(max-width: 767px)"

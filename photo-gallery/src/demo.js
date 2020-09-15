@@ -648,7 +648,6 @@ export class MainApplication extends LitElement {
     ];
 
     return html`
-      <foldable-device-configurator></foldable-device-configurator>
       <mwc-drawer type="modal" hasHeader id="drawer">
         <span slot="title">Configuration</span>
         <div class="drawer">

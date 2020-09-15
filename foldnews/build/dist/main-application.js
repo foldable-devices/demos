@@ -77,7 +77,6 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
-      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <div class="header">
           <div class="header-main">
