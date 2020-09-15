@@ -204,6 +204,8 @@ export class MainApplication extends LitElement {
         height: var(--zenbook-span2-height, env(fold-top));
         width: 100%;
         visibility: visible;
+        flex-grow: 0;
+        flex-shrink: 0;
       }
 
       .fleet {
