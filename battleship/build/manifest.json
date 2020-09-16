@@ -1,6 +1,6 @@
 {
-  "name": "Battleship",
-  "short_name": "Battleship",
+  "name": "Foldship",
+  "short_name": "Foldship",
   "theme_color": "#2d89ef",
   "background_color": "#ffffff",
   "display": "standalone",

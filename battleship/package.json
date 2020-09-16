@@ -1,7 +1,7 @@
 {
   "name": "battleship",
   "version": "1.0.0",
-  "description": "A battleship game leveraging dual screen devices.",
+  "description": "A game where ship battle leveraging dual screen devices.",
   "main": "src/main-application.js",
   "scripts": {
     "start": "snowpack dev",
