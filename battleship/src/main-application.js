@@ -238,7 +238,6 @@ export class MainApplication extends LitElement {
     }
 
     @media (screen-spanning: none) and (orientation:portrait) {
-
       #fullscreen-rotate {
         display: block;
       }

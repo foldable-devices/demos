@@ -505,7 +505,6 @@ _defineProperty(MainApplication, "styles", css`
     }
 
     @media (screen-spanning: none) and (orientation:portrait) {
-
       #fullscreen-rotate {
         display: block;
       }

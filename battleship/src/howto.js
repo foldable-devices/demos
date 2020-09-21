@@ -51,7 +51,7 @@ export class HowToScreen extends LitElement {
     }
 
     .menu-button {
-      height: 50%;
+      width: 15%;
       display: block;
       margin: auto;
     }
@@ -107,6 +107,10 @@ export class HowToScreen extends LitElement {
         width: 80%;
         margin: auto;
       }
+
+      .menu-button {
+        width: 30%;
+      }
     }
 
     @media (screen-spanning: single-fold-horizontal) {
@@ -134,6 +138,10 @@ export class HowToScreen extends LitElement {
         width: 80%;
         display: block;
         margin: auto;
+      }
+
+      .menu-button {
+        width: 30%;
       }
     }
   `;
