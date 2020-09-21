@@ -9,11 +9,11 @@ const css = (strings, ...values) => {
 export class DialogBox extends LitElement {
   static styles = css`
     :host {
-      width: 15vw;
-      height: 15vh;
+      width: 25vw;
+      height: 30vh;
       position: absolute;
-      top: calc(50vh - 7.5vh);
-      left: calc(50vw - 7.5vw);
+      top: calc(50vh - 15vh);
+      left: calc(50vw - 12.5vw);
       z-index: 4;
       visibility: hidden;
     }
@@ -33,7 +33,7 @@ export class DialogBox extends LitElement {
       border-radius: 1em;
     }
 
-    .text {
+    .items {
       background-color: white;
       display: flex;
       height: 100%;
@@ -44,18 +44,19 @@ export class DialogBox extends LitElement {
     }
 
     .label {
-      font-size: 1vw;
-      line-height: 200%;
+      font-size: 1.5vw;
       text-align: center;
+      margin-bottom: 10px;
     }
 
-    .picture {
-      width: 20%;
-      margin-bottom: 5px;
+    .title {
+      font-size: 2vw;
+      text-align: center;
+      margin-bottom: 10px;
     }
 
     .button {
-      width: 100%;
+      margin-bottom: 10px;
     }
 
     .button:hover {
@@ -64,28 +65,41 @@ export class DialogBox extends LitElement {
 
     @media (screen-spanning: single-fold-horizontal) {
       :host {
-        width: 15vw;
+        width: 30vw;
         height: 15vh;
-        top: calc(75vh - 7.5vh);
-        left: calc(50vw - 7.5vw);
+        top: calc(env(fold-top) + (100vh - env(fold-top) + env(fold-height)) / 2 - 10vh);
+        left: calc(50vw - 15vw);
       }
     }
 
     @media (screen-spanning: none) {
       :host {
-        width: 15vw;
-        height: 15vh;
-        top: calc(50vh - 7.5vh);
-        left: calc(50vw - 7.5vw);
+        width: 25vw;
+        height: 30vh;
+        top: calc(50vh - 15vh);
+        left: calc(50vw - 12.5vw);
       }
     }
 
     @media (screen-spanning: single-fold-vertical) {
       :host {
-        width: 15vw;
-        height: 15vh;
-        top: calc(50vh - 7.5vh);
-        left: calc(75vw - 7.5vw);
+        width: 20vw;
+        height: 30vh;
+        top: calc(50vh - 20vh);
+        left: calc(env(fold-left) + (100vw - env(fold-left) + env(fold-width)) / 2 - 10vw);
+      }
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) and (screen-spanning: none) {
+      .title {
+        font-size: 1em;
+      }
+
+      :host {
+        width: 50vw;
+        height: 55vh;
+        top: calc(50vh - 35vh);
+        left: calc(50vw - 25vw);
       }
     }
 
@@ -117,24 +131,22 @@ export class DialogBox extends LitElement {
     this.shadowRoot.host.style.visibility = 'visible';
   }
 
-  buttonClicked() {
-    let event = new CustomEvent('button-clicked', {
-      detail: { message: 'Button clicked.'},
-      bubbles: true,
-      composed: true });
-    this.dispatchEvent(event);
-    this.close();
-  }
-
   render() {
     return html`
       <div class="content">
-        <div class="text">
-          <div class="label">You won!</div>
-          <picture class="picture">
-            <source srcset="images/restart-button.webp" type="image/webp">
-            <img class="button" src="images/restart-button.png" @click="${this.buttonClicked}"/>
-          </picture>
+        <div class="items">
+          <div class="title">
+            <slot name="title"></slot>
+          </div>
+          <div class="label">
+            <slot name="label"></slot>
+          </div>
+          <div class="button">
+            <slot name="menu-1"></slot>
+          </div>
+          <div class="button">
+            <slot name="menu-2"></slot>
+          </div>
         </div>
       </div>
     `;

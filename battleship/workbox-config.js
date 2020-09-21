@@ -19,7 +19,10 @@ module.exports = {
     "images/submarine-top-vertical.webp",
     "images/ocean-1024.webp",
     "images/captain.webp",
+    "images/close-button.webp",
     "images/restart-button.webp",
+    "images/new-game-button.webp",
+    "images/how-to-button.webp",
     "web_modules/import-map.json",
     "dist/*.js"
   ],

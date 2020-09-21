@@ -7,6 +7,7 @@ import '../web_modules/@material/mwc-icon-button.js';
 import '../web_modules/@material/mwc-snackbar.js';
 import "./player-grid.js";
 import "./enemy-grid.js";
+import "./howto.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
 import '../web_modules/@material/mwc-snackbar.js';
@@ -24,8 +25,16 @@ export class MainApplication extends LitElement {
     this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
     this._playerGrid = this.shadowRoot.querySelector('#player-grid');
     this._playMessage = this.shadowRoot.querySelector('#play-message');
-    this._dialogbox = this.shadowRoot.querySelector('#dialogbox');
+    this._endGameMenu = this.shadowRoot.querySelector('#end-game-menu');
+    this._welcomeMenu = this.shadowRoot.querySelector('#welcome-menu');
+    this._endGameMessage = this.shadowRoot.querySelector('#end-game-message');
+    this._endGameTitle = this.shadowRoot.querySelector('#end-game-title');
+
+    this._welcomeMenu.open();
+
     this._snackbar = this.shadowRoot.querySelector('#snackbar');
+    this._infobox = this.shadowRoot.querySelector('#infobox');
+    this._howTo = this.shadowRoot.querySelector('#how-to');
 
     if (this._deviceSupportsSpanningMQs()) {
       let rotateMessage = this.shadowRoot.querySelector('#rotate-message');
@@ -96,6 +105,16 @@ export class MainApplication extends LitElement {
     return hasBrowserSupport;
   }
 
+  startGame() {
+    this._welcomeMenu.close();
+
+    this._enemyGrid.classList.remove('blocked');
+
+    this._playerGrid.style.visibility = 'visible';
+    this._enemyGrid.style.visibility = 'visible';
+    this._infobox.style.visibility = 'visible';
+  }
+
   restartGame() {
     this._round = 0;
 
@@ -106,6 +125,24 @@ export class MainApplication extends LitElement {
     this._playerGrid.restart();
 
     this._playMessage.innerHTML = 'Let\'s get started, fire first.';
+
+    this._endGameMenu.close();
+
+    this.startGame();
+  }
+
+  showHowTo() {
+    this._welcomeMenu.close();
+
+    this._endGameMenu.close();
+
+    this._howTo.style.visibility = 'visible';
+  }
+
+  closeHowTo() {
+    this._welcomeMenu.open();
+
+    this._howTo.style.visibility = 'hidden';
   }
 
   playerPlayed() {
@@ -146,7 +183,10 @@ export class MainApplication extends LitElement {
   playerWin() {
     this._enemyGrid.classList.add('blocked');
 
-    this._dialogbox.showMessage('You won! <br> You defeated your enemy in ' + this._round + ' rounds.');
+    this._endGameTitle.innerHTML = 'You won!';
+    this._endGameMessage.innerHTML = 'You defeated your enemy in ' + this._round + ' rounds.';
+
+    this._endGameMenu.open();
 
     this._playMessage.innerHTML = 'Oh no :(, you won...';
   }
@@ -154,7 +194,10 @@ export class MainApplication extends LitElement {
   playerLost() {
     this._enemyGrid.classList.add('blocked');
 
-    this._dialogbox.showMessage('You lost! <br> Your enemy defeated you in ' + this._round + ' rounds.');
+    this._endGameTitle.innerHTML = 'You won!';
+    this._endGameMessage.innerHTML = 'Your enemy defeated you in ' + this._round + ' rounds.';
+
+    this._endGameMenu.open();
 
     this._playMessage.innerHTML = 'Yeah, I won!';
   }
@@ -206,11 +249,34 @@ export class MainApplication extends LitElement {
       <info-box id="infobox">
         <div slot="label" id="play-message">Let's get started, fire first.</div>
       </info-box>
-      <dialog-box id="dialogbox" @button-clicked=${this.restartGame}></dialog-box>
+      <dialog-box id="welcome-menu">
+        <div slot="title">Welcome to FoldShip!</div>
+        <picture class="menu-picture" slot="menu-1">
+          <source srcset="images/new-game-button.webp" type="image/webp">
+          <img class="menu-button" src="images/new-game-button.png" @click="${this.startGame}"/>
+        </picture>
+        <picture class="menu-picture" slot="menu-2">
+          <source srcset="images/how-to-button.webp" type="image/webp">
+          <img class="menu-button" src="images/how-to-button.png" @click="${this.showHowTo}"/>
+        </picture>
+      </dialog-box>
+      <dialog-box id="end-game-menu">
+        <div slot="title" id="end-game-title">You won!</div>
+        <div slot="label" id="end-game-message">You won!</div>
+        <picture class="menu-picture" slot="menu-1">
+          <source srcset="images/restart-button.webp" type="image/webp">
+          <img class="menu-button" src="images/restart-button.png" @click="${this.restartGame}"/>
+        </picture>
+        <picture class="menu-picture" slot="menu-2">
+          <source srcset="images/how-to-button.webp" type="image/webp">
+          <img class="menu-button" src="images/how-to-button.png" @click="${this.showHowTo}"/>
+        </picture>
+      </dialog-box>
       <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
         <mwc-button slot="action">RELOAD</mwc-button>
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
+      <how-to-screen id="how-to" @howto-closed="${this.closeHowTo}"></how-to-screen>
       <div id="fullscreen-rotate">
         <info-box id="rotate-infobox">
           <div slot="label" id="rotate-message">Ahoy Captain!<br>Please rotate your device to play.</div>
@@ -269,18 +335,21 @@ _defineProperty(MainApplication, "styles", css`
       height: 100%;
       width: 15px;
       z-index: 2;
+      visibility: hidden;
     }
 
     .enemy-fleet {
       width: 50%;
       height: 100%;
       z-index: 1;
+      visibility: hidden;
     }
 
     .fleet {
       width: 50%;
       height: 100%;
       z-index: 1;
+      visibility: hidden;
     }
 
     mwc-snackbar {
@@ -305,6 +374,20 @@ _defineProperty(MainApplication, "styles", css`
       font-size: 2vmax;
       opacity: 1;
       text-align: center;
+    }
+
+    #infobox {
+      visibility: hidden;
+    }
+
+    .menu-button {
+      width: 80%;
+      display: block;
+      margin: auto;
+    }
+
+    how-to-screen {
+      visibility: hidden;
     }
 
     @media all and (orientation:portrait) {
@@ -334,22 +417,6 @@ _defineProperty(MainApplication, "styles", css`
         display: none;
       }
 
-      .fold {
-        visibility: visible;
-      }
-
-      .enemy-fleet {
-        visibility: visible;
-      }
-
-      .fleet {
-        visibility: visible;
-      }
-
-      #infobox {
-        visibility: visible;
-      }
-
       .background {
         z-index: 0;
       }
@@ -359,7 +426,6 @@ _defineProperty(MainApplication, "styles", css`
       .fold {
         height: env(fold-height);
         width: env(fold-width);
-        visibility: visible;
       }
 
       .content {
@@ -369,13 +435,11 @@ _defineProperty(MainApplication, "styles", css`
       .enemy-fleet {
         width: env(fold-left);
         height: 100%;
-        visibility: visible;
       }
 
       .fleet {
         height: 100%;
         width: calc(100vw - env(fold-left) - env(fold-width));
-        visibility: visible;
       }
 
       #fullscreen-rotate {
@@ -385,11 +449,7 @@ _defineProperty(MainApplication, "styles", css`
       .background {
         z-index: 0;
       }
-
-      #infobox {
-        visibility: visible;
-      }
-    }
+   }
 
     @media (screen-spanning: single-fold-horizontal) {
       .fold {
@@ -433,27 +493,14 @@ _defineProperty(MainApplication, "styles", css`
       .fold {
         height: 100%;
         width: 15px;
-        visibility: visible;
       }
 
       .content {
         flex-direction: row;
       }
 
-      .enemy-fleet {
-        visibility: visible;
-      }
-
-      .fleet {
-        visibility: visible;
-      }
-
       .blocked {
         pointer-events: none;
-      }
-
-      #infobox {
-        visibility: visible;
       }
     }
 
