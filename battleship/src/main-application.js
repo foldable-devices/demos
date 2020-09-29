@@ -8,6 +8,7 @@ import "./enemy-grid.js";
 import "./howto.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
+import "./rotatebox.js";
 import '@material/mwc-snackbar';
 import 'foldable-device-configurator';
 import { Workbox, messageSW} from 'workbox-window';
@@ -89,26 +90,6 @@ export class MainApplication extends LitElement {
       --mdc-snackbar-action-color: #2d89ef;
     }
 
-    #fullscreen-rotate {
-      width: 100%;
-      height: 100%;
-      z-index: 99;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    #rotate-infobox {
-      width: 90%;
-      height: 90%;
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      font-size: 2vmax;
-      opacity: 1;
-      text-align: center;
-    }
-
     #infobox {
       visibility: hidden;
     }
@@ -124,10 +105,6 @@ export class MainApplication extends LitElement {
     }
 
     @media all and (orientation:portrait) {
-      #fullscreen-rotate {
-        display: block;
-      }
-
       .fold {
         visibility: hidden;
       }
@@ -146,10 +123,6 @@ export class MainApplication extends LitElement {
     }
 
     @media all and (orientation:landscape) {
-      #fullscreen-rotate {
-        display: none;
-      }
-
       .background {
         z-index: 0;
       }
@@ -159,6 +132,7 @@ export class MainApplication extends LitElement {
       .fold {
         height: env(fold-height);
         width: env(fold-width);
+        visibility: visible;
       }
 
       .content {
@@ -173,10 +147,6 @@ export class MainApplication extends LitElement {
       .fleet {
         height: 100%;
         width: calc(100vw - env(fold-left) - env(fold-width));
-      }
-
-      #fullscreen-rotate {
-        display: none;
       }
 
       .background {
@@ -198,7 +168,6 @@ export class MainApplication extends LitElement {
       .enemy-fleet {
         height: var(--zenbook-span2-height, env(fold-top));
         width: 100%;
-        visibility: visible;
         flex-grow: 0;
         flex-shrink: 0;
       }
@@ -206,19 +175,10 @@ export class MainApplication extends LitElement {
       .fleet {
         width: 100%;
         height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
-        visibility: visible;
-      }
-
-      #fullscreen-rotate {
-        display: none;
       }
 
       .background {
         z-index: 0;
-      }
-
-      #infobox {
-        visibility: visible;
       }
     }
 
@@ -238,12 +198,8 @@ export class MainApplication extends LitElement {
     }
 
     @media (screen-spanning: none) and (orientation:portrait) {
-      #fullscreen-rotate {
-        display: block;
-      }
-
       .background {
-        z-index: 5;
+        z-index: 4;
       }
 
       .enemy-fleet {
@@ -267,6 +223,7 @@ export class MainApplication extends LitElement {
   _timeBetweenRounds = 1500;
   _snackbar;
   _playMessage;
+  _playing = false;
   _wb;
   _wbRegistration = undefined;
 
@@ -281,13 +238,9 @@ export class MainApplication extends LitElement {
     this._welcomeMenu.open();
     this._snackbar = this.shadowRoot.querySelector('#snackbar');
     this._infobox = this.shadowRoot.querySelector('#infobox');
+    this._fullscreenRotate = this.shadowRoot.querySelector('#fullscreen-rotate');
+    this._fullscreenRotate.hide();
     this._howTo = this.shadowRoot.querySelector('#how-to');
-
-    if (this._deviceSupportsSpanningMQs()) {
-      let rotateMessage = this.shadowRoot.querySelector('#rotate-message');
-      rotateMessage.innerHTML= 'Ahoy Captain!<br>Please rotate your device to play. \
-                                <br> You can also span the window to play.'
-    }
 
     this._snackbar.addEventListener('MDCSnackbar:closed', event => {
       if (event.detail.reason === "action") {
@@ -339,13 +292,18 @@ export class MainApplication extends LitElement {
   }
 
   startGame() {
+    if (this._deviceSupportsSpanningMQs()) {
+      this._fullscreenRotate.setLabel('Ahoy Captain!<br>Please rotate your device to play. \
+                                <br> You can also span the window to play.');
+    }
+    this._fullscreenRotate.show();
     this._welcomeMenu.close();
     this._enemyGrid.classList.remove('blocked');
     this._playerGrid.style.visibility = 'visible';
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
+    this._playing = true;
   }
-
 
   restartGame() {
     this._round = 0;
@@ -364,7 +322,10 @@ export class MainApplication extends LitElement {
   }
 
   closeHowTo() {
-    this._welcomeMenu.open();
+    if (this._round > 0)
+      this._endGameMenu.open();
+    else
+      this._welcomeMenu.open();
     this._howTo.style.visibility = 'hidden';
   }
 
@@ -402,6 +363,8 @@ export class MainApplication extends LitElement {
   }
 
   playerWin() {
+    this._playing = false;
+    this._fullscreenRotate.hide();
     this._enemyGrid.classList.add('blocked');
     this._endGameTitle.innerHTML = 'You won!';
     this._endGameMessage.innerHTML = 'You defeated your enemy in ' + this._round + ' rounds.';
@@ -410,6 +373,8 @@ export class MainApplication extends LitElement {
   }
 
   playerLost() {
+    this._playing = false;
+    this._fullscreenRotate.hide();
     this._enemyGrid.classList.add('blocked');
     this._endGameTitle.innerHTML = 'You won!';
     this._endGameMessage.innerHTML = 'Your enemy defeated you in ' + this._round + ' rounds.';
@@ -492,11 +457,7 @@ export class MainApplication extends LitElement {
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
       <how-to-screen id="how-to" @howto-closed="${this.closeHowTo}"></how-to-screen>
-      <div id="fullscreen-rotate">
-        <info-box id="rotate-infobox">
-          <div slot="label" id="rotate-message">Ahoy Captain!<br>Please rotate your device to play.</div>
-        </info-box>
-      </div>
+      <rotate-box id="fullscreen-rotate"></rotate-box>
     `;
   }
 }

@@ -156,7 +156,6 @@ export class HowToScreen extends LitElement {
   }
 
   close() {
-    console.log('close')
     let event = new CustomEvent('howto-closed', {
       bubbles: true,
       composed: true });

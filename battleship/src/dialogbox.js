@@ -65,7 +65,7 @@ export class DialogBox extends LitElement {
 
     @media (screen-spanning: single-fold-horizontal) {
       :host {
-        width: 30vw;
+        width: 32vw;
         height: 15vh;
         top: calc(env(fold-top) + (100vh - env(fold-top) + env(fold-height)) / 2 - 10vh);
         left: calc(50vw - 15vw);
@@ -99,6 +99,19 @@ export class DialogBox extends LitElement {
         width: 50vw;
         height: 55vh;
         top: calc(50vh - 35vh);
+        left: calc(50vw - 25vw);
+      }
+    }
+
+    @media (max-width: 1024px) and (orientation: portrait) and (screen-spanning: none) {
+      .title {
+        font-size: 1em;
+      }
+
+      :host {
+        width: 50vw;
+        height: 25vh;
+        top: calc(50vh - 20vh);
         left: calc(50vw - 25vw);
       }
     }

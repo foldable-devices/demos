@@ -10,6 +10,7 @@ import "./enemy-grid.js";
 import "./howto.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
+import "./rotatebox.js";
 import '../web_modules/@material/mwc-snackbar.js';
 import '../web_modules/foldable-device-configurator.js';
 import { Workbox, messageSW } from '../web_modules/workbox-window.js';
@@ -34,13 +35,11 @@ export class MainApplication extends LitElement {
 
     this._snackbar = this.shadowRoot.querySelector('#snackbar');
     this._infobox = this.shadowRoot.querySelector('#infobox');
-    this._howTo = this.shadowRoot.querySelector('#how-to');
+    this._fullscreenRotate = this.shadowRoot.querySelector('#fullscreen-rotate');
 
-    if (this._deviceSupportsSpanningMQs()) {
-      let rotateMessage = this.shadowRoot.querySelector('#rotate-message');
-      rotateMessage.innerHTML = 'Ahoy Captain!<br>Please rotate your device to play. \
-                                <br> You can also span the window to play.';
-    }
+    this._fullscreenRotate.hide();
+
+    this._howTo = this.shadowRoot.querySelector('#how-to');
 
     this._snackbar.addEventListener('MDCSnackbar:closed', event => {
       if (event.detail.reason === "action") {
@@ -84,6 +83,8 @@ export class MainApplication extends LitElement {
 
     _defineProperty(this, "_playMessage", void 0);
 
+    _defineProperty(this, "_playing", false);
+
     _defineProperty(this, "_wb", void 0);
 
     _defineProperty(this, "_wbRegistration", undefined);
@@ -106,6 +107,13 @@ export class MainApplication extends LitElement {
   }
 
   startGame() {
+    if (this._deviceSupportsSpanningMQs()) {
+      this._fullscreenRotate.setLabel('Ahoy Captain!<br>Please rotate your device to play. \
+                                <br> You can also span the window to play.');
+    }
+
+    this._fullscreenRotate.show();
+
     this._welcomeMenu.close();
 
     this._enemyGrid.classList.remove('blocked');
@@ -113,6 +121,7 @@ export class MainApplication extends LitElement {
     this._playerGrid.style.visibility = 'visible';
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
+    this._playing = true;
   }
 
   restartGame() {
@@ -140,8 +149,7 @@ export class MainApplication extends LitElement {
   }
 
   closeHowTo() {
-    this._welcomeMenu.open();
-
+    if (this._round > 0) this._endGameMenu.open();else this._welcomeMenu.open();
     this._howTo.style.visibility = 'hidden';
   }
 
@@ -181,6 +189,10 @@ export class MainApplication extends LitElement {
   }
 
   playerWin() {
+    this._playing = false;
+
+    this._fullscreenRotate.hide();
+
     this._enemyGrid.classList.add('blocked');
 
     this._endGameTitle.innerHTML = 'You won!';
@@ -192,6 +204,10 @@ export class MainApplication extends LitElement {
   }
 
   playerLost() {
+    this._playing = false;
+
+    this._fullscreenRotate.hide();
+
     this._enemyGrid.classList.add('blocked');
 
     this._endGameTitle.innerHTML = 'You won!';
@@ -277,11 +293,7 @@ export class MainApplication extends LitElement {
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
       <how-to-screen id="how-to" @howto-closed="${this.closeHowTo}"></how-to-screen>
-      <div id="fullscreen-rotate">
-        <info-box id="rotate-infobox">
-          <div slot="label" id="rotate-message">Ahoy Captain!<br>Please rotate your device to play.</div>
-        </info-box>
-      </div>
+      <rotate-box id="fullscreen-rotate"></rotate-box>
     `;
   }
 
@@ -356,26 +368,6 @@ _defineProperty(MainApplication, "styles", css`
       --mdc-snackbar-action-color: #2d89ef;
     }
 
-    #fullscreen-rotate {
-      width: 100%;
-      height: 100%;
-      z-index: 99;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    #rotate-infobox {
-      width: 90%;
-      height: 90%;
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      font-size: 2vmax;
-      opacity: 1;
-      text-align: center;
-    }
-
     #infobox {
       visibility: hidden;
     }
@@ -391,10 +383,6 @@ _defineProperty(MainApplication, "styles", css`
     }
 
     @media all and (orientation:portrait) {
-      #fullscreen-rotate {
-        display: block;
-      }
-
       .fold {
         visibility: hidden;
       }
@@ -413,10 +401,6 @@ _defineProperty(MainApplication, "styles", css`
     }
 
     @media all and (orientation:landscape) {
-      #fullscreen-rotate {
-        display: none;
-      }
-
       .background {
         z-index: 0;
       }
@@ -426,6 +410,7 @@ _defineProperty(MainApplication, "styles", css`
       .fold {
         height: env(fold-height);
         width: env(fold-width);
+        visibility: visible;
       }
 
       .content {
@@ -440,10 +425,6 @@ _defineProperty(MainApplication, "styles", css`
       .fleet {
         height: 100%;
         width: calc(100vw - env(fold-left) - env(fold-width));
-      }
-
-      #fullscreen-rotate {
-        display: none;
       }
 
       .background {
@@ -465,7 +446,6 @@ _defineProperty(MainApplication, "styles", css`
       .enemy-fleet {
         height: var(--zenbook-span2-height, env(fold-top));
         width: 100%;
-        visibility: visible;
         flex-grow: 0;
         flex-shrink: 0;
       }
@@ -473,19 +453,10 @@ _defineProperty(MainApplication, "styles", css`
       .fleet {
         width: 100%;
         height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
-        visibility: visible;
-      }
-
-      #fullscreen-rotate {
-        display: none;
       }
 
       .background {
         z-index: 0;
-      }
-
-      #infobox {
-        visibility: visible;
       }
     }
 
@@ -505,12 +476,8 @@ _defineProperty(MainApplication, "styles", css`
     }
 
     @media (screen-spanning: none) and (orientation:portrait) {
-      #fullscreen-rotate {
-        display: block;
-      }
-
       .background {
-        z-index: 5;
+        z-index: 4;
       }
 
       .enemy-fleet {
