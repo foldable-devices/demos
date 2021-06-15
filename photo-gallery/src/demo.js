@@ -1,5 +1,5 @@
-import { LitElement, html, css as litCSS } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { LitElement, html, css as litCSS } from 'lit';
+import {classMap} from 'lit/directives/class-map.js';
 import '@material/mwc-button';
 import '@material/mwc-checkbox';
 import '@material/mwc-drawer';
