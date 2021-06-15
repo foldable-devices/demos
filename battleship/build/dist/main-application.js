@@ -1,19 +1,19 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
-import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
-import '../web_modules/@material/mwc-button.js';
-import '../web_modules/@material/mwc-icon-button.js';
-import '../web_modules/@material/mwc-snackbar.js';
+import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
+import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
+import '../_snowpack/pkg/@material/mwc-button.js';
+import '../_snowpack/pkg/@material/mwc-icon-button.js';
+import '../_snowpack/pkg/@material/mwc-snackbar.js';
 import "./player-grid.js";
 import "./enemy-grid.js";
 import "./howto.js";
 import "./infoxbox.js";
 import "./dialogbox.js";
 import "./rotatebox.js";
-import '../web_modules/@material/mwc-snackbar.js';
-import '../web_modules/foldable-device-configurator.js';
-import { Workbox, messageSW } from '../web_modules/workbox-window.js';
+import '../_snowpack/pkg/@material/mwc-snackbar.js';
+import '../_snowpack/pkg/foldable-device-configurator.js';
+import { Workbox, messageSW } from '../_snowpack/pkg/workbox-window.js';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");

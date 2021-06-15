@@ -1,4 +1,4 @@
-import { LitElement, css, html } from 'lit-element';
+import { LitElement, css, html } from 'lit';
 import * as Ship from './ship.js';
 
 export class EmptyCell extends LitElement {

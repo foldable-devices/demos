@@ -1,4 +1,4 @@
-import { html, css } from 'lit-element';
+import { html, css } from 'lit';
 import * as Ship from './ship.js';
 
 export class EnemyShip extends Ship.Ship {

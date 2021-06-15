@@ -6,7 +6,7 @@ function _superPropBase(object, property) { while (!Object.prototype.hasOwnPrope
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-import { html, css } from '../web_modules/lit-element.js';
+import { html, css } from '../_snowpack/pkg/lit.js';
 import { GameGrid } from './game-grid.js';
 import * as Ship from './ship.js';
 export const GridDirection = {

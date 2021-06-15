@@ -1,6 +1,6 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, html, css } from '../web_modules/lit-element.js';
+import { LitElement, html, css } from '../_snowpack/pkg/lit.js';
 export const Orientation = {
   Horizontal: 'horizontal',
   Vertical: 'vertical'
@@ -75,7 +75,7 @@ export class Ship extends LitElement {
     this._type = type;
     this.requestUpdate('type', oldType);
     this.size = getShipSize(this._type);
-    this.shadowRoot.host.style.setProperty('--size', this._size);
+    if (this.shadowRoot) this.shadowRoot.host.style.setProperty('--size', this._size);
   }
 
   get type() {
@@ -106,6 +106,7 @@ export class Ship extends LitElement {
     let oldOrientation = this._orientation;
     this._orientation = orientation;
     this.requestUpdate('orientation', oldOrientation);
+    if (!this.shadowRoot) return;
 
     if (orientation == Orientation.Horizontal) {
       this.shadowRoot.host.classList.add('horizontal');
@@ -125,7 +126,7 @@ export class Ship extends LitElement {
     this._x = x;
     this.requestUpdate('x', oldX); // +1 because grid do not start at 0.
 
-    this.shadowRoot.host.style.setProperty('--x', this.x + 1);
+    if (this.shadowRoot) this.shadowRoot.host.style.setProperty('--x', this.x + 1);
   }
 
   get x() {
@@ -137,7 +138,7 @@ export class Ship extends LitElement {
     this._y = y;
     this.requestUpdate('y', oldY); // +1 because grid do not start at 0.
 
-    this.shadowRoot.host.style.setProperty('--y', y + 1);
+    if (this.shadowRoot) this.shadowRoot.host.style.setProperty('--y', y + 1);
   }
 
   get y() {
@@ -148,7 +149,7 @@ export class Ship extends LitElement {
     let oldSize = this._size;
     this._size = size;
     this.requestUpdate('size', oldSize);
-    this.shadowRoot.host.style.setProperty('--size', this._size);
+    if (this.shadowRoot) this.shadowRoot.host.style.setProperty('--size', this._size);
   }
 
   get size() {
@@ -158,6 +159,9 @@ export class Ship extends LitElement {
   firstUpdated() {
     this._image = this.shadowRoot.querySelector('#image');
     this.size = getShipSize(this._type);
+    this.y = this._y;
+    this.x = this._x;
+    this.orientation = this._orientation;
   }
 
   constructor() {
@@ -178,7 +182,7 @@ export class Ship extends LitElement {
     Array.from({
       length: this.size
     }).map((_, pos) => {
-      const hitArea = this.shadowRoot.querySelector('#hit-' + pos);
+      const hitArea = this.renderRoot.querySelector('#hit-' + pos);
       hitArea.classList.remove('hit');
     });
     this.hitCount = 0;
@@ -194,7 +198,7 @@ export class Ship extends LitElement {
       hitZoneId = x - this.x;
     }
 
-    const hitArea = this.shadowRoot.querySelector('#hit-' + hitZoneId);
+    const hitArea = this.renderRoot.querySelector('#hit-' + hitZoneId);
     hitArea.classList.add('hit');
     this.hitCount++;
     if (this.hitCount === this.size) this.shipDestroyed();else this.shipHit();

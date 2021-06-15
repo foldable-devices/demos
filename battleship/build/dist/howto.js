@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, html, css as litCSS } from '../web_modules/lit-element.js';
-import { adjustCSS, observe } from "../web_modules/spanning-css-polyfill.js";
+import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
+import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "how-to-screen");

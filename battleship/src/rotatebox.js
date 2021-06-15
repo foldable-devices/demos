@@ -1,4 +1,4 @@
-import { LitElement, html, css as litCSS } from 'lit-element';
+import { LitElement, html, css as litCSS } from 'lit';
 import { adjustCSS, observe } from "spanning-css-polyfill";
 
 import "./infoxbox.js";
