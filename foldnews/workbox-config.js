@@ -2,12 +2,12 @@ module.exports = {
   "globDirectory": "build",
   "inlineWorkboxRuntime": "true",
   "globPatterns": [
-    "**/*.{ico,html,css}",
+    "**/*.{ico,html,css,js}",
     "images/manifest/icon-512x512.png",
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
-    "web_modules/import-map.json",
+    "_snowpack/pkg/import-map.json",
     "dist/*.js"
   ],
   "swDest": "build/sw.js",
@@ -29,5 +29,19 @@ module.exports = {
         maxEntries: 15,
       },
     },
+  },
+  {
+    urlPattern: /^https:\/\/fonts\.googleapis\.com/,
+    handler: 'StaleWhileRevalidate',
+    options: {
+      cacheName: 'google-fonts-stylesheets'
+    }
+  },
+  {
+    urlPattern: /^https:\/\/fonts\.gstatic\.com/,
+    handler: 'StaleWhileRevalidate',
+    options: {
+      cacheName: 'google-fonts-stylesheets'
+    }
   }],
 };
