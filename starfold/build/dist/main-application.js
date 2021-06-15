@@ -1,12 +1,12 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, html, css } from '../web_modules/lit-element.js';
-import { FoldablesFeature } from '../web_modules/windowsegments-polyfill.js';
-import '../web_modules/@material/mwc-button.js';
-import '../web_modules/@material/mwc-icon-button.js';
-import '../web_modules/@material/mwc-snackbar.js';
-import { Workbox, messageSW } from '../web_modules/workbox-window.js';
-import '../web_modules/foldable-device-configurator.js';
+import { LitElement, html, css } from '../_snowpack/pkg/lit.js';
+import { FoldablesFeature } from '../_snowpack/pkg/windowsegments-polyfill.js';
+import '../_snowpack/pkg/@material/mwc-button.js';
+import '../_snowpack/pkg/@material/mwc-icon-button.js';
+import '../_snowpack/pkg/@material/mwc-snackbar.js';
+import { Workbox, messageSW } from '../_snowpack/pkg/workbox-window.js';
+import '../_snowpack/pkg/foldable-device-configurator.js';
 import "./menu.js";
 export class MainApplication extends LitElement {
   static get properties() {

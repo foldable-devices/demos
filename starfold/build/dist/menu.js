@@ -1,6 +1,6 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-import { LitElement, html, css } from '../web_modules/lit-element.js';
+import { LitElement, html, css } from '../_snowpack/pkg/lit.js';
 export class Menu extends LitElement {
   firstUpdated() {}
 

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { FoldablesFeature } from 'windowsegments-polyfill';
 import '@material/mwc-button';
 import '@material/mwc-icon-button';
