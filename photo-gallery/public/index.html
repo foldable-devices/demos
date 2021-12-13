@@ -32,7 +32,7 @@
   </head>
   <body>
     <script>
-      // Workaround because Material Web Components have issue with when they're included from multiple sources
+      // Workaround because Material Web Components have issues when they're included from multiple sources
       // in this case (foldable-configurator and this demo)
       const define = window.customElements.define.bind(window.customElements)
       customElements.define = (name, constructor, options) => {
