@@ -11,7 +11,13 @@ export default {
       'lit-element',
       'lit-html',
       'lit',
-      'spanning-css-polyfill']
+      '@material/mwc-ripple',
+      '@material/mwc-button',
+      '@material/mwc-checkbox',
+      '@material/mwc-drawer',
+      '@material/mwc-icon-button',
+      '@material/mwc-snackbar',
+      'viewportsegments-css-polyfill']
     }
   },
 };

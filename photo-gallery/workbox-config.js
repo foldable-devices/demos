@@ -1,6 +1,6 @@
 module.exports = {
   "globDirectory": "build",
-  "inlineWorkboxRuntime": "true",
+  "inlineWorkboxRuntime": true,
   "globPatterns": [
     "**/*.{ico,html,css,js}",
     "images/manifest/icon-512x512.png",

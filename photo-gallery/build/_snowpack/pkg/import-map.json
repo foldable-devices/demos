@@ -8,7 +8,7 @@
     "foldable-device-configurator": "./foldable-device-configurator.js",
     "lit": "./lit.js",
     "lit/directives/class-map.js": "./lit/directives/class-map.js",
-    "spanning-css-polyfill": "./spanning-css-polyfill.js",
+    "viewportsegments-css-polyfill": "./viewportsegments-css-polyfill.js",
     "workbox-window": "./workbox-window.js"
   }
 }

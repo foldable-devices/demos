@@ -6,7 +6,7 @@ import '@material/mwc-drawer';
 import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
 import 'foldable-device-configurator';
-import { adjustCSS, observe } from "spanning-css-polyfill";
+import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 import { Workbox, messageSW} from 'workbox-window';
 
 const css = (strings, ...values) => {
@@ -383,15 +383,15 @@ export class MainApplication extends LitElement {
       margin-left: 12px;
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       .gallery {
-        width: env(fold-left);
+        width: env(viewport-segment-right 0 0);
         height: 100vh;
       }
 
       .fold {
-        height: env(fold-height);
-        width: env(fold-width);
+        height: env(viewport-segment-height 0 0);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
       }
 
       .content {
@@ -400,19 +400,19 @@ export class MainApplication extends LitElement {
 
       .detail-container {
         height: 100vh;
-        width: calc(100vw - env(fold-left) - env(fold-width));
+        width: env(viewport-segment-width 1 0);
       }
     }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       .gallery {
         width: 100vw;
-        height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
+        height: var(--zenbook-span1-height, env(viewport-segment-top 0 1));
       }
 
       .fold {
-        height: env(fold-height);
-        width: env(fold-width);
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
+        width: env(viewport-segment-width 0 0);
       }
 
       .content {
@@ -420,12 +420,12 @@ export class MainApplication extends LitElement {
       }
 
       .detail-container {
-        height: var(--zenbook-span2-height, env(fold-top));
+        height: var(--zenbook-span2-height, env(viewport-segment-height 0 0));
         width: 100vw;
       }
     }
 
-    @media (screen-spanning: none) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .gallery {
         width: 100vw;
         height: 100vh;
@@ -648,6 +648,7 @@ export class MainApplication extends LitElement {
     ];
 
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <mwc-drawer type="modal" hasHeader id="drawer">
         <span slot="title">Configuration</span>
         <div class="drawer">

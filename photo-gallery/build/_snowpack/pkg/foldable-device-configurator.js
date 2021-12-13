@@ -14,16 +14,18 @@ function e(e, t, i) {
 
 
 const t = window.ShadowRoot && (void 0 === window.ShadyCSS || window.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype,
-      i = Symbol();
+      i = Symbol(),
+      r = new Map();
 
 class s {
   constructor(e, t) {
-    if (t !== i) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    if (this._$cssResult$ = !0, t !== i) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
     this.cssText = e;
   }
 
   get styleSheet() {
-    return t && void 0 === this.t && (this.t = new CSSStyleSheet(), this.t.replaceSync(this.cssText)), this.t;
+    let e = r.get(this.cssText);
+    return t && void 0 === e && (r.set(this.cssText, e = new CSSStyleSheet()), e.replaceSync(this.cssText)), e;
   }
 
   toString() {
@@ -32,25 +34,12 @@ class s {
 
 }
 
-const n = new Map(),
-      r = e => {
-  let t = n.get(e);
-  return void 0 === t && n.set(e, t = new s(e, i)), t;
-},
-      o = (e, ...t) => {
-  const i = 1 === e.length ? e[0] : t.reduce((t, i, n) => t + (e => {
-    if (e instanceof s) return e.cssText;
-    if ("number" == typeof e) return e;
-    throw Error("Value passed to 'css' function must be a 'css' function result: " + e + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
-  })(i) + e[n + 1], e[0]);
-  return r(i);
-},
-      a = t ? e => e : e => e instanceof CSSStyleSheet ? (e => {
+const n = t ? e => e : e => e instanceof CSSStyleSheet ? (e => {
   let t = "";
 
   for (const i of e.cssRules) t += i.cssText;
 
-  return (e => r("string" == typeof e ? e : e + ""))(t);
+  return (e => new s("string" == typeof e ? e : e + "", i))(t);
 })(e) : e
 /**
  * @license
@@ -58,14 +47,16 @@ const n = new Map(),
  * SPDX-License-Identifier: BSD-3-Clause
  */
 ;
+var o;
 
-var d, l, c, h;
-
-const u = {
+const a = window.trustedTypes,
+      d = a ? a.emptyScript : "",
+      c = window.reactiveElementPolyfillSupport,
+      l = {
   toAttribute(e, t) {
     switch (t) {
       case Boolean:
-        e = e ? "" : null;
+        e = e ? d : null;
         break;
 
       case Object:
@@ -102,39 +93,40 @@ const u = {
   }
 
 },
-      p = (e, t) => t !== e && (t == t || e == e),
-      m = {
+      h = (e, t) => t !== e && (t == t || e == e),
+      p = {
   attribute: !0,
   type: String,
-  converter: u,
+  converter: l,
   reflect: !1,
-  hasChanged: p
+  hasChanged: h
 };
 
-class f extends HTMLElement {
+class u extends HTMLElement {
   constructor() {
-    super(), this.Πi = new Map(), this.Πo = void 0, this.Πl = void 0, this.isUpdatePending = !1, this.hasUpdated = !1, this.Πh = null, this.u();
+    super(), this._$Et = new Map(), this.isUpdatePending = !1, this.hasUpdated = !1, this._$Ei = null, this.o();
   }
 
   static addInitializer(e) {
     var t;
-    null !== (t = this.v) && void 0 !== t || (this.v = []), this.v.push(e);
+    null !== (t = this.l) && void 0 !== t || (this.l = []), this.l.push(e);
   }
 
   static get observedAttributes() {
     this.finalize();
     const e = [];
     return this.elementProperties.forEach((t, i) => {
-      const s = this.Πp(i, t);
-      void 0 !== s && (this.Πm.set(s, i), e.push(s));
+      const r = this._$Eh(i, t);
+
+      void 0 !== r && (this._$Eu.set(r, i), e.push(r));
     }), e;
   }
 
-  static createProperty(e, t = m) {
+  static createProperty(e, t = p) {
     if (t.state && (t.attribute = !1), this.finalize(), this.elementProperties.set(e, t), !t.noAccessor && !this.prototype.hasOwnProperty(e)) {
       const i = "symbol" == typeof e ? Symbol() : "__" + e,
-            s = this.getPropertyDescriptor(e, i, t);
-      void 0 !== s && Object.defineProperty(this.prototype, e, s);
+            r = this.getPropertyDescriptor(e, i, t);
+      void 0 !== r && Object.defineProperty(this.prototype, e, r);
     }
   }
 
@@ -144,9 +136,9 @@ class f extends HTMLElement {
         return this[t];
       },
 
-      set(s) {
-        const n = this[e];
-        this[t] = s, this.requestUpdate(e, n, i);
+      set(r) {
+        const s = this[e];
+        this[t] = r, this.requestUpdate(e, s, i);
       },
 
       configurable: !0,
@@ -155,7 +147,7 @@ class f extends HTMLElement {
   }
 
   static getPropertyOptions(e) {
-    return this.elementProperties.get(e) || m;
+    return this.elementProperties.get(e) || p;
   }
 
   static finalize() {
@@ -163,7 +155,7 @@ class f extends HTMLElement {
     this.finalized = !0;
     const e = Object.getPrototypeOf(this);
 
-    if (e.finalize(), this.elementProperties = new Map(e.elementProperties), this.Πm = new Map(), this.hasOwnProperty("properties")) {
+    if (e.finalize(), this.elementProperties = new Map(e.elementProperties), this._$Eu = new Map(), this.hasOwnProperty("properties")) {
       const e = this.properties,
             t = [...Object.getOwnPropertyNames(e), ...Object.getOwnPropertySymbols(e)];
 
@@ -179,35 +171,35 @@ class f extends HTMLElement {
     if (Array.isArray(e)) {
       const i = new Set(e.flat(1 / 0).reverse());
 
-      for (const e of i) t.unshift(a(e));
-    } else void 0 !== e && t.push(a(e));
+      for (const e of i) t.unshift(n(e));
+    } else void 0 !== e && t.push(n(e));
 
     return t;
   }
 
-  static "Πp"(e, t) {
+  static _$Eh(e, t) {
     const i = t.attribute;
     return !1 === i ? void 0 : "string" == typeof i ? i : "string" == typeof e ? e.toLowerCase() : void 0;
   }
 
-  u() {
+  o() {
     var e;
-    this.Πg = new Promise(e => this.enableUpdating = e), this.L = new Map(), this.Π_(), this.requestUpdate(), null === (e = this.constructor.v) || void 0 === e || e.forEach(e => e(this));
+    this._$Ep = new Promise(e => this.enableUpdating = e), this._$AL = new Map(), this._$Em(), this.requestUpdate(), null === (e = this.constructor.l) || void 0 === e || e.forEach(e => e(this));
   }
 
   addController(e) {
     var t, i;
-    (null !== (t = this.ΠU) && void 0 !== t ? t : this.ΠU = []).push(e), void 0 !== this.renderRoot && this.isConnected && (null === (i = e.hostConnected) || void 0 === i || i.call(e));
+    (null !== (t = this._$Eg) && void 0 !== t ? t : this._$Eg = []).push(e), void 0 !== this.renderRoot && this.isConnected && (null === (i = e.hostConnected) || void 0 === i || i.call(e));
   }
 
   removeController(e) {
     var t;
-    null === (t = this.ΠU) || void 0 === t || t.splice(this.ΠU.indexOf(e) >>> 0, 1);
+    null === (t = this._$Eg) || void 0 === t || t.splice(this._$Eg.indexOf(e) >>> 0, 1);
   }
 
-  "Π_"() {
+  _$Em() {
     this.constructor.elementProperties.forEach((e, t) => {
-      this.hasOwnProperty(t) && (this.Πi.set(t, this[t]), delete this[t]);
+      this.hasOwnProperty(t) && (this._$Et.set(t, this[t]), delete this[t]);
     });
   }
 
@@ -216,106 +208,113 @@ class f extends HTMLElement {
     const i = null !== (e = this.shadowRoot) && void 0 !== e ? e : this.attachShadow(this.constructor.shadowRootOptions);
     return ((e, i) => {
       t ? e.adoptedStyleSheets = i.map(e => e instanceof CSSStyleSheet ? e : e.styleSheet) : i.forEach(t => {
-        const i = document.createElement("style");
-        i.textContent = t.cssText, e.appendChild(i);
+        const i = document.createElement("style"),
+              r = window.litNonce;
+        void 0 !== r && i.setAttribute("nonce", r), i.textContent = t.cssText, e.appendChild(i);
       });
     })(i, this.constructor.elementStyles), i;
   }
 
   connectedCallback() {
     var e;
-    void 0 === this.renderRoot && (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), null === (e = this.ΠU) || void 0 === e || e.forEach(e => {
+    void 0 === this.renderRoot && (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), null === (e = this._$Eg) || void 0 === e || e.forEach(e => {
       var t;
       return null === (t = e.hostConnected) || void 0 === t ? void 0 : t.call(e);
-    }), this.Πl && (this.Πl(), this.Πo = this.Πl = void 0);
+    });
   }
 
   enableUpdating(e) {}
 
   disconnectedCallback() {
     var e;
-    null === (e = this.ΠU) || void 0 === e || e.forEach(e => {
+    null === (e = this._$Eg) || void 0 === e || e.forEach(e => {
       var t;
       return null === (t = e.hostDisconnected) || void 0 === t ? void 0 : t.call(e);
-    }), this.Πo = new Promise(e => this.Πl = e);
+    });
   }
 
   attributeChangedCallback(e, t, i) {
-    this.K(e, i);
+    this._$AK(e, i);
   }
 
-  "Πj"(e, t, i = m) {
-    var s, n;
-    const r = this.constructor.Πp(e, i);
+  _$ES(e, t, i = p) {
+    var r, s;
 
-    if (void 0 !== r && !0 === i.reflect) {
-      const o = (null !== (n = null === (s = i.converter) || void 0 === s ? void 0 : s.toAttribute) && void 0 !== n ? n : u.toAttribute)(t, i.type);
-      this.Πh = e, null == o ? this.removeAttribute(r) : this.setAttribute(r, o), this.Πh = null;
+    const n = this.constructor._$Eh(e, i);
+
+    if (void 0 !== n && !0 === i.reflect) {
+      const o = (null !== (s = null === (r = i.converter) || void 0 === r ? void 0 : r.toAttribute) && void 0 !== s ? s : l.toAttribute)(t, i.type);
+      this._$Ei = e, null == o ? this.removeAttribute(n) : this.setAttribute(n, o), this._$Ei = null;
     }
   }
 
-  K(e, t) {
-    var i, s, n;
-    const r = this.constructor,
-          o = r.Πm.get(e);
+  _$AK(e, t) {
+    var i, r, s;
 
-    if (void 0 !== o && this.Πh !== o) {
-      const e = r.getPropertyOptions(o),
+    const n = this.constructor,
+          o = n._$Eu.get(e);
+
+    if (void 0 !== o && this._$Ei !== o) {
+      const e = n.getPropertyOptions(o),
             a = e.converter,
-            d = null !== (n = null !== (s = null === (i = a) || void 0 === i ? void 0 : i.fromAttribute) && void 0 !== s ? s : "function" == typeof a ? a : null) && void 0 !== n ? n : u.fromAttribute;
-      this.Πh = o, this[o] = d(t, e.type), this.Πh = null;
+            d = null !== (s = null !== (r = null === (i = a) || void 0 === i ? void 0 : i.fromAttribute) && void 0 !== r ? r : "function" == typeof a ? a : null) && void 0 !== s ? s : l.fromAttribute;
+      this._$Ei = o, this[o] = d(t, e.type), this._$Ei = null;
     }
   }
 
   requestUpdate(e, t, i) {
-    let s = !0;
-    void 0 !== e && (((i = i || this.constructor.getPropertyOptions(e)).hasChanged || p)(this[e], t) ? (this.L.has(e) || this.L.set(e, t), !0 === i.reflect && this.Πh !== e && (void 0 === this.Πk && (this.Πk = new Map()), this.Πk.set(e, i))) : s = !1), !this.isUpdatePending && s && (this.Πg = this.Πq());
+    let r = !0;
+    void 0 !== e && (((i = i || this.constructor.getPropertyOptions(e)).hasChanged || h)(this[e], t) ? (this._$AL.has(e) || this._$AL.set(e, t), !0 === i.reflect && this._$Ei !== e && (void 0 === this._$E_ && (this._$E_ = new Map()), this._$E_.set(e, i))) : r = !1), !this.isUpdatePending && r && (this._$Ep = this._$EC());
   }
 
-  async "Πq"() {
+  async _$EC() {
     this.isUpdatePending = !0;
 
     try {
-      for (await this.Πg; this.Πo;) await this.Πo;
+      await this._$Ep;
     } catch (e) {
       Promise.reject(e);
     }
 
-    const e = this.performUpdate();
+    const e = this.scheduleUpdate();
     return null != e && (await e), !this.isUpdatePending;
+  }
+
+  scheduleUpdate() {
+    return this.performUpdate();
   }
 
   performUpdate() {
     var e;
     if (!this.isUpdatePending) return;
-    this.hasUpdated, this.Πi && (this.Πi.forEach((e, t) => this[t] = e), this.Πi = void 0);
+    this.hasUpdated, this._$Et && (this._$Et.forEach((e, t) => this[t] = e), this._$Et = void 0);
     let t = !1;
-    const i = this.L;
+    const i = this._$AL;
 
     try {
-      t = this.shouldUpdate(i), t ? (this.willUpdate(i), null === (e = this.ΠU) || void 0 === e || e.forEach(e => {
+      t = this.shouldUpdate(i), t ? (this.willUpdate(i), null === (e = this._$Eg) || void 0 === e || e.forEach(e => {
         var t;
         return null === (t = e.hostUpdate) || void 0 === t ? void 0 : t.call(e);
-      }), this.update(i)) : this.Π$();
+      }), this.update(i)) : this._$EU();
     } catch (e) {
-      throw t = !1, this.Π$(), e;
+      throw t = !1, this._$EU(), e;
     }
 
-    t && this.E(i);
+    t && this._$AE(i);
   }
 
   willUpdate(e) {}
 
-  E(e) {
+  _$AE(e) {
     var t;
-    null === (t = this.ΠU) || void 0 === t || t.forEach(e => {
+    null === (t = this._$Eg) || void 0 === t || t.forEach(e => {
       var t;
       return null === (t = e.hostUpdated) || void 0 === t ? void 0 : t.call(e);
     }), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(e)), this.updated(e);
   }
 
-  "Π$"() {
-    this.L = new Map(), this.isUpdatePending = !1;
+  _$EU() {
+    this._$AL = new Map(), this.isUpdatePending = !1;
   }
 
   get updateComplete() {
@@ -323,7 +322,7 @@ class f extends HTMLElement {
   }
 
   getUpdateComplete() {
-    return this.Πg;
+    return this._$Ep;
   }
 
   shouldUpdate(e) {
@@ -331,7 +330,7 @@ class f extends HTMLElement {
   }
 
   update(e) {
-    void 0 !== this.Πk && (this.Πk.forEach((e, t) => this.Πj(t, this[t], e)), this.Πk = void 0), this.Π$();
+    void 0 !== this._$E_ && (this._$E_.forEach((e, t) => this._$ES(t, this[t], e)), this._$E_ = void 0), this._$EU();
   }
 
   updated(e) {}
@@ -346,358 +345,726 @@ class f extends HTMLElement {
  */
 
 
-var v, _, g, y;
-
-f.finalized = !0, f.elementProperties = new Map(), f.elementStyles = [], f.shadowRootOptions = {
+var m;
+u.finalized = !0, u.elementProperties = new Map(), u.elementStyles = [], u.shadowRootOptions = {
   mode: "open"
-}, null === (l = (d = globalThis).reactiveElementPlatformSupport) || void 0 === l || l.call(d, {
-  ReactiveElement: f
-}), (null !== (c = (h = globalThis).reactiveElementVersions) && void 0 !== c ? c : h.reactiveElementVersions = []).push("1.0.0-rc.2");
+}, null == c || c({
+  ReactiveElement: u
+}), (null !== (o = globalThis.reactiveElementVersions) && void 0 !== o ? o : globalThis.reactiveElementVersions = []).push("1.0.2");
 
-const w = globalThis.trustedTypes,
-      b = w ? w.createPolicy("lit-html", {
+const v = globalThis.trustedTypes,
+      f = v ? v.createPolicy("lit-html", {
   createHTML: e => e
 }) : void 0,
-      S = `lit$${(Math.random() + "").slice(9)}$`,
-      x = "?" + S,
-      C = `<${x}>`,
-      k = document,
-      E = (e = "") => k.createComment(e),
-      P = e => null === e || "object" != typeof e && "function" != typeof e,
-      A = Array.isArray,
-      T = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,
-      R = /-->/g,
-      I = />/g,
-      N = />|[ 	\n\r](?:([^\s"'>=/]+)([ 	\n\r]*=[ 	\n\r]*(?:[^ 	\n\r"'`<>=]|("|')|))|$)/g,
-      z = /'/g,
-      M = /"/g,
-      H = /^(?:script|style|textarea)$/i,
-      O = (e => (t, ...i) => ({
+      g = `lit$${(Math.random() + "").slice(9)}$`,
+      y = "?" + g,
+      b = `<${y}>`,
+      _ = document,
+      w = (e = "") => _.createComment(e),
+      S = e => null === e || "object" != typeof e && "function" != typeof e,
+      T = Array.isArray,
+      E = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,
+      A = /-->/g,
+      x = />/g,
+      R = />|[ 	\n\r](?:([^\s"'>=/]+)([ 	\n\r]*=[ 	\n\r]*(?:[^ 	\n\r"'`<>=]|("|')|))|$)/g,
+      C = /'/g,
+      k = /"/g,
+      $ = /^(?:script|style|textarea)$/i,
+      I = (e => (t, ...i) => ({
   _$litType$: e,
   strings: t,
   values: i
 }))(1),
-      F = Symbol.for("lit-noChange"),
-      V = Symbol.for("lit-nothing"),
-      U = new WeakMap(),
-      L = k.createTreeWalker(k, 129, null, !1);
+      P = Symbol.for("lit-noChange"),
+      D = Symbol.for("lit-nothing"),
+      z = new WeakMap(),
+      V = _.createTreeWalker(_, 129, null, !1);
 
-class D {
+class F {
   constructor({
     strings: e,
     _$litType$: t
   }, i) {
-    let s;
+    let r;
     this.parts = [];
-    let n = 0,
-        r = 0;
+    let s = 0,
+        n = 0;
 
     const o = e.length - 1,
           a = this.parts,
-          [d, l] = ((e, t) => {
+          [d, c] = ((e, t) => {
       const i = e.length - 1,
-            s = [];
-      let n,
-          r = 2 === t ? "<svg>" : "",
-          o = T;
+            r = [];
+      let s,
+          n = 2 === t ? "<svg>" : "",
+          o = E;
 
       for (let t = 0; t < i; t++) {
         const i = e[t];
         let a,
             d,
-            l = -1,
-            c = 0;
+            c = -1,
+            l = 0;
 
-        for (; c < i.length && (o.lastIndex = c, d = o.exec(i), null !== d);) c = o.lastIndex, o === T ? "!--" === d[1] ? o = R : void 0 !== d[1] ? o = I : void 0 !== d[2] ? (H.test(d[2]) && (n = RegExp("</" + d[2], "g")), o = N) : void 0 !== d[3] && (o = N) : o === N ? ">" === d[0] ? (o = null != n ? n : T, l = -1) : void 0 === d[1] ? l = -2 : (l = o.lastIndex - d[2].length, a = d[1], o = void 0 === d[3] ? N : '"' === d[3] ? M : z) : o === M || o === z ? o = N : o === R || o === I ? o = T : (o = N, n = void 0);
+        for (; l < i.length && (o.lastIndex = l, d = o.exec(i), null !== d);) l = o.lastIndex, o === E ? "!--" === d[1] ? o = A : void 0 !== d[1] ? o = x : void 0 !== d[2] ? ($.test(d[2]) && (s = RegExp("</" + d[2], "g")), o = R) : void 0 !== d[3] && (o = R) : o === R ? ">" === d[0] ? (o = null != s ? s : E, c = -1) : void 0 === d[1] ? c = -2 : (c = o.lastIndex - d[2].length, a = d[1], o = void 0 === d[3] ? R : '"' === d[3] ? k : C) : o === k || o === C ? o = R : o === A || o === x ? o = E : (o = R, s = void 0);
 
-        const h = o === N && e[t + 1].startsWith("/>") ? " " : "";
-        r += o === T ? i + C : l >= 0 ? (s.push(a), i.slice(0, l) + "$lit$" + i.slice(l) + S + h) : i + S + (-2 === l ? (s.push(void 0), t) : h);
+        const h = o === R && e[t + 1].startsWith("/>") ? " " : "";
+        n += o === E ? i + b : c >= 0 ? (r.push(a), i.slice(0, c) + "$lit$" + i.slice(c) + g + h) : i + g + (-2 === c ? (r.push(void 0), t) : h);
       }
 
-      const a = r + (e[i] || "<?>") + (2 === t ? "</svg>" : "");
-      return [void 0 !== b ? b.createHTML(a) : a, s];
+      const a = n + (e[i] || "<?>") + (2 === t ? "</svg>" : "");
+      return [void 0 !== f ? f.createHTML(a) : a, r];
     })(e, t);
 
-    if (this.el = D.createElement(d, i), L.currentNode = this.el.content, 2 === t) {
+    if (this.el = F.createElement(d, i), V.currentNode = this.el.content, 2 === t) {
       const e = this.el.content,
             t = e.firstChild;
       t.remove(), e.append(...t.childNodes);
     }
 
-    for (; null !== (s = L.nextNode()) && a.length < o;) {
-      if (1 === s.nodeType) {
-        if (s.hasAttributes()) {
+    for (; null !== (r = V.nextNode()) && a.length < o;) {
+      if (1 === r.nodeType) {
+        if (r.hasAttributes()) {
           const e = [];
 
-          for (const t of s.getAttributeNames()) if (t.endsWith("$lit$") || t.startsWith(S)) {
-            const i = l[r++];
+          for (const t of r.getAttributeNames()) if (t.endsWith("$lit$") || t.startsWith(g)) {
+            const i = c[n++];
 
             if (e.push(t), void 0 !== i) {
-              const e = s.getAttribute(i.toLowerCase() + "$lit$").split(S),
+              const e = r.getAttribute(i.toLowerCase() + "$lit$").split(g),
                     t = /([.?@])?(.*)/.exec(i);
               a.push({
                 type: 1,
-                index: n,
+                index: s,
                 name: t[2],
                 strings: e,
-                ctor: "." === t[1] ? q : "?" === t[1] ? K : "@" === t[1] ? X : W
+                ctor: "." === t[1] ? U : "?" === t[1] ? B : "@" === t[1] ? j : N
               });
             } else a.push({
               type: 6,
-              index: n
+              index: s
             });
           }
 
-          for (const t of e) s.removeAttribute(t);
+          for (const t of e) r.removeAttribute(t);
         }
 
-        if (H.test(s.tagName)) {
-          const e = s.textContent.split(S),
+        if ($.test(r.tagName)) {
+          const e = r.textContent.split(g),
                 t = e.length - 1;
 
           if (t > 0) {
-            s.textContent = w ? w.emptyScript : "";
+            r.textContent = v ? v.emptyScript : "";
 
-            for (let i = 0; i < t; i++) s.append(e[i], E()), L.nextNode(), a.push({
+            for (let i = 0; i < t; i++) r.append(e[i], w()), V.nextNode(), a.push({
               type: 2,
-              index: ++n
+              index: ++s
             });
 
-            s.append(e[t], E());
+            r.append(e[t], w());
           }
         }
-      } else if (8 === s.nodeType) if (s.data === x) a.push({
+      } else if (8 === r.nodeType) if (r.data === y) a.push({
         type: 2,
-        index: n
+        index: s
       });else {
         let e = -1;
 
-        for (; -1 !== (e = s.data.indexOf(S, e + 1));) a.push({
+        for (; -1 !== (e = r.data.indexOf(g, e + 1));) a.push({
           type: 7,
-          index: n
-        }), e += S.length - 1;
+          index: s
+        }), e += g.length - 1;
       }
 
-      n++;
+      s++;
     }
   }
 
   static createElement(e, t) {
-    const i = k.createElement("template");
+    const i = _.createElement("template");
+
     return i.innerHTML = e, i;
   }
 
 }
 
-function $(e, t, i = e, s) {
-  var n, r, o, a;
-  if (t === F) return t;
-  let d = void 0 !== s ? null === (n = i.Σi) || void 0 === n ? void 0 : n[s] : i.Σo;
-  const l = P(t) ? void 0 : t._$litDirective$;
-  return (null == d ? void 0 : d.constructor) !== l && (null === (r = null == d ? void 0 : d.O) || void 0 === r || r.call(d, !1), void 0 === l ? d = void 0 : (d = new l(e), d.T(e, i, s)), void 0 !== s ? (null !== (o = (a = i).Σi) && void 0 !== o ? o : a.Σi = [])[s] = d : i.Σo = d), void 0 !== d && (t = $(e, d.S(e, t.values), d, s)), t;
+function H(e, t, i = e, r) {
+  var s, n, o, a;
+  if (t === P) return t;
+  let d = void 0 !== r ? null === (s = i._$Cl) || void 0 === s ? void 0 : s[r] : i._$Cu;
+  const c = S(t) ? void 0 : t._$litDirective$;
+  return (null == d ? void 0 : d.constructor) !== c && (null === (n = null == d ? void 0 : d._$AO) || void 0 === n || n.call(d, !1), void 0 === c ? d = void 0 : (d = new c(e), d._$AT(e, i, r)), void 0 !== r ? (null !== (o = (a = i)._$Cl) && void 0 !== o ? o : a._$Cl = [])[r] = d : i._$Cu = d), void 0 !== d && (t = H(e, d._$AS(e, t.values), d, r)), t;
 }
 
-class j {
+class M {
   constructor(e, t) {
-    this.l = [], this.N = void 0, this.D = e, this.M = t;
+    this.v = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
   }
 
-  u(e) {
+  get parentNode() {
+    return this._$AM.parentNode;
+  }
+
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+
+  p(e) {
     var t;
     const {
       el: {
         content: i
       },
-      parts: s
-    } = this.D,
-          n = (null !== (t = null == e ? void 0 : e.creationScope) && void 0 !== t ? t : k).importNode(i, !0);
-    L.currentNode = n;
-    let r = L.nextNode(),
+      parts: r
+    } = this._$AD,
+          s = (null !== (t = null == e ? void 0 : e.creationScope) && void 0 !== t ? t : _).importNode(i, !0);
+    V.currentNode = s;
+    let n = V.nextNode(),
         o = 0,
         a = 0,
-        d = s[0];
+        d = r[0];
 
     for (; void 0 !== d;) {
       if (o === d.index) {
         let t;
-        2 === d.type ? t = new B(r, r.nextSibling, this, e) : 1 === d.type ? t = new d.ctor(r, d.name, d.strings, this, e) : 6 === d.type && (t = new J(r, this, e)), this.l.push(t), d = s[++a];
+        2 === d.type ? t = new L(n, n.nextSibling, this, e) : 1 === d.type ? t = new d.ctor(n, d.name, d.strings, this, e) : 6 === d.type && (t = new W(n, this, e)), this.v.push(t), d = r[++a];
       }
 
-      o !== (null == d ? void 0 : d.index) && (r = L.nextNode(), o++);
+      o !== (null == d ? void 0 : d.index) && (n = V.nextNode(), o++);
     }
 
-    return n;
+    return s;
   }
 
-  v(e) {
+  m(e) {
     let t = 0;
 
-    for (const i of this.l) void 0 !== i && (void 0 !== i.strings ? (i.I(e, i, t), t += i.strings.length - 2) : i.I(e[t])), t++;
+    for (const i of this.v) void 0 !== i && (void 0 !== i.strings ? (i._$AI(e, i, t), t += i.strings.length - 2) : i._$AI(e[t])), t++;
   }
 
 }
 
-class B {
-  constructor(e, t, i, s) {
-    this.type = 2, this.N = void 0, this.A = e, this.B = t, this.M = i, this.options = s;
+class L {
+  constructor(e, t, i, r) {
+    var s;
+    this.type = 2, this._$AH = D, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = i, this.options = r, this._$Cg = null === (s = null == r ? void 0 : r.isConnected) || void 0 === s || s;
   }
 
-  setConnected(e) {
-    var t;
-    null === (t = this.P) || void 0 === t || t.call(this, e);
+  get _$AU() {
+    var e, t;
+    return null !== (t = null === (e = this._$AM) || void 0 === e ? void 0 : e._$AU) && void 0 !== t ? t : this._$Cg;
   }
 
   get parentNode() {
-    return this.A.parentNode;
+    let e = this._$AA.parentNode;
+    const t = this._$AM;
+    return void 0 !== t && 11 === e.nodeType && (e = t.parentNode), e;
   }
 
   get startNode() {
-    return this.A;
+    return this._$AA;
   }
 
   get endNode() {
-    return this.B;
+    return this._$AB;
   }
 
-  I(e, t = this) {
-    e = $(this, e, t), P(e) ? e === V || null == e || "" === e ? (this.H !== V && this.R(), this.H = V) : e !== this.H && e !== F && this.m(e) : void 0 !== e._$litType$ ? this._(e) : void 0 !== e.nodeType ? this.$(e) : (e => {
+  _$AI(e, t = this) {
+    e = H(this, e, t), S(e) ? e === D || null == e || "" === e ? (this._$AH !== D && this._$AR(), this._$AH = D) : e !== this._$AH && e !== P && this.$(e) : void 0 !== e._$litType$ ? this.T(e) : void 0 !== e.nodeType ? this.S(e) : (e => {
       var t;
-      return A(e) || "function" == typeof (null === (t = e) || void 0 === t ? void 0 : t[Symbol.iterator]);
-    })(e) ? this.g(e) : this.m(e);
+      return T(e) || "function" == typeof (null === (t = e) || void 0 === t ? void 0 : t[Symbol.iterator]);
+    })(e) ? this.M(e) : this.$(e);
   }
 
-  k(e, t = this.B) {
-    return this.A.parentNode.insertBefore(e, t);
+  A(e, t = this._$AB) {
+    return this._$AA.parentNode.insertBefore(e, t);
+  }
+
+  S(e) {
+    this._$AH !== e && (this._$AR(), this._$AH = this.A(e));
   }
 
   $(e) {
-    this.H !== e && (this.R(), this.H = this.k(e));
+    this._$AH !== D && S(this._$AH) ? this._$AA.nextSibling.data = e : this.S(_.createTextNode(e)), this._$AH = e;
   }
 
-  m(e) {
-    const t = this.A.nextSibling;
-    null !== t && 3 === t.nodeType && (null === this.B ? null === t.nextSibling : t === this.B.previousSibling) ? t.data = e : this.$(k.createTextNode(e)), this.H = e;
-  }
-
-  _(e) {
+  T(e) {
     var t;
     const {
       values: i,
-      _$litType$: s
+      _$litType$: r
     } = e,
-          n = "number" == typeof s ? this.C(e) : (void 0 === s.el && (s.el = D.createElement(s.h, this.options)), s);
-    if ((null === (t = this.H) || void 0 === t ? void 0 : t.D) === n) this.H.v(i);else {
-      const e = new j(n, this),
-            t = e.u(this.options);
-      e.v(i), this.$(t), this.H = e;
+          s = "number" == typeof r ? this._$AC(e) : (void 0 === r.el && (r.el = F.createElement(r.h, this.options)), r);
+    if ((null === (t = this._$AH) || void 0 === t ? void 0 : t._$AD) === s) this._$AH.m(i);else {
+      const e = new M(s, this),
+            t = e.p(this.options);
+      e.m(i), this.S(t), this._$AH = e;
     }
   }
 
-  C(e) {
-    let t = U.get(e.strings);
-    return void 0 === t && U.set(e.strings, t = new D(e)), t;
+  _$AC(e) {
+    let t = z.get(e.strings);
+    return void 0 === t && z.set(e.strings, t = new F(e)), t;
   }
 
-  g(e) {
-    A(this.H) || (this.H = [], this.R());
-    const t = this.H;
+  M(e) {
+    T(this._$AH) || (this._$AH = [], this._$AR());
+    const t = this._$AH;
     let i,
-        s = 0;
+        r = 0;
 
-    for (const n of e) s === t.length ? t.push(i = new B(this.k(E()), this.k(E()), this, this.options)) : i = t[s], i.I(n), s++;
+    for (const s of e) r === t.length ? t.push(i = new L(this.A(w()), this.A(w()), this, this.options)) : i = t[r], i._$AI(s), r++;
 
-    s < t.length && (this.R(i && i.B.nextSibling, s), t.length = s);
+    r < t.length && (this._$AR(i && i._$AB.nextSibling, r), t.length = r);
   }
 
-  R(e = this.A.nextSibling, t) {
+  _$AR(e = this._$AA.nextSibling, t) {
     var i;
 
-    for (null === (i = this.P) || void 0 === i || i.call(this, !1, !0, t); e && e !== this.B;) {
+    for (null === (i = this._$AP) || void 0 === i || i.call(this, !1, !0, t); e && e !== this._$AB;) {
       const t = e.nextSibling;
       e.remove(), e = t;
     }
   }
 
+  setConnected(e) {
+    var t;
+    void 0 === this._$AM && (this._$Cg = e, null === (t = this._$AP) || void 0 === t || t.call(this, e));
+  }
+
 }
 
-class W {
-  constructor(e, t, i, s, n) {
-    this.type = 1, this.H = V, this.N = void 0, this.V = void 0, this.element = e, this.name = t, this.M = s, this.options = n, i.length > 2 || "" !== i[0] || "" !== i[1] ? (this.H = Array(i.length - 1).fill(V), this.strings = i) : this.H = V;
+class N {
+  constructor(e, t, i, r, s) {
+    this.type = 1, this._$AH = D, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = s, i.length > 2 || "" !== i[0] || "" !== i[1] ? (this._$AH = Array(i.length - 1).fill(new String()), this.strings = i) : this._$AH = D;
   }
 
   get tagName() {
     return this.element.tagName;
   }
 
-  I(e, t = this, i, s) {
-    const n = this.strings;
-    let r = !1;
-    if (void 0 === n) e = $(this, e, t, 0), r = !P(e) || e !== this.H && e !== F, r && (this.H = e);else {
-      const s = e;
-      let o, a;
-
-      for (e = n[0], o = 0; o < n.length - 1; o++) a = $(this, s[i + o], t, o), a === F && (a = this.H[o]), r || (r = !P(a) || a !== this.H[o]), a === V ? e = V : e !== V && (e += (null != a ? a : "") + n[o + 1]), this.H[o] = a;
-    }
-    r && !s && this.W(e);
+  get _$AU() {
+    return this._$AM._$AU;
   }
 
-  W(e) {
-    e === V ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, null != e ? e : "");
+  _$AI(e, t = this, i, r) {
+    const s = this.strings;
+    let n = !1;
+    if (void 0 === s) e = H(this, e, t, 0), n = !S(e) || e !== this._$AH && e !== P, n && (this._$AH = e);else {
+      const r = e;
+      let o, a;
+
+      for (e = s[0], o = 0; o < s.length - 1; o++) a = H(this, r[i + o], t, o), a === P && (a = this._$AH[o]), n || (n = !S(a) || a !== this._$AH[o]), a === D ? e = D : e !== D && (e += (null != a ? a : "") + s[o + 1]), this._$AH[o] = a;
+    }
+    n && !r && this.k(e);
+  }
+
+  k(e) {
+    e === D ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, null != e ? e : "");
   }
 
 }
 
-class q extends W {
+class U extends N {
   constructor() {
     super(...arguments), this.type = 3;
   }
 
-  W(e) {
-    this.element[this.name] = e === V ? void 0 : e;
+  k(e) {
+    this.element[this.name] = e === D ? void 0 : e;
   }
 
 }
 
-class K extends W {
+const O = v ? v.emptyScript : "";
+
+class B extends N {
   constructor() {
     super(...arguments), this.type = 4;
   }
 
-  W(e) {
-    e && e !== V ? this.element.setAttribute(this.name, "") : this.element.removeAttribute(this.name);
+  k(e) {
+    e && e !== D ? this.element.setAttribute(this.name, O) : this.element.removeAttribute(this.name);
   }
 
 }
 
-class X extends W {
-  constructor() {
-    super(...arguments), this.type = 5;
+class j extends N {
+  constructor(e, t, i, r, s) {
+    super(e, t, i, r, s), this.type = 5;
   }
 
-  I(e, t = this) {
+  _$AI(e, t = this) {
     var i;
-    if ((e = null !== (i = $(this, e, t, 0)) && void 0 !== i ? i : V) === F) return;
-    const s = this.H,
-          n = e === V && s !== V || e.capture !== s.capture || e.once !== s.once || e.passive !== s.passive,
-          r = e !== V && (s === V || n);
-    n && this.element.removeEventListener(this.name, this, s), r && this.element.addEventListener(this.name, this, e), this.H = e;
+    if ((e = null !== (i = H(this, e, t, 0)) && void 0 !== i ? i : D) === P) return;
+    const r = this._$AH,
+          s = e === D && r !== D || e.capture !== r.capture || e.once !== r.once || e.passive !== r.passive,
+          n = e !== D && (r === D || s);
+    s && this.element.removeEventListener(this.name, this, r), n && this.element.addEventListener(this.name, this, e), this._$AH = e;
   }
 
   handleEvent(e) {
     var t, i;
-    "function" == typeof this.H ? this.H.call(null !== (i = null === (t = this.options) || void 0 === t ? void 0 : t.host) && void 0 !== i ? i : this.element, e) : this.H.handleEvent(e);
+    "function" == typeof this._$AH ? this._$AH.call(null !== (i = null === (t = this.options) || void 0 === t ? void 0 : t.host) && void 0 !== i ? i : this.element, e) : this._$AH.handleEvent(e);
   }
 
 }
 
-class J {
+class W {
   constructor(e, t, i) {
-    this.element = e, this.type = 6, this.N = void 0, this.V = void 0, this.M = t, this.options = i;
+    this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = i;
   }
 
-  I(e) {
-    $(this, e);
+  get _$AU() {
+    return this._$AM._$AU;
   }
+
+  _$AI(e) {
+    H(this, e);
+  }
+
+}
+
+const q = window.litHtmlPolyfillSupport;
+null == q || q(F, L), (null !== (m = globalThis.litHtmlVersions) && void 0 !== m ? m : globalThis.litHtmlVersions = []).push("2.0.2");
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+const X = window.ShadowRoot && (void 0 === window.ShadyCSS || window.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype,
+      G = Symbol(),
+      K = new Map();
+
+class Y {
+  constructor(e, t) {
+    if (this._$cssResult$ = !0, t !== G) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    this.cssText = e;
+  }
+
+  get styleSheet() {
+    let e = K.get(this.cssText);
+    return X && void 0 === e && (K.set(this.cssText, e = new CSSStyleSheet()), e.replaceSync(this.cssText)), e;
+  }
+
+  toString() {
+    return this.cssText;
+  }
+
+}
+
+const Z = (e, ...t) => {
+  const i = 1 === e.length ? e[0] : t.reduce((t, i, r) => t + (e => {
+    if (!0 === e._$cssResult$) return e.cssText;
+    if ("number" == typeof e) return e;
+    throw Error("Value passed to 'css' function must be a 'css' function result: " + e + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
+  })(i) + e[r + 1], e[0]);
+  return new Y(i, G);
+},
+      J = X ? e => e : e => e instanceof CSSStyleSheet ? (e => {
+  let t = "";
+
+  for (const i of e.cssRules) t += i.cssText;
+
+  return (e => new Y("string" == typeof e ? e : e + "", G))(t);
+})(e) : e
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+;
+
+var Q;
+
+const ee = window.trustedTypes,
+      te = ee ? ee.emptyScript : "",
+      ie = window.reactiveElementPolyfillSupport,
+      re = {
+  toAttribute(e, t) {
+    switch (t) {
+      case Boolean:
+        e = e ? te : null;
+        break;
+
+      case Object:
+      case Array:
+        e = null == e ? e : JSON.stringify(e);
+    }
+
+    return e;
+  },
+
+  fromAttribute(e, t) {
+    let i = e;
+
+    switch (t) {
+      case Boolean:
+        i = null !== e;
+        break;
+
+      case Number:
+        i = null === e ? null : Number(e);
+        break;
+
+      case Object:
+      case Array:
+        try {
+          i = JSON.parse(e);
+        } catch (e) {
+          i = null;
+        }
+
+    }
+
+    return i;
+  }
+
+},
+      se = (e, t) => t !== e && (t == t || e == e),
+      ne = {
+  attribute: !0,
+  type: String,
+  converter: re,
+  reflect: !1,
+  hasChanged: se
+};
+
+class oe extends HTMLElement {
+  constructor() {
+    super(), this._$Et = new Map(), this.isUpdatePending = !1, this.hasUpdated = !1, this._$Ei = null, this.o();
+  }
+
+  static addInitializer(e) {
+    var t;
+    null !== (t = this.l) && void 0 !== t || (this.l = []), this.l.push(e);
+  }
+
+  static get observedAttributes() {
+    this.finalize();
+    const e = [];
+    return this.elementProperties.forEach((t, i) => {
+      const r = this._$Eh(i, t);
+
+      void 0 !== r && (this._$Eu.set(r, i), e.push(r));
+    }), e;
+  }
+
+  static createProperty(e, t = ne) {
+    if (t.state && (t.attribute = !1), this.finalize(), this.elementProperties.set(e, t), !t.noAccessor && !this.prototype.hasOwnProperty(e)) {
+      const i = "symbol" == typeof e ? Symbol() : "__" + e,
+            r = this.getPropertyDescriptor(e, i, t);
+      void 0 !== r && Object.defineProperty(this.prototype, e, r);
+    }
+  }
+
+  static getPropertyDescriptor(e, t, i) {
+    return {
+      get() {
+        return this[t];
+      },
+
+      set(r) {
+        const s = this[e];
+        this[t] = r, this.requestUpdate(e, s, i);
+      },
+
+      configurable: !0,
+      enumerable: !0
+    };
+  }
+
+  static getPropertyOptions(e) {
+    return this.elementProperties.get(e) || ne;
+  }
+
+  static finalize() {
+    if (this.hasOwnProperty("finalized")) return !1;
+    this.finalized = !0;
+    const e = Object.getPrototypeOf(this);
+
+    if (e.finalize(), this.elementProperties = new Map(e.elementProperties), this._$Eu = new Map(), this.hasOwnProperty("properties")) {
+      const e = this.properties,
+            t = [...Object.getOwnPropertyNames(e), ...Object.getOwnPropertySymbols(e)];
+
+      for (const i of t) this.createProperty(i, e[i]);
+    }
+
+    return this.elementStyles = this.finalizeStyles(this.styles), !0;
+  }
+
+  static finalizeStyles(e) {
+    const t = [];
+
+    if (Array.isArray(e)) {
+      const i = new Set(e.flat(1 / 0).reverse());
+
+      for (const e of i) t.unshift(J(e));
+    } else void 0 !== e && t.push(J(e));
+
+    return t;
+  }
+
+  static _$Eh(e, t) {
+    const i = t.attribute;
+    return !1 === i ? void 0 : "string" == typeof i ? i : "string" == typeof e ? e.toLowerCase() : void 0;
+  }
+
+  o() {
+    var e;
+    this._$Ep = new Promise(e => this.enableUpdating = e), this._$AL = new Map(), this._$Em(), this.requestUpdate(), null === (e = this.constructor.l) || void 0 === e || e.forEach(e => e(this));
+  }
+
+  addController(e) {
+    var t, i;
+    (null !== (t = this._$Eg) && void 0 !== t ? t : this._$Eg = []).push(e), void 0 !== this.renderRoot && this.isConnected && (null === (i = e.hostConnected) || void 0 === i || i.call(e));
+  }
+
+  removeController(e) {
+    var t;
+    null === (t = this._$Eg) || void 0 === t || t.splice(this._$Eg.indexOf(e) >>> 0, 1);
+  }
+
+  _$Em() {
+    this.constructor.elementProperties.forEach((e, t) => {
+      this.hasOwnProperty(t) && (this._$Et.set(t, this[t]), delete this[t]);
+    });
+  }
+
+  createRenderRoot() {
+    var e;
+    const t = null !== (e = this.shadowRoot) && void 0 !== e ? e : this.attachShadow(this.constructor.shadowRootOptions);
+    return ((e, t) => {
+      X ? e.adoptedStyleSheets = t.map(e => e instanceof CSSStyleSheet ? e : e.styleSheet) : t.forEach(t => {
+        const i = document.createElement("style"),
+              r = window.litNonce;
+        void 0 !== r && i.setAttribute("nonce", r), i.textContent = t.cssText, e.appendChild(i);
+      });
+    })(t, this.constructor.elementStyles), t;
+  }
+
+  connectedCallback() {
+    var e;
+    void 0 === this.renderRoot && (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), null === (e = this._$Eg) || void 0 === e || e.forEach(e => {
+      var t;
+      return null === (t = e.hostConnected) || void 0 === t ? void 0 : t.call(e);
+    });
+  }
+
+  enableUpdating(e) {}
+
+  disconnectedCallback() {
+    var e;
+    null === (e = this._$Eg) || void 0 === e || e.forEach(e => {
+      var t;
+      return null === (t = e.hostDisconnected) || void 0 === t ? void 0 : t.call(e);
+    });
+  }
+
+  attributeChangedCallback(e, t, i) {
+    this._$AK(e, i);
+  }
+
+  _$ES(e, t, i = ne) {
+    var r, s;
+
+    const n = this.constructor._$Eh(e, i);
+
+    if (void 0 !== n && !0 === i.reflect) {
+      const o = (null !== (s = null === (r = i.converter) || void 0 === r ? void 0 : r.toAttribute) && void 0 !== s ? s : re.toAttribute)(t, i.type);
+      this._$Ei = e, null == o ? this.removeAttribute(n) : this.setAttribute(n, o), this._$Ei = null;
+    }
+  }
+
+  _$AK(e, t) {
+    var i, r, s;
+
+    const n = this.constructor,
+          o = n._$Eu.get(e);
+
+    if (void 0 !== o && this._$Ei !== o) {
+      const e = n.getPropertyOptions(o),
+            a = e.converter,
+            d = null !== (s = null !== (r = null === (i = a) || void 0 === i ? void 0 : i.fromAttribute) && void 0 !== r ? r : "function" == typeof a ? a : null) && void 0 !== s ? s : re.fromAttribute;
+      this._$Ei = o, this[o] = d(t, e.type), this._$Ei = null;
+    }
+  }
+
+  requestUpdate(e, t, i) {
+    let r = !0;
+    void 0 !== e && (((i = i || this.constructor.getPropertyOptions(e)).hasChanged || se)(this[e], t) ? (this._$AL.has(e) || this._$AL.set(e, t), !0 === i.reflect && this._$Ei !== e && (void 0 === this._$E_ && (this._$E_ = new Map()), this._$E_.set(e, i))) : r = !1), !this.isUpdatePending && r && (this._$Ep = this._$EC());
+  }
+
+  async _$EC() {
+    this.isUpdatePending = !0;
+
+    try {
+      await this._$Ep;
+    } catch (e) {
+      Promise.reject(e);
+    }
+
+    const e = this.scheduleUpdate();
+    return null != e && (await e), !this.isUpdatePending;
+  }
+
+  scheduleUpdate() {
+    return this.performUpdate();
+  }
+
+  performUpdate() {
+    var e;
+    if (!this.isUpdatePending) return;
+    this.hasUpdated, this._$Et && (this._$Et.forEach((e, t) => this[t] = e), this._$Et = void 0);
+    let t = !1;
+    const i = this._$AL;
+
+    try {
+      t = this.shouldUpdate(i), t ? (this.willUpdate(i), null === (e = this._$Eg) || void 0 === e || e.forEach(e => {
+        var t;
+        return null === (t = e.hostUpdate) || void 0 === t ? void 0 : t.call(e);
+      }), this.update(i)) : this._$EU();
+    } catch (e) {
+      throw t = !1, this._$EU(), e;
+    }
+
+    t && this._$AE(i);
+  }
+
+  willUpdate(e) {}
+
+  _$AE(e) {
+    var t;
+    null === (t = this._$Eg) || void 0 === t || t.forEach(e => {
+      var t;
+      return null === (t = e.hostUpdated) || void 0 === t ? void 0 : t.call(e);
+    }), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(e)), this.updated(e);
+  }
+
+  _$EU() {
+    this._$AL = new Map(), this.isUpdatePending = !1;
+  }
+
+  get updateComplete() {
+    return this.getUpdateComplete();
+  }
+
+  getUpdateComplete() {
+    return this._$Ep;
+  }
+
+  shouldUpdate(e) {
+    return !0;
+  }
+
+  update(e) {
+    void 0 !== this._$E_ && (this._$E_.forEach((e, t) => this._$ES(t, this[t], e)), this._$E_ = void 0), this._$EU();
+  }
+
+  updated(e) {}
+
+  firstUpdated(e) {}
 
 }
 /**
@@ -707,14 +1074,18 @@ class J {
  */
 
 
-var Y, Z, G, Q, ee, te;
-null === (_ = (v = globalThis).litHtmlPlatformSupport) || void 0 === _ || _.call(v, D, B), (null !== (g = (y = globalThis).litHtmlVersions) && void 0 !== g ? g : y.litHtmlVersions = []).push("2.0.0-rc.3"), (null !== (Y = (te = globalThis).litElementVersions) && void 0 !== Y ? Y : te.litElementVersions = []).push("3.0.0-rc.2");
+var ae, de;
+oe.finalized = !0, oe.elementProperties = new Map(), oe.elementStyles = [], oe.shadowRootOptions = {
+  mode: "open"
+}, null == ie || ie({
+  ReactiveElement: oe
+}), (null !== (Q = globalThis.reactiveElementVersions) && void 0 !== Q ? Q : globalThis.reactiveElementVersions = []).push("1.0.2");
 
-class ie extends f {
+class ce extends oe {
   constructor() {
     super(...arguments), this.renderOptions = {
       host: this
-    }, this.Φt = void 0;
+    }, this._$Dt = void 0;
   }
 
   createRenderRoot() {
@@ -725,35 +1096,43 @@ class ie extends f {
 
   update(e) {
     const t = this.render();
-    super.update(e), this.Φt = ((e, t, i) => {
-      var s, n;
-      const r = null !== (s = null == i ? void 0 : i.renderBefore) && void 0 !== s ? s : t;
-      let o = r._$litPart$;
+    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Dt = ((e, t, i) => {
+      var r, s;
+      const n = null !== (r = null == i ? void 0 : i.renderBefore) && void 0 !== r ? r : t;
+      let o = n._$litPart$;
 
       if (void 0 === o) {
-        const e = null !== (n = null == i ? void 0 : i.renderBefore) && void 0 !== n ? n : null;
-        r._$litPart$ = o = new B(t.insertBefore(E(), e), e, void 0, i);
+        const e = null !== (s = null == i ? void 0 : i.renderBefore) && void 0 !== s ? s : null;
+        n._$litPart$ = o = new L(t.insertBefore(w(), e), e, void 0, null != i ? i : {});
       }
 
-      return o.I(e), o;
+      return o._$AI(e), o;
     })(t, this.renderRoot, this.renderOptions);
   }
 
   connectedCallback() {
     var e;
-    super.connectedCallback(), null === (e = this.Φt) || void 0 === e || e.setConnected(!0);
+    super.connectedCallback(), null === (e = this._$Dt) || void 0 === e || e.setConnected(!0);
   }
 
   disconnectedCallback() {
     var e;
-    super.disconnectedCallback(), null === (e = this.Φt) || void 0 === e || e.setConnected(!1);
+    super.disconnectedCallback(), null === (e = this._$Dt) || void 0 === e || e.setConnected(!1);
   }
 
   render() {
-    return F;
+    return P;
   }
 
 }
+
+ce.finalized = !0, ce._$litElement$ = !0, null === (ae = globalThis.litElementHydrateSupport) || void 0 === ae || ae.call(globalThis, {
+  LitElement: ce
+});
+const le = globalThis.litElementPolyfillSupport;
+null == le || le({
+  LitElement: ce
+}), (null !== (de = globalThis.litElementVersions) && void 0 !== de ? de : globalThis.litElementVersions = []).push("3.0.2");
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -769,1039 +1148,97 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
-
-function se(e, t, i, s) {
-  var n,
-      r = arguments.length,
-      o = r < 3 ? t : null === s ? s = Object.getOwnPropertyDescriptor(t, i) : s;
-  if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o = Reflect.decorate(e, t, i, s);else for (var a = e.length - 1; a >= 0; a--) (n = e[a]) && (o = (r < 3 ? n(o) : r > 3 ? n(t, i, o) : n(t, i)) || o);
-  return r > 3 && o && Object.defineProperty(t, i, o), o;
-  /**
-   * @license
-   * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
-   * This code may only be used under the BSD style license found at
-   * http://polymer.github.io/LICENSE.txt
-   * The complete set of authors may be found at
-   * http://polymer.github.io/AUTHORS.txt
-   * The complete set of contributors may be found at
-   * http://polymer.github.io/CONTRIBUTORS.txt
-   * Code distributed by Google as part of the polymer project is also
-   * subject to an additional IP rights grant found at
-   * http://polymer.github.io/PATENTS.txt
-   */
-}
-
-ie.finalized = !0, ie._$litElement$ = !0, null === (G = (Z = globalThis).litElementHydrateSupport) || void 0 === G || G.call(Z, {
-  LitElement: ie
-}), null === (ee = (Q = globalThis).litElementPlatformSupport) || void 0 === ee || ee.call(Q, {
-  LitElement: ie
-});
-
-const ne = "undefined" != typeof window && null != window.customElements && void 0 !== window.customElements.polyfillWrapFlushCallback,
-      re = (e, t, i = null) => {
-  for (; t !== i;) {
-    const i = t.nextSibling;
-    e.removeChild(t), t = i;
-  }
-},
-      oe = `{{lit-${String(Math.random()).slice(2)}}}`,
-      ae = `\x3c!--${oe}--\x3e`,
-      de = new RegExp(`${oe}|${ae}`);
-
-class le {
-  constructor(e, t) {
-    this.parts = [], this.element = t;
-    const i = [],
-          s = [],
-          n = document.createTreeWalker(t.content, 133, null, !1);
-    let r = 0,
-        o = -1,
-        a = 0;
-    const {
-      strings: d,
-      values: {
-        length: l
-      }
-    } = e;
-
-    for (; a < l;) {
-      const e = n.nextNode();
-
-      if (null !== e) {
-        if (o++, 1 === e.nodeType) {
-          if (e.hasAttributes()) {
-            const t = e.attributes,
-                  {
-              length: i
-            } = t;
-            let s = 0;
-
-            for (let e = 0; e < i; e++) ce(t[e].name, "$lit$") && s++;
-
-            for (; s-- > 0;) {
-              const t = d[a],
-                    i = pe.exec(t)[2],
-                    s = i.toLowerCase() + "$lit$",
-                    n = e.getAttribute(s);
-              e.removeAttribute(s);
-              const r = n.split(de);
-              this.parts.push({
-                type: "attribute",
-                index: o,
-                name: i,
-                strings: r
-              }), a += r.length - 1;
-            }
-          }
-
-          "TEMPLATE" === e.tagName && (s.push(e), n.currentNode = e.content);
-        } else if (3 === e.nodeType) {
-          const t = e.data;
-
-          if (t.indexOf(oe) >= 0) {
-            const s = e.parentNode,
-                  n = t.split(de),
-                  r = n.length - 1;
-
-            for (let t = 0; t < r; t++) {
-              let i,
-                  r = n[t];
-              if ("" === r) i = ue();else {
-                const e = pe.exec(r);
-                null !== e && ce(e[2], "$lit$") && (r = r.slice(0, e.index) + e[1] + e[2].slice(0, -"$lit$".length) + e[3]), i = document.createTextNode(r);
-              }
-              s.insertBefore(i, e), this.parts.push({
-                type: "node",
-                index: ++o
-              });
-            }
-
-            "" === n[r] ? (s.insertBefore(ue(), e), i.push(e)) : e.data = n[r], a += r;
-          }
-        } else if (8 === e.nodeType) if (e.data === oe) {
-          const t = e.parentNode;
-          null !== e.previousSibling && o !== r || (o++, t.insertBefore(ue(), e)), r = o, this.parts.push({
-            type: "node",
-            index: o
-          }), null === e.nextSibling ? e.data = "" : (i.push(e), o--), a++;
-        } else {
-          let t = -1;
-
-          for (; -1 !== (t = e.data.indexOf(oe, t + 1));) this.parts.push({
-            type: "node",
-            index: -1
-          }), a++;
-        }
-      } else n.currentNode = s.pop();
-    }
-
-    for (const e of i) e.parentNode.removeChild(e);
-  }
-
-}
-
-const ce = (e, t) => {
-  const i = e.length - t.length;
-  return i >= 0 && e.slice(i) === t;
-},
-      he = e => -1 !== e.index,
-      ue = () => document.createComment(""),
-      pe = /([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;
-
-function me(e, t) {
-  const {
-    element: {
-      content: i
-    },
-    parts: s
-  } = e,
-        n = document.createTreeWalker(i, 133, null, !1);
-  let r = ve(s),
-      o = s[r],
-      a = -1,
-      d = 0;
-  const l = [];
-  let c = null;
-
-  for (; n.nextNode();) {
-    a++;
-    const e = n.currentNode;
-
-    for (e.previousSibling === c && (c = null), t.has(e) && (l.push(e), null === c && (c = e)), null !== c && d++; void 0 !== o && o.index === a;) o.index = null !== c ? -1 : o.index - d, r = ve(s, r), o = s[r];
-  }
-
-  l.forEach(e => e.parentNode.removeChild(e));
-}
-
-const fe = e => {
-  let t = 11 === e.nodeType ? 0 : 1;
-  const i = document.createTreeWalker(e, 133, null, !1);
-
-  for (; i.nextNode();) t++;
-
-  return t;
-},
-      ve = (e, t = -1) => {
-  for (let i = t + 1; i < e.length; i++) {
-    const t = e[i];
-    if (he(t)) return i;
-  }
-
-  return -1;
+var he = function (e, t) {
+  return he = Object.setPrototypeOf || {
+    __proto__: []
+  } instanceof Array && function (e, t) {
+    e.__proto__ = t;
+  } || function (e, t) {
+    for (var i in t) Object.prototype.hasOwnProperty.call(t, i) && (e[i] = t[i]);
+  }, he(e, t);
 };
+
+function pe(e, t) {
+  if ("function" != typeof t && null !== t) throw new TypeError("Class extends value " + String(t) + " is not a constructor or null");
+
+  function i() {
+    this.constructor = e;
+  }
+
+  he(e, t), e.prototype = null === t ? Object.create(t) : (i.prototype = t.prototype, new i());
+}
+
+var ue = function () {
+  return ue = Object.assign || function (e) {
+    for (var t, i = 1, r = arguments.length; i < r; i++) for (var s in t = arguments[i]) Object.prototype.hasOwnProperty.call(t, s) && (e[s] = t[s]);
+
+    return e;
+  }, ue.apply(this, arguments);
+};
+
+function me(e, t, i, r) {
+  var s,
+      n = arguments.length,
+      o = n < 3 ? t : null === r ? r = Object.getOwnPropertyDescriptor(t, i) : r;
+  if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o = Reflect.decorate(e, t, i, r);else for (var a = e.length - 1; a >= 0; a--) (s = e[a]) && (o = (n < 3 ? s(o) : n > 3 ? s(t, i, o) : s(t, i)) || o);
+  return n > 3 && o && Object.defineProperty(t, i, o), o;
+}
+
+function ve(e) {
+  var t = "function" == typeof Symbol && Symbol.iterator,
+      i = t && e[t],
+      r = 0;
+  if (i) return i.call(e);
+  if (e && "number" == typeof e.length) return {
+    next: function () {
+      return e && r >= e.length && (e = void 0), {
+        value: e && e[r++],
+        done: !e
+      };
+    }
+  };
+  throw new TypeError(t ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
 /**
  * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 
-const _e = new WeakMap(),
-      ge = e => (...t) => {
-  const i = e(...t);
-  return _e.set(i, !0), i;
-},
-      ye = e => "function" == typeof e && _e.has(e),
-      we = {},
-      be = {};
+const fe = e => t => "function" == typeof t ? ((e, t) => (window.customElements.define(e, t), t))(e, t) : ((e, t) => {
+  const {
+    kind: i,
+    elements: r
+  } = t;
+  return {
+    kind: i,
+    elements: r,
+
+    finisher(t) {
+      window.customElements.define(e, t);
+    }
+
+  };
+})(e, t)
 /**
  * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-
-class Se {
-  constructor(e, t, i) {
-    this.__parts = [], this.template = e, this.processor = t, this.options = i;
-  }
-
-  update(e) {
-    let t = 0;
-
-    for (const i of this.__parts) void 0 !== i && i.setValue(e[t]), t++;
-
-    for (const e of this.__parts) void 0 !== e && e.commit();
-  }
-
-  _clone() {
-    const e = ne ? this.template.element.content.cloneNode(!0) : document.importNode(this.template.element.content, !0),
-          t = [],
-          i = this.template.parts,
-          s = document.createTreeWalker(e, 133, null, !1);
-    let n,
-        r = 0,
-        o = 0,
-        a = s.nextNode();
-
-    for (; r < i.length;) if (n = i[r], he(n)) {
-      for (; o < n.index;) o++, "TEMPLATE" === a.nodeName && (t.push(a), s.currentNode = a.content), null === (a = s.nextNode()) && (s.currentNode = t.pop(), a = s.nextNode());
-
-      if ("node" === n.type) {
-        const e = this.processor.handleTextExpression(this.options);
-        e.insertAfterNode(a.previousSibling), this.__parts.push(e);
-      } else this.__parts.push(...this.processor.handleAttributeExpressions(a, n.name, n.strings, this.options));
-
-      r++;
-    } else this.__parts.push(void 0), r++;
-
-    return ne && (document.adoptNode(e), customElements.upgrade(e)), e;
-  }
-
-}
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-
-const xe = window.trustedTypes && trustedTypes.createPolicy("lit-html", {
-  createHTML: e => e
-}),
-      Ce = ` ${oe} `;
-
-class ke {
-  constructor(e, t, i, s) {
-    this.strings = e, this.values = t, this.type = i, this.processor = s;
-  }
-
-  getHTML() {
-    const e = this.strings.length - 1;
-    let t = "",
-        i = !1;
-
-    for (let s = 0; s < e; s++) {
-      const e = this.strings[s],
-            n = e.lastIndexOf("\x3c!--");
-      i = (n > -1 || i) && -1 === e.indexOf("--\x3e", n + 1);
-      const r = pe.exec(e);
-      t += null === r ? e + (i ? Ce : ae) : e.substr(0, r.index) + r[1] + r[2] + "$lit$" + r[3] + oe;
-    }
-
-    return t += this.strings[e], t;
-  }
-
-  getTemplateElement() {
-    const e = document.createElement("template");
-    let t = this.getHTML();
-    return void 0 !== xe && (t = xe.createHTML(t)), e.innerHTML = t, e;
-  }
-
-}
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-
-const Ee = e => null === e || !("object" == typeof e || "function" == typeof e),
-      Pe = e => Array.isArray(e) || !(!e || !e[Symbol.iterator]);
-
-class Ae {
-  constructor(e, t, i) {
-    this.dirty = !0, this.element = e, this.name = t, this.strings = i, this.parts = [];
-
-    for (let e = 0; e < i.length - 1; e++) this.parts[e] = this._createPart();
-  }
-
-  _createPart() {
-    return new Te(this);
-  }
-
-  _getValue() {
-    const e = this.strings,
-          t = e.length - 1,
-          i = this.parts;
-
-    if (1 === t && "" === e[0] && "" === e[1]) {
-      const e = i[0].value;
-      if ("symbol" == typeof e) return String(e);
-      if ("string" == typeof e || !Pe(e)) return e;
-    }
-
-    let s = "";
-
-    for (let n = 0; n < t; n++) {
-      s += e[n];
-      const t = i[n];
-
-      if (void 0 !== t) {
-        const e = t.value;
-        if (Ee(e) || !Pe(e)) s += "string" == typeof e ? e : String(e);else for (const t of e) s += "string" == typeof t ? t : String(t);
-      }
-    }
-
-    return s += e[t], s;
-  }
-
-  commit() {
-    this.dirty && (this.dirty = !1, this.element.setAttribute(this.name, this._getValue()));
-  }
-
-}
-
-class Te {
-  constructor(e) {
-    this.value = void 0, this.committer = e;
-  }
-
-  setValue(e) {
-    e === we || Ee(e) && e === this.value || (this.value = e, ye(e) || (this.committer.dirty = !0));
-  }
-
-  commit() {
-    for (; ye(this.value);) {
-      const e = this.value;
-      this.value = we, e(this);
-    }
-
-    this.value !== we && this.committer.commit();
-  }
-
-}
-
-class Re {
-  constructor(e) {
-    this.value = void 0, this.__pendingValue = void 0, this.options = e;
-  }
-
-  appendInto(e) {
-    this.startNode = e.appendChild(ue()), this.endNode = e.appendChild(ue());
-  }
-
-  insertAfterNode(e) {
-    this.startNode = e, this.endNode = e.nextSibling;
-  }
-
-  appendIntoPart(e) {
-    e.__insert(this.startNode = ue()), e.__insert(this.endNode = ue());
-  }
-
-  insertAfterPart(e) {
-    e.__insert(this.startNode = ue()), this.endNode = e.endNode, e.endNode = this.startNode;
-  }
-
-  setValue(e) {
-    this.__pendingValue = e;
-  }
-
-  commit() {
-    if (null === this.startNode.parentNode) return;
-
-    for (; ye(this.__pendingValue);) {
-      const e = this.__pendingValue;
-      this.__pendingValue = we, e(this);
-    }
-
-    const e = this.__pendingValue;
-    e !== we && (Ee(e) ? e !== this.value && this.__commitText(e) : e instanceof ke ? this.__commitTemplateResult(e) : e instanceof Node ? this.__commitNode(e) : Pe(e) ? this.__commitIterable(e) : e === be ? (this.value = be, this.clear()) : this.__commitText(e));
-  }
-
-  __insert(e) {
-    this.endNode.parentNode.insertBefore(e, this.endNode);
-  }
-
-  __commitNode(e) {
-    this.value !== e && (this.clear(), this.__insert(e), this.value = e);
-  }
-
-  __commitText(e) {
-    const t = this.startNode.nextSibling,
-          i = "string" == typeof (e = null == e ? "" : e) ? e : String(e);
-    t === this.endNode.previousSibling && 3 === t.nodeType ? t.data = i : this.__commitNode(document.createTextNode(i)), this.value = e;
-  }
-
-  __commitTemplateResult(e) {
-    const t = this.options.templateFactory(e);
-    if (this.value instanceof Se && this.value.template === t) this.value.update(e.values);else {
-      const i = new Se(t, e.processor, this.options),
-            s = i._clone();
-
-      i.update(e.values), this.__commitNode(s), this.value = i;
-    }
-  }
-
-  __commitIterable(e) {
-    Array.isArray(this.value) || (this.value = [], this.clear());
-    const t = this.value;
-    let i,
-        s = 0;
-
-    for (const n of e) i = t[s], void 0 === i && (i = new Re(this.options), t.push(i), 0 === s ? i.appendIntoPart(this) : i.insertAfterPart(t[s - 1])), i.setValue(n), i.commit(), s++;
-
-    s < t.length && (t.length = s, this.clear(i && i.endNode));
-  }
-
-  clear(e = this.startNode) {
-    re(this.startNode.parentNode, e.nextSibling, this.endNode);
-  }
-
-}
-
-class Ie {
-  constructor(e, t, i) {
-    if (this.value = void 0, this.__pendingValue = void 0, 2 !== i.length || "" !== i[0] || "" !== i[1]) throw new Error("Boolean attributes can only contain a single expression");
-    this.element = e, this.name = t, this.strings = i;
-  }
-
-  setValue(e) {
-    this.__pendingValue = e;
-  }
-
-  commit() {
-    for (; ye(this.__pendingValue);) {
-      const e = this.__pendingValue;
-      this.__pendingValue = we, e(this);
-    }
-
-    if (this.__pendingValue === we) return;
-    const e = !!this.__pendingValue;
-    this.value !== e && (e ? this.element.setAttribute(this.name, "") : this.element.removeAttribute(this.name), this.value = e), this.__pendingValue = we;
-  }
-
-}
-
-class Ne extends Ae {
-  constructor(e, t, i) {
-    super(e, t, i), this.single = 2 === i.length && "" === i[0] && "" === i[1];
-  }
-
-  _createPart() {
-    return new ze(this);
-  }
-
-  _getValue() {
-    return this.single ? this.parts[0].value : super._getValue();
-  }
-
-  commit() {
-    this.dirty && (this.dirty = !1, this.element[this.name] = this._getValue());
-  }
-
-}
-
-class ze extends Te {}
-
-let Me = !1;
-
-(() => {
-  try {
-    const e = {
-      get capture() {
-        return Me = !0, !1;
-      }
-
-    };
-    window.addEventListener("test", e, e), window.removeEventListener("test", e, e);
-  } catch (e) {}
-})();
-
-class He {
-  constructor(e, t, i) {
-    this.value = void 0, this.__pendingValue = void 0, this.element = e, this.eventName = t, this.eventContext = i, this.__boundHandleEvent = e => this.handleEvent(e);
-  }
-
-  setValue(e) {
-    this.__pendingValue = e;
-  }
-
-  commit() {
-    for (; ye(this.__pendingValue);) {
-      const e = this.__pendingValue;
-      this.__pendingValue = we, e(this);
-    }
-
-    if (this.__pendingValue === we) return;
-    const e = this.__pendingValue,
-          t = this.value,
-          i = null == e || null != t && (e.capture !== t.capture || e.once !== t.once || e.passive !== t.passive),
-          s = null != e && (null == t || i);
-    i && this.element.removeEventListener(this.eventName, this.__boundHandleEvent, this.__options), s && (this.__options = Oe(e), this.element.addEventListener(this.eventName, this.__boundHandleEvent, this.__options)), this.value = e, this.__pendingValue = we;
-  }
-
-  handleEvent(e) {
-    "function" == typeof this.value ? this.value.call(this.eventContext || this.element, e) : this.value.handleEvent(e);
-  }
-
-}
-
-const Oe = e => e && (Me ? {
-  capture: e.capture,
-  passive: e.passive,
-  once: e.once
-} : e.capture)
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-;
-
-function Fe(e) {
-  let t = Ve.get(e.type);
-  void 0 === t && (t = {
-    stringsArray: new WeakMap(),
-    keyString: new Map()
-  }, Ve.set(e.type, t));
-  let i = t.stringsArray.get(e.strings);
-  if (void 0 !== i) return i;
-  const s = e.strings.join(oe);
-  return i = t.keyString.get(s), void 0 === i && (i = new le(e, e.getTemplateElement()), t.keyString.set(s, i)), t.stringsArray.set(e.strings, i), i;
-}
-
-const Ve = new Map(),
-      Ue = new WeakMap();
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-const Le = new
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-class {
-  handleAttributeExpressions(e, t, i, s) {
-    const n = t[0];
-
-    if ("." === n) {
-      return new Ne(e, t.slice(1), i).parts;
-    }
-
-    if ("@" === n) return [new He(e, t.slice(1), s.eventContext)];
-    if ("?" === n) return [new Ie(e, t.slice(1), i)];
-    return new Ae(e, t, i).parts;
-  }
-
-  handleTextExpression(e) {
-    return new Re(e);
-  }
-
-}();
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-"undefined" != typeof window && (window.litHtmlVersions || (window.litHtmlVersions = [])).push("1.4.1");
-
-const De = (e, ...t) => new ke(e, t, "html", Le)
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 ,
-      $e = (e, t) => `${e}--${t}`;
+      ge = (e, t) => "method" === t.kind && t.descriptor && !("value" in t.descriptor) ? { ...t,
 
-let je = !0;
-void 0 === window.ShadyCSS ? je = !1 : void 0 === window.ShadyCSS.prepareTemplateDom && (console.warn("Incompatible ShadyCSS version detected. Please update to at least @webcomponents/webcomponentsjs@2.0.2 and @webcomponents/shadycss@1.3.1."), je = !1);
-
-const Be = e => t => {
-  const i = $e(t.type, e);
-  let s = Ve.get(i);
-  void 0 === s && (s = {
-    stringsArray: new WeakMap(),
-    keyString: new Map()
-  }, Ve.set(i, s));
-  let n = s.stringsArray.get(t.strings);
-  if (void 0 !== n) return n;
-  const r = t.strings.join(oe);
-
-  if (n = s.keyString.get(r), void 0 === n) {
-    const i = t.getTemplateElement();
-    je && window.ShadyCSS.prepareTemplateDom(i, e), n = new le(t, i), s.keyString.set(r, n);
-  }
-
-  return s.stringsArray.set(t.strings, n), n;
-},
-      We = ["html", "svg"],
-      qe = new Set(),
-      Ke = (e, t, i) => {
-  qe.add(e);
-  const s = i ? i.element : document.createElement("template"),
-        n = t.querySelectorAll("style"),
-        {
-    length: r
-  } = n;
-  if (0 === r) return void window.ShadyCSS.prepareTemplateStyles(s, e);
-  const o = document.createElement("style");
-
-  for (let e = 0; e < r; e++) {
-    const t = n[e];
-    t.parentNode.removeChild(t), o.textContent += t.textContent;
-  }
-
-  (e => {
-    We.forEach(t => {
-      const i = Ve.get($e(t, e));
-      void 0 !== i && i.keyString.forEach(e => {
-        const {
-          element: {
-            content: t
-          }
-        } = e,
-              i = new Set();
-        Array.from(t.querySelectorAll("style")).forEach(e => {
-          i.add(e);
-        }), me(e, i);
-      });
-    });
-  })(e);
-
-  const a = s.content;
-  i ? function (e, t, i = null) {
-    const {
-      element: {
-        content: s
-      },
-      parts: n
-    } = e;
-    if (null == i) return void s.appendChild(t);
-    const r = document.createTreeWalker(s, 133, null, !1);
-    let o = ve(n),
-        a = 0,
-        d = -1;
-
-    for (; r.nextNode();) for (d++, r.currentNode === i && (a = fe(t), i.parentNode.insertBefore(t, i)); -1 !== o && n[o].index === d;) {
-      if (a > 0) {
-        for (; -1 !== o;) n[o].index += a, o = ve(n, o);
-
-        return;
-      }
-
-      o = ve(n, o);
-    }
-  }(i, o, a.firstChild) : a.insertBefore(o, a.firstChild), window.ShadyCSS.prepareTemplateStyles(s, e);
-  const d = a.querySelector("style");
-  if (window.ShadyCSS.nativeShadow && null !== d) t.insertBefore(d.cloneNode(!0), t.firstChild);else if (i) {
-    a.insertBefore(o, a.firstChild);
-    const e = new Set();
-    e.add(o), me(i, e);
-  }
-};
-
-window.JSCompiler_renameProperty = (e, t) => e;
-
-const Xe = {
-  toAttribute(e, t) {
-    switch (t) {
-      case Boolean:
-        return e ? "" : null;
-
-      case Object:
-      case Array:
-        return null == e ? e : JSON.stringify(e);
-    }
-
-    return e;
-  },
-
-  fromAttribute(e, t) {
-    switch (t) {
-      case Boolean:
-        return null !== e;
-
-      case Number:
-        return null === e ? null : Number(e);
-
-      case Object:
-      case Array:
-        return JSON.parse(e);
-    }
-
-    return e;
-  }
-
-},
-      Je = (e, t) => t !== e && (t == t || e == e),
-      Ye = {
-  attribute: !0,
-  type: String,
-  converter: Xe,
-  reflect: !1,
-  hasChanged: Je
-};
-
-class Ze extends HTMLElement {
-  constructor() {
-    super(), this.initialize();
-  }
-
-  static get observedAttributes() {
-    this.finalize();
-    const e = [];
-    return this._classProperties.forEach((t, i) => {
-      const s = this._attributeNameForProperty(i, t);
-
-      void 0 !== s && (this._attributeToPropertyMap.set(s, i), e.push(s));
-    }), e;
-  }
-
-  static _ensureClassProperties() {
-    if (!this.hasOwnProperty(JSCompiler_renameProperty("_classProperties", this))) {
-      this._classProperties = new Map();
-
-      const e = Object.getPrototypeOf(this)._classProperties;
-
-      void 0 !== e && e.forEach((e, t) => this._classProperties.set(t, e));
-    }
-  }
-
-  static createProperty(e, t = Ye) {
-    if (this._ensureClassProperties(), this._classProperties.set(e, t), t.noAccessor || this.prototype.hasOwnProperty(e)) return;
-    const i = "symbol" == typeof e ? Symbol() : `__${e}`,
-          s = this.getPropertyDescriptor(e, i, t);
-    void 0 !== s && Object.defineProperty(this.prototype, e, s);
-  }
-
-  static getPropertyDescriptor(e, t, i) {
-    return {
-      get() {
-        return this[t];
-      },
-
-      set(s) {
-        const n = this[e];
-        this[t] = s, this.requestUpdateInternal(e, n, i);
-      },
-
-      configurable: !0,
-      enumerable: !0
-    };
-  }
-
-  static getPropertyOptions(e) {
-    return this._classProperties && this._classProperties.get(e) || Ye;
-  }
-
-  static finalize() {
-    const e = Object.getPrototypeOf(this);
-
-    if (e.hasOwnProperty("finalized") || e.finalize(), this.finalized = !0, this._ensureClassProperties(), this._attributeToPropertyMap = new Map(), this.hasOwnProperty(JSCompiler_renameProperty("properties", this))) {
-      const e = this.properties,
-            t = [...Object.getOwnPropertyNames(e), ...("function" == typeof Object.getOwnPropertySymbols ? Object.getOwnPropertySymbols(e) : [])];
-
-      for (const i of t) this.createProperty(i, e[i]);
-    }
-  }
-
-  static _attributeNameForProperty(e, t) {
-    const i = t.attribute;
-    return !1 === i ? void 0 : "string" == typeof i ? i : "string" == typeof e ? e.toLowerCase() : void 0;
-  }
-
-  static _valueHasChanged(e, t, i = Je) {
-    return i(e, t);
-  }
-
-  static _propertyValueFromAttribute(e, t) {
-    const i = t.type,
-          s = t.converter || Xe,
-          n = "function" == typeof s ? s : s.fromAttribute;
-    return n ? n(e, i) : e;
-  }
-
-  static _propertyValueToAttribute(e, t) {
-    if (void 0 === t.reflect) return;
-    const i = t.type,
-          s = t.converter;
-    return (s && s.toAttribute || Xe.toAttribute)(e, i);
-  }
-
-  initialize() {
-    this._updateState = 0, this._updatePromise = new Promise(e => this._enableUpdatingResolver = e), this._changedProperties = new Map(), this._saveInstanceProperties(), this.requestUpdateInternal();
-  }
-
-  _saveInstanceProperties() {
-    this.constructor._classProperties.forEach((e, t) => {
-      if (this.hasOwnProperty(t)) {
-        const e = this[t];
-        delete this[t], this._instanceProperties || (this._instanceProperties = new Map()), this._instanceProperties.set(t, e);
-      }
-    });
-  }
-
-  _applyInstanceProperties() {
-    this._instanceProperties.forEach((e, t) => this[t] = e), this._instanceProperties = void 0;
-  }
-
-  connectedCallback() {
-    this.enableUpdating();
-  }
-
-  enableUpdating() {
-    void 0 !== this._enableUpdatingResolver && (this._enableUpdatingResolver(), this._enableUpdatingResolver = void 0);
-  }
-
-  disconnectedCallback() {}
-
-  attributeChangedCallback(e, t, i) {
-    t !== i && this._attributeToProperty(e, i);
-  }
-
-  _propertyToAttribute(e, t, i = Ye) {
-    const s = this.constructor,
-          n = s._attributeNameForProperty(e, i);
-
-    if (void 0 !== n) {
-      const e = s._propertyValueToAttribute(t, i);
-
-      if (void 0 === e) return;
-      this._updateState = 8 | this._updateState, null == e ? this.removeAttribute(n) : this.setAttribute(n, e), this._updateState = -9 & this._updateState;
-    }
-  }
-
-  _attributeToProperty(e, t) {
-    if (8 & this._updateState) return;
-
-    const i = this.constructor,
-          s = i._attributeToPropertyMap.get(e);
-
-    if (void 0 !== s) {
-      const e = i.getPropertyOptions(s);
-      this._updateState = 16 | this._updateState, this[s] = i._propertyValueFromAttribute(t, e), this._updateState = -17 & this._updateState;
-    }
-  }
-
-  requestUpdateInternal(e, t, i) {
-    let s = !0;
-
-    if (void 0 !== e) {
-      const n = this.constructor;
-      i = i || n.getPropertyOptions(e), n._valueHasChanged(this[e], t, i.hasChanged) ? (this._changedProperties.has(e) || this._changedProperties.set(e, t), !0 !== i.reflect || 16 & this._updateState || (void 0 === this._reflectingProperties && (this._reflectingProperties = new Map()), this._reflectingProperties.set(e, i))) : s = !1;
-    }
-
-    !this._hasRequestedUpdate && s && (this._updatePromise = this._enqueueUpdate());
-  }
-
-  requestUpdate(e, t) {
-    return this.requestUpdateInternal(e, t), this.updateComplete;
-  }
-
-  async _enqueueUpdate() {
-    this._updateState = 4 | this._updateState;
-
-    try {
-      await this._updatePromise;
-    } catch (e) {}
-
-    const e = this.performUpdate();
-    return null != e && (await e), !this._hasRequestedUpdate;
-  }
-
-  get _hasRequestedUpdate() {
-    return 4 & this._updateState;
-  }
-
-  get hasUpdated() {
-    return 1 & this._updateState;
-  }
-
-  performUpdate() {
-    if (!this._hasRequestedUpdate) return;
-    this._instanceProperties && this._applyInstanceProperties();
-    let e = !1;
-    const t = this._changedProperties;
-
-    try {
-      e = this.shouldUpdate(t), e ? this.update(t) : this._markUpdated();
-    } catch (t) {
-      throw e = !1, this._markUpdated(), t;
-    }
-
-    e && (1 & this._updateState || (this._updateState = 1 | this._updateState, this.firstUpdated(t)), this.updated(t));
-  }
-
-  _markUpdated() {
-    this._changedProperties = new Map(), this._updateState = -5 & this._updateState;
-  }
-
-  get updateComplete() {
-    return this._getUpdateComplete();
-  }
-
-  _getUpdateComplete() {
-    return this._updatePromise;
-  }
-
-  shouldUpdate(e) {
-    return !0;
-  }
-
-  update(e) {
-    void 0 !== this._reflectingProperties && this._reflectingProperties.size > 0 && (this._reflectingProperties.forEach((e, t) => this._propertyToAttribute(t, this[t], e)), this._reflectingProperties = void 0), this._markUpdated();
-  }
-
-  updated(e) {}
-
-  firstUpdated(e) {}
-
-}
-
-Ze.finalized = !0;
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-const Ge = (e, t) => "method" === t.kind && t.descriptor && !("value" in t.descriptor) ? Object.assign(Object.assign({}, t), {
   finisher(i) {
     i.createProperty(t.key, e);
   }
 
-}) : {
+} : {
   kind: "field",
   key: Symbol(),
   placement: "own",
   descriptor: {},
+  originalKey: t.key,
 
   initializer() {
     "function" == typeof t.initializer && (this[t.key] = t.initializer.call(this));
@@ -1813,164 +1250,106 @@ const Ge = (e, t) => "method" === t.kind && t.descriptor && !("value" in t.descr
 
 };
 
-function Qe(e) {
+function ye(e) {
   return (t, i) => void 0 !== i ? ((e, t, i) => {
     t.constructor.createProperty(i, e);
-  })(e, t, i) : Ge(e, t);
-}
-
-function et(e) {
-  return Qe({
-    attribute: !1,
-    hasChanged: null == e ? void 0 : e.hasChanged
-  });
-}
-
-function tt(e, t) {
-  return (i, s) => {
-    const n = {
-      get() {
-        return this.renderRoot.querySelector(e);
-      },
-
-      enumerable: !0,
-      configurable: !0
-    };
-
-    if (t) {
-      const t = "symbol" == typeof s ? Symbol() : `__${s}`;
-
-      n.get = function () {
-        return void 0 === this[t] && (this[t] = this.renderRoot.querySelector(e)), this[t];
-      };
-    }
-
-    return void 0 !== s ? it(n, i, s) : st(n, i);
-  };
-}
-
-const it = (e, t, i) => {
-  Object.defineProperty(t, i, e);
-},
-      st = (e, t) => ({
-  kind: "method",
-  placement: "prototype",
-  key: t.key,
-  descriptor: e
-});
-/**
-@license
-Copyright (c) 2019 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at
-http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
-http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
-found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
-part of the polymer project is also subject to an additional IP rights grant
-found at http://polymer.github.io/PATENTS.txt
-*/
-
-
-const nt = window.ShadowRoot && (void 0 === window.ShadyCSS || window.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype,
-      rt = Symbol();
-
-class ot {
-  constructor(e, t) {
-    if (t !== rt) throw new Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
-    this.cssText = e;
-  }
-
-  get styleSheet() {
-    return void 0 === this._styleSheet && (nt ? (this._styleSheet = new CSSStyleSheet(), this._styleSheet.replaceSync(this.cssText)) : this._styleSheet = null), this._styleSheet;
-  }
-
-  toString() {
-    return this.cssText;
-  }
-
+  })(e, t, i) : ge(e, t);
 }
 /**
  * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 
-(window.litElementVersions || (window.litElementVersions = [])).push("2.4.0");
-const at = {};
-
-class dt extends Ze {
-  static getStyles() {
-    return this.styles;
-  }
-
-  static _getUniqueStyles() {
-    if (this.hasOwnProperty(JSCompiler_renameProperty("_styles", this))) return;
-    const e = this.getStyles();
-
-    if (Array.isArray(e)) {
-      const t = (e, i) => e.reduceRight((e, i) => Array.isArray(i) ? t(i, e) : (e.add(i), e), i),
-            i = t(e, new Set()),
-            s = [];
-
-      i.forEach(e => s.unshift(e)), this._styles = s;
-    } else this._styles = void 0 === e ? [] : [e];
-
-    this._styles = this._styles.map(e => {
-      if (e instanceof CSSStyleSheet && !nt) {
-        const t = Array.prototype.slice.call(e.cssRules).reduce((e, t) => e + t.cssText, "");
-        return new ot(String(t), rt);
-      }
-
-      return e;
-    });
-  }
-
-  initialize() {
-    super.initialize(), this.constructor._getUniqueStyles(), this.renderRoot = this.createRenderRoot(), window.ShadowRoot && this.renderRoot instanceof window.ShadowRoot && this.adoptStyles();
-  }
-
-  createRenderRoot() {
-    return this.attachShadow({
-      mode: "open"
-    });
-  }
-
-  adoptStyles() {
-    const e = this.constructor._styles;
-    0 !== e.length && (void 0 === window.ShadyCSS || window.ShadyCSS.nativeShadow ? nt ? this.renderRoot.adoptedStyleSheets = e.map(e => e instanceof CSSStyleSheet ? e : e.styleSheet) : this._needsShimAdoptedStyleSheets = !0 : window.ShadyCSS.ScopingShim.prepareAdoptedCssText(e.map(e => e.cssText), this.localName));
-  }
-
-  connectedCallback() {
-    super.connectedCallback(), this.hasUpdated && void 0 !== window.ShadyCSS && window.ShadyCSS.styleElement(this);
-  }
-
-  update(e) {
-    const t = this.render();
-    super.update(e), t !== at && this.constructor.render(t, this.renderRoot, {
-      scopeName: this.localName,
-      eventContext: this
-    }), this._needsShimAdoptedStyleSheets && (this._needsShimAdoptedStyleSheets = !1, this.constructor._styles.forEach(e => {
-      const t = document.createElement("style");
-      t.textContent = e.cssText, this.renderRoot.appendChild(t);
-    }));
-  }
-
-  render() {
-    return at;
-  }
-
+function be(e) {
+  return ye({ ...e,
+    state: !0
+  });
 }
 /**
  * @license
- * Copyright 2019 Google Inc.
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+
+const _e = ({
+  finisher: e,
+  descriptor: t
+}) => (i, r) => {
+  var s;
+
+  if (void 0 === r) {
+    const r = null !== (s = i.originalKey) && void 0 !== s ? s : i.key,
+          n = null != t ? {
+      kind: "method",
+      placement: "prototype",
+      key: r,
+      descriptor: t(i.key)
+    } : { ...i,
+      key: r
+    };
+    return null != e && (n.finisher = function (t) {
+      e(t, r);
+    }), n;
+  }
+
+  {
+    const s = i.constructor;
+    void 0 !== t && Object.defineProperty(i, r, t(r)), null == e || e(s, r);
+  }
+}
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+;
+
+function we(e, t) {
+  return _e({
+    descriptor: i => {
+      const r = {
+        get() {
+          var t, i;
+          return null !== (i = null === (t = this.renderRoot) || void 0 === t ? void 0 : t.querySelector(e)) && void 0 !== i ? i : null;
+        },
+
+        enumerable: !0,
+        configurable: !0
+      };
+
+      if (t) {
+        const t = "symbol" == typeof i ? Symbol() : "__" + i;
+
+        r.get = function () {
+          var i, r;
+          return void 0 === this[t] && (this[t] = null !== (r = null === (i = this.renderRoot) || void 0 === i ? void 0 : i.querySelector(e)) && void 0 !== r ? r : null), this[t];
+        };
+      }
+
+      return r;
+    }
+  });
+}
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-LIcense-Identifier: Apache-2.0
+ */
+
+
+const Se = Z`.mdc-slider{cursor:pointer;height:48px;margin:0 24px;position:relative;touch-action:pan-y}.mdc-slider .mdc-slider__track{height:4px;position:absolute;top:50%;transform:translateY(-50%);width:100%}.mdc-slider .mdc-slider__track--active,.mdc-slider .mdc-slider__track--inactive{display:flex;height:100%;position:absolute;width:100%}.mdc-slider .mdc-slider__track--active{border-radius:3px;height:6px;overflow:hidden;top:-1px}.mdc-slider .mdc-slider__track--active_fill{border-top:6px solid;box-sizing:border-box;height:100%;width:100%;position:relative;-webkit-transform-origin:left;transform-origin:left}[dir=rtl] .mdc-slider .mdc-slider__track--active_fill,.mdc-slider .mdc-slider__track--active_fill[dir=rtl]{-webkit-transform-origin:right;transform-origin:right}.mdc-slider .mdc-slider__track--inactive{border-radius:2px;height:4px;left:0;top:0}.mdc-slider .mdc-slider__track--inactive::before{position:absolute;box-sizing:border-box;width:100%;height:100%;top:0;left:0;border:1px solid transparent;border-radius:inherit;content:"";pointer-events:none}.mdc-slider .mdc-slider__track--active_fill{border-color:#6200ee;border-color:var(--mdc-theme-primary, #6200ee)}.mdc-slider.mdc-slider--disabled .mdc-slider__track--active_fill{border-color:#000;border-color:var(--mdc-theme-on-surface, #000)}.mdc-slider .mdc-slider__track--inactive{background-color:#6200ee;background-color:var(--mdc-theme-primary, #6200ee);opacity:.24}.mdc-slider.mdc-slider--disabled .mdc-slider__track--inactive{background-color:#000;background-color:var(--mdc-theme-on-surface, #000);opacity:.24}.mdc-slider .mdc-slider__value-indicator-container{bottom:44px;left:50%;pointer-events:none;position:absolute;transform:translateX(-50%)}.mdc-slider .mdc-slider__value-indicator{transition:transform 100ms 0ms cubic-bezier(0.4, 0, 1, 1);align-items:center;border-radius:4px;display:flex;height:32px;padding:0 12px;transform:scale(0);transform-origin:bottom}.mdc-slider .mdc-slider__value-indicator::before{border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid;bottom:-5px;content:"";height:0;left:50%;position:absolute;transform:translateX(-50%);width:0}.mdc-slider .mdc-slider__value-indicator::after{position:absolute;box-sizing:border-box;width:100%;height:100%;top:0;left:0;border:1px solid transparent;border-radius:inherit;content:"";pointer-events:none}.mdc-slider .mdc-slider__thumb--with-indicator .mdc-slider__value-indicator-container{pointer-events:auto}.mdc-slider .mdc-slider__thumb--with-indicator .mdc-slider__value-indicator{transition:transform 100ms 0ms cubic-bezier(0, 0, 0.2, 1);transform:scale(1)}@media(prefers-reduced-motion){.mdc-slider .mdc-slider__value-indicator,.mdc-slider .mdc-slider__thumb--with-indicator .mdc-slider__value-indicator{transition:none}}.mdc-slider .mdc-slider__value-indicator-text{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle2-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.875rem;font-size:var(--mdc-typography-subtitle2-font-size, 0.875rem);line-height:1.375rem;line-height:var(--mdc-typography-subtitle2-line-height, 1.375rem);font-weight:500;font-weight:var(--mdc-typography-subtitle2-font-weight, 500);letter-spacing:0.0071428571em;letter-spacing:var(--mdc-typography-subtitle2-letter-spacing, 0.0071428571em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle2-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle2-text-transform, inherit)}.mdc-slider .mdc-slider__value-indicator{background-color:#000;opacity:.6}.mdc-slider .mdc-slider__value-indicator::before{border-top-color:#000}.mdc-slider .mdc-slider__value-indicator{color:#fff;color:var(--mdc-theme-on-primary, #fff)}.mdc-slider .mdc-slider__thumb{display:flex;height:48px;left:-24px;outline:none;position:absolute;user-select:none;width:48px}.mdc-slider .mdc-slider__thumb--top{z-index:1}.mdc-slider .mdc-slider__thumb--top .mdc-slider__thumb-knob,.mdc-slider .mdc-slider__thumb--top.mdc-slider__thumb:hover .mdc-slider__thumb-knob,.mdc-slider .mdc-slider__thumb--top.mdc-slider__thumb--focused .mdc-slider__thumb-knob{border-style:solid;border-width:1px;box-sizing:content-box}.mdc-slider .mdc-slider__thumb-knob{box-shadow:0px 2px 1px -1px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 1px 3px 0px rgba(0,0,0,.12);border:10px solid;border-radius:50%;box-sizing:border-box;height:20px;left:50%;position:absolute;top:50%;transform:translate(-50%, -50%);width:20px}.mdc-slider .mdc-slider__thumb-knob{background-color:#6200ee;background-color:var(--mdc-theme-primary, #6200ee);border-color:#6200ee;border-color:var(--mdc-theme-primary, #6200ee)}.mdc-slider .mdc-slider__thumb--top .mdc-slider__thumb-knob,.mdc-slider .mdc-slider__thumb--top.mdc-slider__thumb:hover .mdc-slider__thumb-knob,.mdc-slider .mdc-slider__thumb--top.mdc-slider__thumb--focused .mdc-slider__thumb-knob{border-color:#fff}.mdc-slider.mdc-slider--disabled .mdc-slider__thumb-knob{background-color:#000;background-color:var(--mdc-theme-on-surface, #000);border-color:#000;border-color:var(--mdc-theme-on-surface, #000)}.mdc-slider.mdc-slider--disabled .mdc-slider__thumb--top .mdc-slider__thumb-knob,.mdc-slider.mdc-slider--disabled .mdc-slider__thumb--top.mdc-slider__thumb:hover .mdc-slider__thumb-knob,.mdc-slider.mdc-slider--disabled .mdc-slider__thumb--top.mdc-slider__thumb--focused .mdc-slider__thumb-knob{border-color:#fff}.mdc-slider .mdc-slider__thumb::before,.mdc-slider .mdc-slider__thumb::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-slider .mdc-slider__thumb:hover::before,.mdc-slider .mdc-slider__thumb.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-slider .mdc-slider__thumb.mdc-ripple-upgraded--background-focused::before,.mdc-slider .mdc-slider__thumb:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-slider .mdc-slider__thumb:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-slider .mdc-slider__thumb:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-slider .mdc-slider__thumb.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-slider .mdc-slider__tick-marks{align-items:center;box-sizing:border-box;display:flex;height:100%;justify-content:space-between;padding:0 1px;position:absolute;width:100%}.mdc-slider .mdc-slider__tick-mark--active,.mdc-slider .mdc-slider__tick-mark--inactive{border-radius:50%;height:2px;width:2px}.mdc-slider .mdc-slider__tick-mark--active{background-color:#fff;background-color:var(--mdc-theme-on-primary, #fff);opacity:.6}.mdc-slider.mdc-slider--disabled .mdc-slider__tick-mark--active{background-color:#fff;background-color:var(--mdc-theme-on-primary, #fff);opacity:.6}.mdc-slider .mdc-slider__tick-mark--inactive{background-color:#6200ee;background-color:var(--mdc-theme-primary, #6200ee);opacity:.6}.mdc-slider.mdc-slider--disabled .mdc-slider__tick-mark--inactive{background-color:#000;background-color:var(--mdc-theme-on-surface, #000);opacity:.6}.mdc-slider.mdc-slider--disabled{opacity:.38;cursor:auto}.mdc-slider.mdc-slider--disabled .mdc-slider__thumb{pointer-events:none}.mdc-slider--discrete .mdc-slider__thumb,.mdc-slider--discrete .mdc-slider__track--active_fill{transition:transform 80ms ease}@media(prefers-reduced-motion){.mdc-slider--discrete .mdc-slider__thumb,.mdc-slider--discrete .mdc-slider__track--active_fill{transition:none}}.mdc-slider__input{cursor:pointer;left:0;margin:0;height:100%;opacity:0;pointer-events:none;position:absolute;top:0;width:100%}:host{outline:none;display:block;-webkit-tap-highlight-color:transparent}.ripple{--mdc-ripple-color:#6200ee;--mdc-ripple-color:var(--mdc-theme-primary, #6200ee)}`
+/**
+ * @license
+ * Copyright 2018 Google Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1990,152 +1369,29 @@ class dt extends Ze {
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
-function lt(e) {
-  return void 0 === e && (e = window), !!function (e) {
-    void 0 === e && (e = window);
-    var t = !1;
-
-    try {
-      var i = {
-        get passive() {
-          return t = !0, !1;
-        }
-
-      },
-          s = function () {};
-
-      e.document.addEventListener("test", s, i), e.document.removeEventListener("test", s, i);
-    } catch (e) {
-      t = !1;
-    }
-
-    return t;
-  }
-  /**
-  @license
-  Copyright 2021 Google Inc. All Rights Reserved.
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-      http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  */
-  (e) && {
-    passive: !0
-  };
-}
-
-function ct(e, t, i) {
-  if (void 0 !== t) return function (e, t, i) {
-    const s = e.constructor;
-
-    if (!i) {
-      const e = `__${t}`;
-      if (!(i = s.getPropertyDescriptor(t, e))) throw new Error("@ariaProperty must be used after a @property decorator");
-    }
-
-    const n = i;
-    let r = "";
-    if (!n.set) throw new Error(`@ariaProperty requires a setter for ${t}`);
-    const o = {
-      configurable: !0,
-      enumerable: !0,
-
-      set(e) {
-        if ("" === r) {
-          const e = s.getPropertyOptions(t);
-          r = e.attribute;
-        }
-
-        this.hasAttribute(r) && this.removeAttribute(r), n.set.call(this, e);
-      }
-
-    };
-    return n.get && (o.get = function () {
-      return n.get.call(this);
-    }), o;
-  }(e, t, i);
-  throw new Error("@ariaProperty only supports TypeScript Decorators");
-}
+;
 /**
-@license
-Copyright 2018 Google Inc. All Rights Reserved.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-
-dt.finalized = !0, dt.render = (e, t, i) => {
-  if (!i || "object" != typeof i || !i.scopeName) throw new Error("The `scopeName` option is required.");
-  const s = i.scopeName,
-        n = Ue.has(t),
-        r = je && 11 === t.nodeType && !!t.host,
-        o = r && !qe.has(s),
-        a = o ? document.createDocumentFragment() : t;
-
-  if (((e, t, i) => {
-    let s = Ue.get(t);
-    void 0 === s && (re(t, t.firstChild), Ue.set(t, s = new Re(Object.assign({
-      templateFactory: Fe
-    }, i))), s.appendInto(t)), s.setValue(e), s.commit();
-  })(e, a, Object.assign({
-    templateFactory: Be(s)
-  }, i)), o) {
-    const e = Ue.get(a);
-    Ue.delete(a);
-    const i = e.value instanceof Se ? e.value.template : void 0;
-    Ke(s, a, i), re(t, t.firstChild), t.appendChild(a), Ue.set(t, e);
-  }
-
-  !n && r && window.ShadyCSS.styleElement(t.host);
-};
-
-const ht = () => {},
-      ut = {
+const Te = () => {},
+      Ee = {
   get passive() {
     return !1;
   }
 
 };
 
-document.addEventListener("x", ht, ut), document.removeEventListener("x", ht);
+document.addEventListener("x", Te, Ee), document.removeEventListener("x", Te);
 /**
-@license
-Copyright 2018 Google Inc. All Rights Reserved.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-class pt extends dt {
+class Ae extends ce {
   click() {
     if (this.mdcRoot) return this.mdcRoot.focus(), void this.mdcRoot.click();
     super.click();
@@ -2151,37 +1407,923 @@ class pt extends dt {
 
 }
 /**
-@license
-Copyright 2018 Google Inc. All Rights Reserved.
+ * @license
+ * Copyright 2016 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+var xe = function () {
+  function e(e) {
+    void 0 === e && (e = {}), this.adapter = e;
+  }
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+  return Object.defineProperty(e, "cssClasses", {
+    get: function () {
+      return {};
+    },
+    enumerable: !1,
+    configurable: !0
+  }), Object.defineProperty(e, "strings", {
+    get: function () {
+      return {};
+    },
+    enumerable: !1,
+    configurable: !0
+  }), Object.defineProperty(e, "numbers", {
+    get: function () {
+      return {};
+    },
+    enumerable: !1,
+    configurable: !0
+  }), Object.defineProperty(e, "defaultAdapter", {
+    get: function () {
+      return {};
+    },
+    enumerable: !1,
+    configurable: !0
+  }), e.prototype.init = function () {}, e.prototype.destroy = function () {}, e;
+}(),
+    Re = {
+  BG_FOCUSED: "mdc-ripple-upgraded--background-focused",
+  FG_ACTIVATION: "mdc-ripple-upgraded--foreground-activation",
+  FG_DEACTIVATION: "mdc-ripple-upgraded--foreground-deactivation",
+  ROOT: "mdc-ripple-upgraded",
+  UNBOUNDED: "mdc-ripple-upgraded--unbounded"
+},
+    Ce = {
+  VAR_FG_SCALE: "--mdc-ripple-fg-scale",
+  VAR_FG_SIZE: "--mdc-ripple-fg-size",
+  VAR_FG_TRANSLATE_END: "--mdc-ripple-fg-translate-end",
+  VAR_FG_TRANSLATE_START: "--mdc-ripple-fg-translate-start",
+  VAR_LEFT: "--mdc-ripple-left",
+  VAR_TOP: "--mdc-ripple-top"
+},
+    ke = {
+  DEACTIVATION_TIMEOUT_MS: 225,
+  FG_DEACTIVATION_MS: 150,
+  INITIAL_ORIGIN_SCALE: .6,
+  PADDING: 10,
+  TAP_DELAY_MS: 300
+};
+/**
+ * @license
+ * Copyright 2016 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
+ * @license
+ * Copyright 2016 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 
-class mt extends pt {
-  createRenderRoot() {
-    return this.attachShadow({
-      mode: "open",
-      delegatesFocus: !0
+var $e = ["touchstart", "pointerdown", "mousedown", "keydown"],
+    Ie = ["touchend", "pointerup", "mouseup", "contextmenu"],
+    Pe = [],
+    De = function (e) {
+  function t(i) {
+    var r = e.call(this, ue(ue({}, t.defaultAdapter), i)) || this;
+    return r.activationAnimationHasEnded = !1, r.activationTimer = 0, r.fgDeactivationRemovalTimer = 0, r.fgScale = "0", r.frame = {
+      width: 0,
+      height: 0
+    }, r.initialSize = 0, r.layoutFrame = 0, r.maxRadius = 0, r.unboundedCoords = {
+      left: 0,
+      top: 0
+    }, r.activationState = r.defaultActivationState(), r.activationTimerCallback = function () {
+      r.activationAnimationHasEnded = !0, r.runDeactivationUXLogicIfReady();
+    }, r.activateHandler = function (e) {
+      r.activateImpl(e);
+    }, r.deactivateHandler = function () {
+      r.deactivateImpl();
+    }, r.focusHandler = function () {
+      r.handleFocus();
+    }, r.blurHandler = function () {
+      r.handleBlur();
+    }, r.resizeHandler = function () {
+      r.layout();
+    }, r;
+  }
+
+  return pe(t, e), Object.defineProperty(t, "cssClasses", {
+    get: function () {
+      return Re;
+    },
+    enumerable: !1,
+    configurable: !0
+  }), Object.defineProperty(t, "strings", {
+    get: function () {
+      return Ce;
+    },
+    enumerable: !1,
+    configurable: !0
+  }), Object.defineProperty(t, "numbers", {
+    get: function () {
+      return ke;
+    },
+    enumerable: !1,
+    configurable: !0
+  }), Object.defineProperty(t, "defaultAdapter", {
+    get: function () {
+      return {
+        addClass: function () {},
+        browserSupportsCssVars: function () {
+          return !0;
+        },
+        computeBoundingRect: function () {
+          return {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            width: 0,
+            height: 0
+          };
+        },
+        containsEventTarget: function () {
+          return !0;
+        },
+        deregisterDocumentInteractionHandler: function () {},
+        deregisterInteractionHandler: function () {},
+        deregisterResizeHandler: function () {},
+        getWindowPageOffset: function () {
+          return {
+            x: 0,
+            y: 0
+          };
+        },
+        isSurfaceActive: function () {
+          return !0;
+        },
+        isSurfaceDisabled: function () {
+          return !0;
+        },
+        isUnbounded: function () {
+          return !0;
+        },
+        registerDocumentInteractionHandler: function () {},
+        registerInteractionHandler: function () {},
+        registerResizeHandler: function () {},
+        removeClass: function () {},
+        updateCssVariable: function () {}
+      };
+    },
+    enumerable: !1,
+    configurable: !0
+  }), t.prototype.init = function () {
+    var e = this,
+        i = this.supportsPressRipple();
+
+    if (this.registerRootHandlers(i), i) {
+      var r = t.cssClasses,
+          s = r.ROOT,
+          n = r.UNBOUNDED;
+      requestAnimationFrame(function () {
+        e.adapter.addClass(s), e.adapter.isUnbounded() && (e.adapter.addClass(n), e.layoutInternal());
+      });
+    }
+  }, t.prototype.destroy = function () {
+    var e = this;
+
+    if (this.supportsPressRipple()) {
+      this.activationTimer && (clearTimeout(this.activationTimer), this.activationTimer = 0, this.adapter.removeClass(t.cssClasses.FG_ACTIVATION)), this.fgDeactivationRemovalTimer && (clearTimeout(this.fgDeactivationRemovalTimer), this.fgDeactivationRemovalTimer = 0, this.adapter.removeClass(t.cssClasses.FG_DEACTIVATION));
+      var i = t.cssClasses,
+          r = i.ROOT,
+          s = i.UNBOUNDED;
+      requestAnimationFrame(function () {
+        e.adapter.removeClass(r), e.adapter.removeClass(s), e.removeCssVars();
+      });
+    }
+
+    this.deregisterRootHandlers(), this.deregisterDeactivationHandlers();
+  }, t.prototype.activate = function (e) {
+    this.activateImpl(e);
+  }, t.prototype.deactivate = function () {
+    this.deactivateImpl();
+  }, t.prototype.layout = function () {
+    var e = this;
+    this.layoutFrame && cancelAnimationFrame(this.layoutFrame), this.layoutFrame = requestAnimationFrame(function () {
+      e.layoutInternal(), e.layoutFrame = 0;
+    });
+  }, t.prototype.setUnbounded = function (e) {
+    var i = t.cssClasses.UNBOUNDED;
+    e ? this.adapter.addClass(i) : this.adapter.removeClass(i);
+  }, t.prototype.handleFocus = function () {
+    var e = this;
+    requestAnimationFrame(function () {
+      return e.adapter.addClass(t.cssClasses.BG_FOCUSED);
+    });
+  }, t.prototype.handleBlur = function () {
+    var e = this;
+    requestAnimationFrame(function () {
+      return e.adapter.removeClass(t.cssClasses.BG_FOCUSED);
+    });
+  }, t.prototype.supportsPressRipple = function () {
+    return this.adapter.browserSupportsCssVars();
+  }, t.prototype.defaultActivationState = function () {
+    return {
+      activationEvent: void 0,
+      hasDeactivationUXRun: !1,
+      isActivated: !1,
+      isProgrammatic: !1,
+      wasActivatedByPointer: !1,
+      wasElementMadeActive: !1
+    };
+  }, t.prototype.registerRootHandlers = function (e) {
+    var t, i;
+
+    if (e) {
+      try {
+        for (var r = ve($e), s = r.next(); !s.done; s = r.next()) {
+          var n = s.value;
+          this.adapter.registerInteractionHandler(n, this.activateHandler);
+        }
+      } catch (e) {
+        t = {
+          error: e
+        };
+      } finally {
+        try {
+          s && !s.done && (i = r.return) && i.call(r);
+        } finally {
+          if (t) throw t.error;
+        }
+      }
+
+      this.adapter.isUnbounded() && this.adapter.registerResizeHandler(this.resizeHandler);
+    }
+
+    this.adapter.registerInteractionHandler("focus", this.focusHandler), this.adapter.registerInteractionHandler("blur", this.blurHandler);
+  }, t.prototype.registerDeactivationHandlers = function (e) {
+    var t, i;
+    if ("keydown" === e.type) this.adapter.registerInteractionHandler("keyup", this.deactivateHandler);else try {
+      for (var r = ve(Ie), s = r.next(); !s.done; s = r.next()) {
+        var n = s.value;
+        this.adapter.registerDocumentInteractionHandler(n, this.deactivateHandler);
+      }
+    } catch (e) {
+      t = {
+        error: e
+      };
+    } finally {
+      try {
+        s && !s.done && (i = r.return) && i.call(r);
+      } finally {
+        if (t) throw t.error;
+      }
+    }
+  }, t.prototype.deregisterRootHandlers = function () {
+    var e, t;
+
+    try {
+      for (var i = ve($e), r = i.next(); !r.done; r = i.next()) {
+        var s = r.value;
+        this.adapter.deregisterInteractionHandler(s, this.activateHandler);
+      }
+    } catch (t) {
+      e = {
+        error: t
+      };
+    } finally {
+      try {
+        r && !r.done && (t = i.return) && t.call(i);
+      } finally {
+        if (e) throw e.error;
+      }
+    }
+
+    this.adapter.deregisterInteractionHandler("focus", this.focusHandler), this.adapter.deregisterInteractionHandler("blur", this.blurHandler), this.adapter.isUnbounded() && this.adapter.deregisterResizeHandler(this.resizeHandler);
+  }, t.prototype.deregisterDeactivationHandlers = function () {
+    var e, t;
+    this.adapter.deregisterInteractionHandler("keyup", this.deactivateHandler);
+
+    try {
+      for (var i = ve(Ie), r = i.next(); !r.done; r = i.next()) {
+        var s = r.value;
+        this.adapter.deregisterDocumentInteractionHandler(s, this.deactivateHandler);
+      }
+    } catch (t) {
+      e = {
+        error: t
+      };
+    } finally {
+      try {
+        r && !r.done && (t = i.return) && t.call(i);
+      } finally {
+        if (e) throw e.error;
+      }
+    }
+  }, t.prototype.removeCssVars = function () {
+    var e = this,
+        i = t.strings;
+    Object.keys(i).forEach(function (t) {
+      0 === t.indexOf("VAR_") && e.adapter.updateCssVariable(i[t], null);
+    });
+  }, t.prototype.activateImpl = function (e) {
+    var t = this;
+
+    if (!this.adapter.isSurfaceDisabled()) {
+      var i = this.activationState;
+
+      if (!i.isActivated) {
+        var r = this.previousActivationEvent;
+        if (!(r && void 0 !== e && r.type !== e.type)) i.isActivated = !0, i.isProgrammatic = void 0 === e, i.activationEvent = e, i.wasActivatedByPointer = !i.isProgrammatic && void 0 !== e && ("mousedown" === e.type || "touchstart" === e.type || "pointerdown" === e.type), void 0 !== e && Pe.length > 0 && Pe.some(function (e) {
+          return t.adapter.containsEventTarget(e);
+        }) ? this.resetActivationState() : (void 0 !== e && (Pe.push(e.target), this.registerDeactivationHandlers(e)), i.wasElementMadeActive = this.checkElementMadeActive(e), i.wasElementMadeActive && this.animateActivation(), requestAnimationFrame(function () {
+          Pe = [], i.wasElementMadeActive || void 0 === e || " " !== e.key && 32 !== e.keyCode || (i.wasElementMadeActive = t.checkElementMadeActive(e), i.wasElementMadeActive && t.animateActivation()), i.wasElementMadeActive || (t.activationState = t.defaultActivationState());
+        }));
+      }
+    }
+  }, t.prototype.checkElementMadeActive = function (e) {
+    return void 0 === e || "keydown" !== e.type || this.adapter.isSurfaceActive();
+  }, t.prototype.animateActivation = function () {
+    var e = this,
+        i = t.strings,
+        r = i.VAR_FG_TRANSLATE_START,
+        s = i.VAR_FG_TRANSLATE_END,
+        n = t.cssClasses,
+        o = n.FG_DEACTIVATION,
+        a = n.FG_ACTIVATION,
+        d = t.numbers.DEACTIVATION_TIMEOUT_MS;
+    this.layoutInternal();
+    var c = "",
+        l = "";
+
+    if (!this.adapter.isUnbounded()) {
+      var h = this.getFgTranslationCoordinates(),
+          p = h.startPoint,
+          u = h.endPoint;
+      c = p.x + "px, " + p.y + "px", l = u.x + "px, " + u.y + "px";
+    }
+
+    this.adapter.updateCssVariable(r, c), this.adapter.updateCssVariable(s, l), clearTimeout(this.activationTimer), clearTimeout(this.fgDeactivationRemovalTimer), this.rmBoundedActivationClasses(), this.adapter.removeClass(o), this.adapter.computeBoundingRect(), this.adapter.addClass(a), this.activationTimer = setTimeout(function () {
+      e.activationTimerCallback();
+    }, d);
+  }, t.prototype.getFgTranslationCoordinates = function () {
+    var e,
+        t = this.activationState,
+        i = t.activationEvent;
+    return e = t.wasActivatedByPointer ? function (e, t, i) {
+      if (!e) return {
+        x: 0,
+        y: 0
+      };
+      var r,
+          s,
+          n = t.x,
+          o = t.y,
+          a = n + i.left,
+          d = o + i.top;
+
+      if ("touchstart" === e.type) {
+        var c = e;
+        r = c.changedTouches[0].pageX - a, s = c.changedTouches[0].pageY - d;
+      } else {
+        var l = e;
+        r = l.pageX - a, s = l.pageY - d;
+      }
+
+      return {
+        x: r,
+        y: s
+      };
+    }(i, this.adapter.getWindowPageOffset(), this.adapter.computeBoundingRect()) : {
+      x: this.frame.width / 2,
+      y: this.frame.height / 2
+    }, {
+      startPoint: e = {
+        x: e.x - this.initialSize / 2,
+        y: e.y - this.initialSize / 2
+      },
+      endPoint: {
+        x: this.frame.width / 2 - this.initialSize / 2,
+        y: this.frame.height / 2 - this.initialSize / 2
+      }
+    };
+  }, t.prototype.runDeactivationUXLogicIfReady = function () {
+    var e = this,
+        i = t.cssClasses.FG_DEACTIVATION,
+        r = this.activationState,
+        s = r.hasDeactivationUXRun,
+        n = r.isActivated;
+    (s || !n) && this.activationAnimationHasEnded && (this.rmBoundedActivationClasses(), this.adapter.addClass(i), this.fgDeactivationRemovalTimer = setTimeout(function () {
+      e.adapter.removeClass(i);
+    }, ke.FG_DEACTIVATION_MS));
+  }, t.prototype.rmBoundedActivationClasses = function () {
+    var e = t.cssClasses.FG_ACTIVATION;
+    this.adapter.removeClass(e), this.activationAnimationHasEnded = !1, this.adapter.computeBoundingRect();
+  }, t.prototype.resetActivationState = function () {
+    var e = this;
+    this.previousActivationEvent = this.activationState.activationEvent, this.activationState = this.defaultActivationState(), setTimeout(function () {
+      return e.previousActivationEvent = void 0;
+    }, t.numbers.TAP_DELAY_MS);
+  }, t.prototype.deactivateImpl = function () {
+    var e = this,
+        t = this.activationState;
+
+    if (t.isActivated) {
+      var i = ue({}, t);
+      t.isProgrammatic ? (requestAnimationFrame(function () {
+        e.animateDeactivation(i);
+      }), this.resetActivationState()) : (this.deregisterDeactivationHandlers(), requestAnimationFrame(function () {
+        e.activationState.hasDeactivationUXRun = !0, e.animateDeactivation(i), e.resetActivationState();
+      }));
+    }
+  }, t.prototype.animateDeactivation = function (e) {
+    var t = e.wasActivatedByPointer,
+        i = e.wasElementMadeActive;
+    (t || i) && this.runDeactivationUXLogicIfReady();
+  }, t.prototype.layoutInternal = function () {
+    var e = this;
+    this.frame = this.adapter.computeBoundingRect();
+    var i = Math.max(this.frame.height, this.frame.width);
+    this.maxRadius = this.adapter.isUnbounded() ? i : Math.sqrt(Math.pow(e.frame.width, 2) + Math.pow(e.frame.height, 2)) + t.numbers.PADDING;
+    var r = Math.floor(i * t.numbers.INITIAL_ORIGIN_SCALE);
+    this.adapter.isUnbounded() && r % 2 != 0 ? this.initialSize = r - 1 : this.initialSize = r, this.fgScale = "" + this.maxRadius / this.initialSize, this.updateLayoutCssVars();
+  }, t.prototype.updateLayoutCssVars = function () {
+    var e = t.strings,
+        i = e.VAR_FG_SIZE,
+        r = e.VAR_LEFT,
+        s = e.VAR_TOP,
+        n = e.VAR_FG_SCALE;
+    this.adapter.updateCssVariable(i, this.initialSize + "px"), this.adapter.updateCssVariable(n, this.fgScale), this.adapter.isUnbounded() && (this.unboundedCoords = {
+      left: Math.round(this.frame.width / 2 - this.initialSize / 2),
+      top: Math.round(this.frame.height / 2 - this.initialSize / 2)
+    }, this.adapter.updateCssVariable(r, this.unboundedCoords.left + "px"), this.adapter.updateCssVariable(s, this.unboundedCoords.top + "px"));
+  }, t;
+}(xe),
+    ze = De;
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+
+const Ve = 1,
+      Fe = e => (...t) => ({
+  _$litDirective$: e,
+  values: t
+});
+
+class He {
+  constructor(e) {}
+
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+
+  _$AT(e, t, i) {
+    this._$Ct = e, this._$AM = t, this._$Ci = i;
+  }
+
+  _$AS(e, t) {
+    return this.update(e, t);
+  }
+
+  update(e, t) {
+    return this.render(...t);
+  }
+
+}
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+
+const Me = Fe(class extends He {
+  constructor(e) {
+    var t;
+    if (super(e), e.type !== Ve || "class" !== e.name || (null === (t = e.strings) || void 0 === t ? void 0 : t.length) > 2) throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.");
+  }
+
+  render(e) {
+    return " " + Object.keys(e).filter(t => e[t]).join(" ") + " ";
+  }
+
+  update(e, [t]) {
+    var i, r;
+
+    if (void 0 === this.st) {
+      this.st = new Set(), void 0 !== e.strings && (this.et = new Set(e.strings.join(" ").split(/\s/).filter(e => "" !== e)));
+
+      for (const e in t) t[e] && !(null === (i = this.et) || void 0 === i ? void 0 : i.has(e)) && this.st.add(e);
+
+      return this.render(t);
+    }
+
+    const s = e.element.classList;
+    this.st.forEach(e => {
+      e in t || (s.remove(e), this.st.delete(e));
+    });
+
+    for (const e in t) {
+      const i = !!t[e];
+      i === this.st.has(e) || (null === (r = this.et) || void 0 === r ? void 0 : r.has(e)) || (i ? (s.add(e), this.st.add(e)) : (s.remove(e), this.st.delete(e)));
+    }
+
+    return P;
+  }
+
+}),
+      Le = Fe(class extends He {
+  constructor(e) {
+    var t;
+    if (super(e), e.type !== Ve || "style" !== e.name || (null === (t = e.strings) || void 0 === t ? void 0 : t.length) > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+  }
+
+  render(e) {
+    return Object.keys(e).reduce((t, i) => {
+      const r = e[i];
+      return null == r ? t : t + `${i = i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${r};`;
+    }, "");
+  }
+
+  update(e, [t]) {
+    const {
+      style: i
+    } = e.element;
+
+    if (void 0 === this.ut) {
+      this.ut = new Set();
+
+      for (const e in t) this.ut.add(e);
+
+      return this.render(t);
+    }
+
+    this.ut.forEach(e => {
+      null == t[e] && (this.ut.delete(e), e.includes("-") ? i.removeProperty(e) : i[e] = "");
+    });
+
+    for (const e in t) {
+      const r = t[e];
+      null != r && (this.ut.add(e), e.includes("-") ? i.setProperty(e, r) : i[e] = r);
+    }
+
+    return P;
+  }
+
+});
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+class Ne extends Ae {
+  constructor() {
+    super(...arguments), this.primary = !1, this.accent = !1, this.unbounded = !1, this.disabled = !1, this.activated = !1, this.selected = !1, this.internalUseStateLayerCustomProperties = !1, this.hovering = !1, this.bgFocused = !1, this.fgActivation = !1, this.fgDeactivation = !1, this.fgScale = "", this.fgSize = "", this.translateStart = "", this.translateEnd = "", this.leftPos = "", this.topPos = "", this.mdcFoundationClass = ze;
+  }
+
+  get isActive() {
+    return e = this.parentElement || this, t = ":active", (e.matches || e.webkitMatchesSelector || e.msMatchesSelector).call(e, t);
+    var e, t;
+  }
+
+  createAdapter() {
+    return {
+      browserSupportsCssVars: () => !0,
+      isUnbounded: () => this.unbounded,
+      isSurfaceActive: () => this.isActive,
+      isSurfaceDisabled: () => this.disabled,
+      addClass: e => {
+        switch (e) {
+          case "mdc-ripple-upgraded--background-focused":
+            this.bgFocused = !0;
+            break;
+
+          case "mdc-ripple-upgraded--foreground-activation":
+            this.fgActivation = !0;
+            break;
+
+          case "mdc-ripple-upgraded--foreground-deactivation":
+            this.fgDeactivation = !0;
+        }
+      },
+      removeClass: e => {
+        switch (e) {
+          case "mdc-ripple-upgraded--background-focused":
+            this.bgFocused = !1;
+            break;
+
+          case "mdc-ripple-upgraded--foreground-activation":
+            this.fgActivation = !1;
+            break;
+
+          case "mdc-ripple-upgraded--foreground-deactivation":
+            this.fgDeactivation = !1;
+        }
+      },
+      containsEventTarget: () => !0,
+      registerInteractionHandler: () => {},
+      deregisterInteractionHandler: () => {},
+      registerDocumentInteractionHandler: () => {},
+      deregisterDocumentInteractionHandler: () => {},
+      registerResizeHandler: () => {},
+      deregisterResizeHandler: () => {},
+      updateCssVariable: (e, t) => {
+        switch (e) {
+          case "--mdc-ripple-fg-scale":
+            this.fgScale = t;
+            break;
+
+          case "--mdc-ripple-fg-size":
+            this.fgSize = t;
+            break;
+
+          case "--mdc-ripple-fg-translate-end":
+            this.translateEnd = t;
+            break;
+
+          case "--mdc-ripple-fg-translate-start":
+            this.translateStart = t;
+            break;
+
+          case "--mdc-ripple-left":
+            this.leftPos = t;
+            break;
+
+          case "--mdc-ripple-top":
+            this.topPos = t;
+        }
+      },
+      computeBoundingRect: () => (this.parentElement || this).getBoundingClientRect(),
+      getWindowPageOffset: () => ({
+        x: window.pageXOffset,
+        y: window.pageYOffset
+      })
+    };
+  }
+
+  startPress(e) {
+    this.waitForFoundation(() => {
+      this.mdcFoundation.activate(e);
     });
   }
 
-  click() {
-    this.formElement && (this.formElement.focus(), this.formElement.click());
+  endPress() {
+    this.waitForFoundation(() => {
+      this.mdcFoundation.deactivate();
+    });
   }
 
-  setAriaLabel(e) {
-    this.formElement && this.formElement.setAttribute("aria-label", e);
+  startFocus() {
+    this.waitForFoundation(() => {
+      this.mdcFoundation.handleFocus();
+    });
+  }
+
+  endFocus() {
+    this.waitForFoundation(() => {
+      this.mdcFoundation.handleBlur();
+    });
+  }
+
+  startHover() {
+    this.hovering = !0;
+  }
+
+  endHover() {
+    this.hovering = !1;
+  }
+
+  waitForFoundation(e) {
+    this.mdcFoundation ? e() : this.updateComplete.then(e);
+  }
+
+  update(e) {
+    e.has("disabled") && this.disabled && this.endHover(), super.update(e);
+  }
+
+  render() {
+    const e = this.activated && (this.primary || !this.accent),
+          t = this.selected && (this.primary || !this.accent),
+          i = {
+      "mdc-ripple-surface--accent": this.accent,
+      "mdc-ripple-surface--primary--activated": e,
+      "mdc-ripple-surface--accent--activated": this.accent && this.activated,
+      "mdc-ripple-surface--primary--selected": t,
+      "mdc-ripple-surface--accent--selected": this.accent && this.selected,
+      "mdc-ripple-surface--disabled": this.disabled,
+      "mdc-ripple-surface--hover": this.hovering,
+      "mdc-ripple-surface--primary": this.primary,
+      "mdc-ripple-surface--selected": this.selected,
+      "mdc-ripple-upgraded--background-focused": this.bgFocused,
+      "mdc-ripple-upgraded--foreground-activation": this.fgActivation,
+      "mdc-ripple-upgraded--foreground-deactivation": this.fgDeactivation,
+      "mdc-ripple-upgraded--unbounded": this.unbounded,
+      "mdc-ripple-surface--internal-use-state-layer-custom-properties": this.internalUseStateLayerCustomProperties
+    };
+    return I`
+        <div class="mdc-ripple-surface mdc-ripple-upgraded ${Me(i)}"
+          style="${Le({
+      "--mdc-ripple-fg-scale": this.fgScale,
+      "--mdc-ripple-fg-size": this.fgSize,
+      "--mdc-ripple-fg-translate-end": this.translateEnd,
+      "--mdc-ripple-fg-translate-start": this.translateStart,
+      "--mdc-ripple-left": this.leftPos,
+      "--mdc-ripple-top": this.topPos
+    })}"></div>`;
+  }
+
+}
+
+me([we(".mdc-ripple-surface")], Ne.prototype, "mdcRoot", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "primary", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "accent", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "unbounded", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "disabled", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "activated", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "selected", void 0), me([ye({
+  type: Boolean
+})], Ne.prototype, "internalUseStateLayerCustomProperties", void 0), me([be()], Ne.prototype, "hovering", void 0), me([be()], Ne.prototype, "bgFocused", void 0), me([be()], Ne.prototype, "fgActivation", void 0), me([be()], Ne.prototype, "fgDeactivation", void 0), me([be()], Ne.prototype, "fgScale", void 0), me([be()], Ne.prototype, "fgSize", void 0), me([be()], Ne.prototype, "translateStart", void 0), me([be()], Ne.prototype, "translateEnd", void 0), me([be()], Ne.prototype, "leftPos", void 0), me([be()], Ne.prototype, "topPos", void 0);
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-LIcense-Identifier: Apache-2.0
+ */
+
+const Ue = Z`.mdc-ripple-surface{--mdc-ripple-fg-size: 0;--mdc-ripple-left: 0;--mdc-ripple-top: 0;--mdc-ripple-fg-scale: 1;--mdc-ripple-fg-translate-end: 0;--mdc-ripple-fg-translate-start: 0;-webkit-tap-highlight-color:rgba(0,0,0,0);will-change:transform,opacity;position:relative;outline:none;overflow:hidden}.mdc-ripple-surface::before,.mdc-ripple-surface::after{position:absolute;border-radius:50%;opacity:0;pointer-events:none;content:""}.mdc-ripple-surface::before{transition:opacity 15ms linear,background-color 15ms linear;z-index:1;z-index:var(--mdc-ripple-z-index, 1)}.mdc-ripple-surface::after{z-index:0;z-index:var(--mdc-ripple-z-index, 0)}.mdc-ripple-surface.mdc-ripple-upgraded::before{transform:scale(var(--mdc-ripple-fg-scale, 1))}.mdc-ripple-surface.mdc-ripple-upgraded::after{top:0;left:0;transform:scale(0);transform-origin:center center}.mdc-ripple-surface.mdc-ripple-upgraded--unbounded::after{top:var(--mdc-ripple-top, 0);left:var(--mdc-ripple-left, 0)}.mdc-ripple-surface.mdc-ripple-upgraded--foreground-activation::after{animation:mdc-ripple-fg-radius-in 225ms forwards,mdc-ripple-fg-opacity-in 75ms forwards}.mdc-ripple-surface.mdc-ripple-upgraded--foreground-deactivation::after{animation:mdc-ripple-fg-opacity-out 150ms;transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}.mdc-ripple-surface::before,.mdc-ripple-surface::after{top:calc(50% - 100%);left:calc(50% - 100%);width:200%;height:200%}.mdc-ripple-surface.mdc-ripple-upgraded::after{width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-ripple-surface[data-mdc-ripple-is-unbounded],.mdc-ripple-upgraded--unbounded{overflow:visible}.mdc-ripple-surface[data-mdc-ripple-is-unbounded]::before,.mdc-ripple-surface[data-mdc-ripple-is-unbounded]::after,.mdc-ripple-upgraded--unbounded::before,.mdc-ripple-upgraded--unbounded::after{top:calc(50% - 50%);left:calc(50% - 50%);width:100%;height:100%}.mdc-ripple-surface[data-mdc-ripple-is-unbounded].mdc-ripple-upgraded::before,.mdc-ripple-surface[data-mdc-ripple-is-unbounded].mdc-ripple-upgraded::after,.mdc-ripple-upgraded--unbounded.mdc-ripple-upgraded::before,.mdc-ripple-upgraded--unbounded.mdc-ripple-upgraded::after{top:var(--mdc-ripple-top, calc(50% - 50%));left:var(--mdc-ripple-left, calc(50% - 50%));width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-ripple-surface[data-mdc-ripple-is-unbounded].mdc-ripple-upgraded::after,.mdc-ripple-upgraded--unbounded.mdc-ripple-upgraded::after{width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-ripple-surface::before,.mdc-ripple-surface::after{background-color:#000;background-color:var(--mdc-ripple-color, #000)}.mdc-ripple-surface:hover::before,.mdc-ripple-surface.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-ripple-surface.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-ripple-surface:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}@keyframes mdc-ripple-fg-radius-in{from{animation-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transform:translate(var(--mdc-ripple-fg-translate-start, 0)) scale(1)}to{transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}}@keyframes mdc-ripple-fg-opacity-in{from{animation-timing-function:linear;opacity:0}to{opacity:var(--mdc-ripple-fg-opacity, 0)}}@keyframes mdc-ripple-fg-opacity-out{from{animation-timing-function:linear;opacity:var(--mdc-ripple-fg-opacity, 0)}to{opacity:0}}:host{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:block}:host .mdc-ripple-surface{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;will-change:unset}.mdc-ripple-surface--primary::before,.mdc-ripple-surface--primary::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-ripple-surface--primary:hover::before,.mdc-ripple-surface--primary.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-ripple-surface--primary.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--primary:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-ripple-surface--primary:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--primary:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--primary.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--primary--activated::before{opacity:0.12;opacity:var(--mdc-ripple-activated-opacity, 0.12)}.mdc-ripple-surface--primary--activated::before,.mdc-ripple-surface--primary--activated::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-ripple-surface--primary--activated:hover::before,.mdc-ripple-surface--primary--activated.mdc-ripple-surface--hover::before{opacity:0.16;opacity:var(--mdc-ripple-hover-opacity, 0.16)}.mdc-ripple-surface--primary--activated.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--primary--activated:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-focus-opacity, 0.24)}.mdc-ripple-surface--primary--activated:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--primary--activated:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--primary--activated.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--primary--selected::before{opacity:0.08;opacity:var(--mdc-ripple-selected-opacity, 0.08)}.mdc-ripple-surface--primary--selected::before,.mdc-ripple-surface--primary--selected::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-ripple-surface--primary--selected:hover::before,.mdc-ripple-surface--primary--selected.mdc-ripple-surface--hover::before{opacity:0.12;opacity:var(--mdc-ripple-hover-opacity, 0.12)}.mdc-ripple-surface--primary--selected.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--primary--selected:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-focus-opacity, 0.2)}.mdc-ripple-surface--primary--selected:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--primary--selected:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--primary--selected.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--accent::before,.mdc-ripple-surface--accent::after{background-color:#018786;background-color:var(--mdc-ripple-color, var(--mdc-theme-secondary, #018786))}.mdc-ripple-surface--accent:hover::before,.mdc-ripple-surface--accent.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-ripple-surface--accent.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--accent:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-ripple-surface--accent:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--accent:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--accent.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--accent--activated::before{opacity:0.12;opacity:var(--mdc-ripple-activated-opacity, 0.12)}.mdc-ripple-surface--accent--activated::before,.mdc-ripple-surface--accent--activated::after{background-color:#018786;background-color:var(--mdc-ripple-color, var(--mdc-theme-secondary, #018786))}.mdc-ripple-surface--accent--activated:hover::before,.mdc-ripple-surface--accent--activated.mdc-ripple-surface--hover::before{opacity:0.16;opacity:var(--mdc-ripple-hover-opacity, 0.16)}.mdc-ripple-surface--accent--activated.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--accent--activated:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-focus-opacity, 0.24)}.mdc-ripple-surface--accent--activated:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--accent--activated:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--accent--activated.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--accent--selected::before{opacity:0.08;opacity:var(--mdc-ripple-selected-opacity, 0.08)}.mdc-ripple-surface--accent--selected::before,.mdc-ripple-surface--accent--selected::after{background-color:#018786;background-color:var(--mdc-ripple-color, var(--mdc-theme-secondary, #018786))}.mdc-ripple-surface--accent--selected:hover::before,.mdc-ripple-surface--accent--selected.mdc-ripple-surface--hover::before{opacity:0.12;opacity:var(--mdc-ripple-hover-opacity, 0.12)}.mdc-ripple-surface--accent--selected.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--accent--selected:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-focus-opacity, 0.2)}.mdc-ripple-surface--accent--selected:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--accent--selected:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--accent--selected.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--disabled{opacity:0}.mdc-ripple-surface--internal-use-state-layer-custom-properties::before,.mdc-ripple-surface--internal-use-state-layer-custom-properties::after{background-color:#000;background-color:var(--mdc-ripple-hover-state-layer-color, #000)}.mdc-ripple-surface--internal-use-state-layer-custom-properties:hover::before,.mdc-ripple-surface--internal-use-state-layer-custom-properties.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-state-layer-opacity, 0.04)}.mdc-ripple-surface--internal-use-state-layer-custom-properties.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--internal-use-state-layer-custom-properties:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-state-layer-opacity, 0.12)}.mdc-ripple-surface--internal-use-state-layer-custom-properties:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--internal-use-state-layer-custom-properties:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-pressed-state-layer-opacity, 0.12)}.mdc-ripple-surface--internal-use-state-layer-custom-properties.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-pressed-state-layer-opacity, 0.12)}`
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+;
+let Oe = class extends Ne {};
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var Be, je, We, qe;
+
+function Xe(e, t, i) {
+  if (void 0 !== t)
+    /**
+     * @license
+     * Copyright 2021 Google LLC
+     * SPDX-License-Identifier: Apache-2.0
+     */
+    return function (e, t, i) {
+      const r = e.constructor;
+
+      if (!i) {
+        const e = `__${t}`;
+        if (!(i = r.getPropertyDescriptor(t, e))) throw new Error("@ariaProperty must be used after a @property decorator");
+      }
+
+      const s = i;
+      let n = "";
+      if (!s.set) throw new Error(`@ariaProperty requires a setter for ${t}`);
+      if (e.dispatchWizEvent) return i;
+      const o = {
+        configurable: !0,
+        enumerable: !0,
+
+        set(e) {
+          if ("" === n) {
+            const e = r.getPropertyOptions(t);
+            n = "string" == typeof e.attribute ? e.attribute : t;
+          }
+
+          this.hasAttribute(n) && this.removeAttribute(n), s.set.call(this, e);
+        }
+
+      };
+      return s.get && (o.get = function () {
+        return s.get.call(this);
+      }), o;
+    }(e, t, i);
+  throw new Error("@ariaProperty only supports TypeScript Decorators");
+}
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+
+Oe.styles = [Ue], Oe = me([fe("mwc-ripple")], Oe), function (e) {
+  e[e.ACTIVE = 0] = "ACTIVE", e[e.INACTIVE = 1] = "INACTIVE";
+}(Be || (Be = {})), function (e) {
+  e[e.START = 1] = "START", e[e.END = 2] = "END";
+}(je || (je = {}));
+const Ge = null !== (qe = null === (We = window.ShadyDOM) || void 0 === We ? void 0 : We.inUse) && void 0 !== qe && qe;
+
+class Ke extends Ae {
+  constructor() {
+    super(...arguments), this.disabled = !1, this.containingForm = null, this.formDataListener = e => {
+      this.disabled || this.setFormData(e.formData);
+    };
+  }
+
+  findFormElement() {
+    if (!this.shadowRoot || Ge) return null;
+    const e = this.getRootNode().querySelectorAll("form");
+
+    for (const t of Array.from(e)) if (t.contains(this)) return t;
+
+    return null;
+  }
+
+  connectedCallback() {
+    var e;
+    super.connectedCallback(), this.containingForm = this.findFormElement(), null === (e = this.containingForm) || void 0 === e || e.addEventListener("formdata", this.formDataListener);
+  }
+
+  disconnectedCallback() {
+    var e;
+    super.disconnectedCallback(), null === (e = this.containingForm) || void 0 === e || e.removeEventListener("formdata", this.formDataListener), this.containingForm = null;
+  }
+
+  click() {
+    this.formElement && !this.disabled && (this.formElement.focus(), this.formElement.click());
   }
 
   firstUpdated() {
@@ -2191,79 +2333,101 @@ class mt extends pt {
   }
 
 }
+
+Ke.shadowRootOptions = {
+  mode: "open",
+  delegatesFocus: !0
+}, me([ye({
+  type: Boolean
+})], Ke.prototype, "disabled", void 0);
 /**
-@license
-Copyright 2018 Google Inc. All Rights Reserved.
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-
-const ft = e => (t, i) => {
-  if (t.constructor._observers) {
-    if (!t.constructor.hasOwnProperty("_observers")) {
-      const e = t.constructor._observers;
-      t.constructor._observers = new Map(), e.forEach((e, i) => t.constructor._observers.set(i, e));
-    }
-  } else {
-    t.constructor._observers = new Map();
-    const e = t.updated;
-
-    t.updated = function (t) {
-      e.call(this, t), t.forEach((e, t) => {
-        const i = this.constructor._observers.get(t);
-
-        void 0 !== i && i.call(this, this[t], e);
+class Ye {
+  constructor(e) {
+    this.startPress = t => {
+      e().then(e => {
+        e && e.startPress(t);
+      });
+    }, this.endPress = () => {
+      e().then(e => {
+        e && e.endPress();
+      });
+    }, this.startFocus = () => {
+      e().then(e => {
+        e && e.startFocus();
+      });
+    }, this.endFocus = () => {
+      e().then(e => {
+        e && e.endFocus();
+      });
+    }, this.startHover = () => {
+      e().then(e => {
+        e && e.startHover();
+      });
+    }, this.endHover = () => {
+      e().then(e => {
+        e && e.endHover();
       });
     };
   }
 
-  t.constructor._observers.set(i, e);
 }
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-;
+var Ze = function () {
+  function e() {
+    this.rafIDs = new Map();
+  }
 
-var vt = function (e, t) {
-  return (vt = Object.setPrototypeOf || {
-    __proto__: []
-  } instanceof Array && function (e, t) {
-    e.__proto__ = t;
-  } || function (e, t) {
-    for (var i in t) t.hasOwnProperty(i) && (e[i] = t[i]);
-  })(e, t);
-};
-
-var _t = function () {
-  return (_t = Object.assign || function (e) {
-    for (var t, i = 1, s = arguments.length; i < s; i++) for (var n in t = arguments[i]) Object.prototype.hasOwnProperty.call(t, n) && (e[n] = t[n]);
-
-    return e;
-  }).apply(this, arguments);
-},
-    gt = {
+  return e.prototype.request = function (e, t) {
+    var i = this;
+    this.cancel(e);
+    var r = requestAnimationFrame(function (r) {
+      i.rafIDs.delete(e), t(r);
+    });
+    this.rafIDs.set(e, r);
+  }, e.prototype.cancel = function (e) {
+    var t = this.rafIDs.get(e);
+    t && (cancelAnimationFrame(t), this.rafIDs.delete(e));
+  }, e.prototype.cancelAll = function () {
+    var e = this;
+    this.rafIDs.forEach(function (t, i) {
+      e.cancel(i);
+    });
+  }, e.prototype.getQueue = function () {
+    var e = [];
+    return this.rafIDs.forEach(function (t, i) {
+      e.push(i);
+    }), e;
+  }, e;
+}(),
+    Je = {
   animation: {
     prefixed: "-webkit-animation",
     standard: "animation"
@@ -2276,28 +2440,6 @@ var _t = function () {
     prefixed: "-webkit-transition",
     standard: "transition"
   }
-},
-    yt = {
-  animationend: {
-    cssProperty: "animation",
-    prefixed: "webkitAnimationEnd",
-    standard: "animationend"
-  },
-  animationiteration: {
-    cssProperty: "animation",
-    prefixed: "webkitAnimationIteration",
-    standard: "animationiteration"
-  },
-  animationstart: {
-    cssProperty: "animation",
-    prefixed: "webkitAnimationStart",
-    standard: "animationstart"
-  },
-  transitionend: {
-    cssProperty: "transition",
-    prefixed: "webkitTransitionEnd",
-    standard: "transitionend"
-  }
 };
 /**
  * @license
@@ -2323,12 +2465,22 @@ var _t = function () {
  */
 
 
-function wt(e) {
-  return Boolean(e.document) && "function" == typeof e.document.createElement;
+function Qe(e, t) {
+  if (function (e) {
+    return Boolean(e.document) && "function" == typeof e.document.createElement;
+  }(e) && t in Je) {
+    var i = e.document.createElement("div"),
+        r = Je[t],
+        s = r.standard,
+        n = r.prefixed;
+    return s in i.style ? s : n;
+  }
+
+  return t;
 }
 /**
  * @license
- * Copyright 2016 Google Inc.
+ * Copyright 2020 Google Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2350,123 +2502,34 @@ function wt(e) {
  */
 
 
-var bt = function () {
-  function e(e) {
-    void 0 === e && (e = {}), this.adapter = e;
-  }
+var et,
+    tt = "mdc-slider--disabled",
+    it = "mdc-slider--discrete",
+    rt = "mdc-slider--range",
+    st = "mdc-slider__thumb--focused",
+    nt = "mdc-slider__thumb--top",
+    ot = "mdc-slider__thumb--with-indicator",
+    at = "mdc-slider--tick-marks",
+    dt = 1,
+    ct = 5,
+    lt = "aria-valuetext",
+    ht = "disabled",
+    pt = "min",
+    ut = "max",
+    mt = "value",
+    vt = "step";
+!function (e) {
+  e.SLIDER_UPDATE = "slider_update";
+}(et || (et = {}));
 
-  return Object.defineProperty(e, "cssClasses", {
-    get: function () {
-      return {};
-    },
-    enumerable: !0,
-    configurable: !0
-  }), Object.defineProperty(e, "strings", {
-    get: function () {
-      return {};
-    },
-    enumerable: !0,
-    configurable: !0
-  }), Object.defineProperty(e, "numbers", {
-    get: function () {
-      return {};
-    },
-    enumerable: !0,
-    configurable: !0
-  }), Object.defineProperty(e, "defaultAdapter", {
-    get: function () {
-      return {};
-    },
-    enumerable: !0,
-    configurable: !0
-  }), e.prototype.init = function () {}, e.prototype.destroy = function () {}, e;
-}(),
-    St = {
-  ACTIVE: "mdc-slider--active",
-  DISABLED: "mdc-slider--disabled",
-  DISCRETE: "mdc-slider--discrete",
-  FOCUS: "mdc-slider--focus",
-  HAS_TRACK_MARKER: "mdc-slider--display-markers",
-  IN_TRANSIT: "mdc-slider--in-transit",
-  IS_DISCRETE: "mdc-slider--discrete",
-  DISABLE_TOUCH_ACTION: "mdc-slider--disable-touch-action"
-},
-    xt = {
-  ARIA_DISABLED: "aria-disabled",
-  ARIA_VALUEMAX: "aria-valuemax",
-  ARIA_VALUEMIN: "aria-valuemin",
-  ARIA_VALUENOW: "aria-valuenow",
-  CHANGE_EVENT: "MDCSlider:change",
-  INPUT_EVENT: "MDCSlider:input",
-  PIN_VALUE_MARKER_SELECTOR: ".mdc-slider__pin-value-marker",
-  STEP_DATA_ATTR: "data-step",
-  THUMB_CONTAINER_SELECTOR: ".mdc-slider__thumb-container",
-  TRACK_MARKER_CONTAINER_SELECTOR: ".mdc-slider__track-marker-container",
-  TRACK_SELECTOR: ".mdc-slider__track"
-},
-    Ct = {
-  PAGE_FACTOR: 4
-},
-    kt = "undefined" != typeof window,
-    Et = kt && !!window.PointerEvent,
-    Pt = Et ? ["pointerdown"] : ["mousedown", "touchstart"],
-    At = Et ? ["pointerup"] : ["mouseup", "touchend"],
-    Tt = {
-  mousedown: "mousemove",
-  pointerdown: "pointermove",
-  touchstart: "touchmove"
-},
-    Rt = "ArrowDown",
-    It = "ArrowLeft",
-    Nt = "ArrowRight",
-    zt = "ArrowUp",
-    Mt = "End",
-    Ht = "Home",
-    Ot = "PageDown",
-    Ft = "PageUp",
-    Vt = function (e) {
+var ft = "undefined" != typeof window,
+    gt = function (e) {
   function t(i) {
-    var s = e.call(this, _t(_t({}, t.defaultAdapter), i)) || this;
-    return s.savedTabIndex_ = NaN, s.active_ = !1, s.inTransit_ = !1, s.isDiscrete_ = !1, s.hasTrackMarker_ = !1, s.handlingThumbTargetEvt_ = !1, s.min_ = 0, s.max_ = 100, s.step_ = 0, s.value_ = 0, s.disabled_ = !1, s.preventFocusState_ = !1, s.thumbContainerPointerHandler_ = function () {
-      return s.handlingThumbTargetEvt_ = !0;
-    }, s.interactionStartHandler_ = function (e) {
-      return s.handleDown_(e);
-    }, s.keydownHandler_ = function (e) {
-      return s.handleKeydown_(e);
-    }, s.focusHandler_ = function () {
-      return s.handleFocus_();
-    }, s.blurHandler_ = function () {
-      return s.handleBlur_();
-    }, s.resizeHandler_ = function () {
-      return s.layout();
-    }, s;
+    var r = e.call(this, ue(ue({}, t.defaultAdapter), i)) || this;
+    return r.initialStylesRemoved = !1, r.isDisabled = !1, r.isDiscrete = !1, r.step = dt, r.hasTickMarks = !1, r.isRange = !1, r.thumb = null, r.downEventClientX = null, r.startThumbKnobWidth = 0, r.endThumbKnobWidth = 0, r.animFrame = new Ze(), r;
   }
 
-  return function (e, t) {
-    function i() {
-      this.constructor = e;
-    }
-
-    vt(e, t), e.prototype = null === t ? Object.create(t) : (i.prototype = t.prototype, new i());
-  }(t, e), Object.defineProperty(t, "cssClasses", {
-    get: function () {
-      return St;
-    },
-    enumerable: !0,
-    configurable: !0
-  }), Object.defineProperty(t, "strings", {
-    get: function () {
-      return xt;
-    },
-    enumerable: !0,
-    configurable: !0
-  }), Object.defineProperty(t, "numbers", {
-    get: function () {
-      return Ct;
-    },
-    enumerable: !0,
-    configurable: !0
-  }), Object.defineProperty(t, "defaultAdapter", {
+  return pe(t, e), Object.defineProperty(t, "defaultAdapter", {
     get: function () {
       return {
         hasClass: function () {
@@ -2474,12 +2537,32 @@ var bt = function () {
         },
         addClass: function () {},
         removeClass: function () {},
+        addThumbClass: function () {},
+        removeThumbClass: function () {},
         getAttribute: function () {
           return null;
         },
-        setAttribute: function () {},
-        removeAttribute: function () {},
-        computeBoundingRect: function () {
+        getInputValue: function () {
+          return "";
+        },
+        setInputValue: function () {},
+        getInputAttribute: function () {
+          return null;
+        },
+        setInputAttribute: function () {
+          return null;
+        },
+        removeInputAttribute: function () {
+          return null;
+        },
+        focusInput: function () {},
+        isInputFocused: function () {
+          return !1;
+        },
+        getThumbKnobWidth: function () {
+          return 0;
+        },
+        getThumbBoundingClientRect: function () {
           return {
             top: 0,
             right: 0,
@@ -2489,574 +2572,825 @@ var bt = function () {
             height: 0
           };
         },
-        getTabIndex: function () {
-          return 0;
+        getBoundingClientRect: function () {
+          return {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            width: 0,
+            height: 0
+          };
         },
-        registerInteractionHandler: function () {},
-        deregisterInteractionHandler: function () {},
-        registerThumbContainerInteractionHandler: function () {},
-        deregisterThumbContainerInteractionHandler: function () {},
-        registerBodyInteractionHandler: function () {},
-        deregisterBodyInteractionHandler: function () {},
-        registerResizeHandler: function () {},
-        deregisterResizeHandler: function () {},
-        notifyInput: function () {},
-        notifyChange: function () {},
-        setThumbContainerStyleProperty: function () {},
-        setTrackStyleProperty: function () {},
-        setMarkerValue: function () {},
-        setTrackMarkers: function () {},
         isRTL: function () {
           return !1;
-        }
+        },
+        setThumbStyleProperty: function () {},
+        removeThumbStyleProperty: function () {},
+        setTrackActiveStyleProperty: function () {},
+        removeTrackActiveStyleProperty: function () {},
+        setValueIndicatorText: function () {},
+        getValueToAriaValueTextFn: function () {
+          return null;
+        },
+        updateTickMarks: function () {},
+        setPointerCapture: function () {},
+        emitChangeEvent: function () {},
+        emitInputEvent: function () {},
+        emitDragStartEvent: function () {},
+        emitDragEndEvent: function () {},
+        registerEventHandler: function () {},
+        deregisterEventHandler: function () {},
+        registerThumbEventHandler: function () {},
+        deregisterThumbEventHandler: function () {},
+        registerInputEventHandler: function () {},
+        deregisterInputEventHandler: function () {},
+        registerBodyEventHandler: function () {},
+        deregisterBodyEventHandler: function () {},
+        registerWindowEventHandler: function () {},
+        deregisterWindowEventHandler: function () {}
       };
     },
-    enumerable: !0,
+    enumerable: !1,
     configurable: !0
   }), t.prototype.init = function () {
     var e = this;
-    this.isDiscrete_ = this.adapter.hasClass(St.IS_DISCRETE), this.hasTrackMarker_ = this.adapter.hasClass(St.HAS_TRACK_MARKER), Pt.forEach(function (t) {
-      e.adapter.registerInteractionHandler(t, e.interactionStartHandler_), e.adapter.registerThumbContainerInteractionHandler(t, e.thumbContainerPointerHandler_);
-    }), Et && this.adapter.addClass(St.DISABLE_TOUCH_ACTION), this.adapter.registerInteractionHandler("keydown", this.keydownHandler_), this.adapter.registerInteractionHandler("focus", this.focusHandler_), this.adapter.registerInteractionHandler("blur", this.blurHandler_), this.adapter.registerResizeHandler(this.resizeHandler_), this.layout(), this.isDiscrete_ && 0 === this.getStep() && (this.step_ = 1);
+    this.isDisabled = this.adapter.hasClass(tt), this.isDiscrete = this.adapter.hasClass(it), this.hasTickMarks = this.adapter.hasClass(at), this.isRange = this.adapter.hasClass(rt);
+    var t = this.convertAttributeValueToNumber(this.adapter.getInputAttribute(pt, this.isRange ? je.START : je.END), pt),
+        i = this.convertAttributeValueToNumber(this.adapter.getInputAttribute(ut, je.END), ut),
+        r = this.convertAttributeValueToNumber(this.adapter.getInputAttribute(mt, je.END), mt),
+        s = this.isRange ? this.convertAttributeValueToNumber(this.adapter.getInputAttribute(mt, je.START), mt) : t,
+        n = this.adapter.getInputAttribute(vt, je.END),
+        o = n ? this.convertAttributeValueToNumber(n, vt) : this.step;
+    this.validateProperties({
+      min: t,
+      max: i,
+      value: r,
+      valueStart: s,
+      step: o
+    }), this.min = t, this.max = i, this.value = r, this.valueStart = s, this.step = o, this.numDecimalPlaces = yt(this.step), this.valueBeforeDownEvent = r, this.valueStartBeforeDownEvent = s, this.mousedownOrTouchstartListener = this.handleMousedownOrTouchstart.bind(this), this.moveListener = this.handleMove.bind(this), this.pointerdownListener = this.handlePointerdown.bind(this), this.pointerupListener = this.handlePointerup.bind(this), this.thumbMouseenterListener = this.handleThumbMouseenter.bind(this), this.thumbMouseleaveListener = this.handleThumbMouseleave.bind(this), this.inputStartChangeListener = function () {
+      e.handleInputChange(je.START);
+    }, this.inputEndChangeListener = function () {
+      e.handleInputChange(je.END);
+    }, this.inputStartFocusListener = function () {
+      e.handleInputFocus(je.START);
+    }, this.inputEndFocusListener = function () {
+      e.handleInputFocus(je.END);
+    }, this.inputStartBlurListener = function () {
+      e.handleInputBlur(je.START);
+    }, this.inputEndBlurListener = function () {
+      e.handleInputBlur(je.END);
+    }, this.resizeListener = this.handleResize.bind(this), this.registerEventHandlers();
   }, t.prototype.destroy = function () {
-    var e = this;
-    Pt.forEach(function (t) {
-      e.adapter.deregisterInteractionHandler(t, e.interactionStartHandler_), e.adapter.deregisterThumbContainerInteractionHandler(t, e.thumbContainerPointerHandler_);
-    }), this.adapter.deregisterInteractionHandler("keydown", this.keydownHandler_), this.adapter.deregisterInteractionHandler("focus", this.focusHandler_), this.adapter.deregisterInteractionHandler("blur", this.blurHandler_), this.adapter.deregisterResizeHandler(this.resizeHandler_);
-  }, t.prototype.setupTrackMarker = function () {
-    this.isDiscrete_ && this.hasTrackMarker_ && 0 !== this.getStep() && this.adapter.setTrackMarkers(this.getStep(), this.getMax(), this.getMin());
-  }, t.prototype.layout = function () {
-    this.rect_ = this.adapter.computeBoundingRect(), this.updateUIForCurrentValue_();
-  }, t.prototype.getValue = function () {
-    return this.value_;
-  }, t.prototype.setValue = function (e) {
-    this.setValue_(e, !1);
-  }, t.prototype.getMax = function () {
-    return this.max_;
-  }, t.prototype.setMax = function (e) {
-    if (e < this.min_) throw new Error("Cannot set max to be less than the slider's minimum value");
-    this.max_ = e, this.setValue_(this.value_, !1, !0), this.adapter.setAttribute(xt.ARIA_VALUEMAX, String(this.max_)), this.setupTrackMarker();
-  }, t.prototype.getMin = function () {
-    return this.min_;
+    this.deregisterEventHandlers();
   }, t.prototype.setMin = function (e) {
-    if (e > this.max_) throw new Error("Cannot set min to be greater than the slider's maximum value");
-    this.min_ = e, this.setValue_(this.value_, !1, !0), this.adapter.setAttribute(xt.ARIA_VALUEMIN, String(this.min_)), this.setupTrackMarker();
-  }, t.prototype.getStep = function () {
-    return this.step_;
+    this.min = e, this.isRange || (this.valueStart = e), this.updateUI();
+  }, t.prototype.setMax = function (e) {
+    this.max = e, this.updateUI();
+  }, t.prototype.getMin = function () {
+    return this.min;
+  }, t.prototype.getMax = function () {
+    return this.max;
+  }, t.prototype.getValue = function () {
+    return this.value;
+  }, t.prototype.setValue = function (e) {
+    if (this.isRange && e < this.valueStart) throw new Error("end thumb value (" + e + ") must be >= start thumb value (" + this.valueStart + ")");
+    this.updateValue(e, je.END);
+  }, t.prototype.getValueStart = function () {
+    if (!this.isRange) throw new Error("`valueStart` is only applicable for range sliders.");
+    return this.valueStart;
+  }, t.prototype.setValueStart = function (e) {
+    if (!this.isRange) throw new Error("`valueStart` is only applicable for range sliders.");
+    if (this.isRange && e > this.value) throw new Error("start thumb value (" + e + ") must be <= end thumb value (" + this.value + ")");
+    this.updateValue(e, je.START);
   }, t.prototype.setStep = function (e) {
-    if (e < 0) throw new Error("Step cannot be set to a negative number");
-    this.isDiscrete_ && ("number" != typeof e || e < 1) && (e = 1), this.step_ = e, this.setValue_(this.value_, !1, !0), this.setupTrackMarker();
-  }, t.prototype.isDisabled = function () {
-    return this.disabled_;
+    this.step = e, this.numDecimalPlaces = yt(e), this.updateUI();
+  }, t.prototype.setIsDiscrete = function (e) {
+    this.isDiscrete = e, this.updateValueIndicatorUI(), this.updateTickMarksUI();
+  }, t.prototype.getStep = function () {
+    return this.step;
+  }, t.prototype.setHasTickMarks = function (e) {
+    this.hasTickMarks = e, this.updateTickMarksUI();
+  }, t.prototype.getDisabled = function () {
+    return this.isDisabled;
   }, t.prototype.setDisabled = function (e) {
-    this.disabled_ = e, this.toggleClass_(St.DISABLED, this.disabled_), this.disabled_ ? (this.savedTabIndex_ = this.adapter.getTabIndex(), this.adapter.setAttribute(xt.ARIA_DISABLED, "true"), this.adapter.removeAttribute("tabindex")) : (this.adapter.removeAttribute(xt.ARIA_DISABLED), isNaN(this.savedTabIndex_) || this.adapter.setAttribute("tabindex", String(this.savedTabIndex_)));
-  }, t.prototype.handleDown_ = function (e) {
-    var t = this;
+    this.isDisabled = e, e ? (this.adapter.addClass(tt), this.isRange && this.adapter.setInputAttribute(ht, "", je.START), this.adapter.setInputAttribute(ht, "", je.END)) : (this.adapter.removeClass(tt), this.isRange && this.adapter.removeInputAttribute(ht, je.START), this.adapter.removeInputAttribute(ht, je.END));
+  }, t.prototype.getIsRange = function () {
+    return this.isRange;
+  }, t.prototype.layout = function (e) {
+    var t = (void 0 === e ? {} : e).skipUpdateUI;
+    this.rect = this.adapter.getBoundingClientRect(), this.isRange && (this.startThumbKnobWidth = this.adapter.getThumbKnobWidth(je.START), this.endThumbKnobWidth = this.adapter.getThumbKnobWidth(je.END)), t || this.updateUI();
+  }, t.prototype.handleResize = function () {
+    this.layout();
+  }, t.prototype.handleDown = function (e) {
+    if (!this.isDisabled) {
+      this.valueStartBeforeDownEvent = this.valueStart, this.valueBeforeDownEvent = this.value;
+      var t = null != e.clientX ? e.clientX : e.targetTouches[0].clientX;
+      this.downEventClientX = t;
+      var i = this.mapClientXOnSliderScale(t);
+      this.thumb = this.getThumbFromDownEvent(t, i), null !== this.thumb && (this.handleDragStart(e, i, this.thumb), this.updateValue(i, this.thumb, {
+        emitInputEvent: !0
+      }));
+    }
+  }, t.prototype.handleMove = function (e) {
+    if (!this.isDisabled) {
+      e.preventDefault();
+      var t = null != e.clientX ? e.clientX : e.targetTouches[0].clientX,
+          i = null != this.thumb;
 
-    if (!this.disabled_) {
-      this.preventFocusState_ = !0, this.setInTransit_(!this.handlingThumbTargetEvt_), this.handlingThumbTargetEvt_ = !1, this.setActive_(!0);
-
-      var i = function (e) {
-        t.handleMove_(e);
-      },
-          s = Tt[e.type],
-          n = function () {
-        t.handleUp_(), t.adapter.deregisterBodyInteractionHandler(s, i), At.forEach(function (e) {
-          return t.adapter.deregisterBodyInteractionHandler(e, n);
+      if (this.thumb = this.getThumbFromMoveEvent(t), null !== this.thumb) {
+        var r = this.mapClientXOnSliderScale(t);
+        i || (this.handleDragStart(e, r, this.thumb), this.adapter.emitDragStartEvent(r, this.thumb)), this.updateValue(r, this.thumb, {
+          emitInputEvent: !0
         });
-      };
-
-      this.adapter.registerBodyInteractionHandler(s, i), At.forEach(function (e) {
-        return t.adapter.registerBodyInteractionHandler(e, n);
-      }), this.setValueFromEvt_(e);
+      }
     }
-  }, t.prototype.handleMove_ = function (e) {
-    e.preventDefault(), this.setValueFromEvt_(e);
-  }, t.prototype.handleUp_ = function () {
-    this.setActive_(!1), this.adapter.notifyChange();
-  }, t.prototype.getClientX_ = function (e) {
-    return e.targetTouches && e.targetTouches.length > 0 ? e.targetTouches[0].clientX : e.clientX;
-  }, t.prototype.setValueFromEvt_ = function (e) {
-    var t = this.getClientX_(e),
-        i = this.computeValueFromClientX_(t);
-    this.setValue_(i, !0);
-  }, t.prototype.computeValueFromClientX_ = function (e) {
-    var t = this.max_,
-        i = this.min_,
-        s = (e - this.rect_.left) / this.rect_.width;
-    return this.adapter.isRTL() && (s = 1 - s), i + s * (t - i);
-  }, t.prototype.handleKeydown_ = function (e) {
-    var t = this.getKeyId_(e),
-        i = this.getValueForKeyId_(t);
-    isNaN(i) || (e.preventDefault(), this.adapter.addClass(St.FOCUS), this.setValue_(i, !0), this.adapter.notifyChange());
-  }, t.prototype.getKeyId_ = function (e) {
-    return e.key === It || 37 === e.keyCode ? It : e.key === Nt || 39 === e.keyCode ? Nt : e.key === zt || 38 === e.keyCode ? zt : e.key === Rt || 40 === e.keyCode ? Rt : e.key === Ht || 36 === e.keyCode ? Ht : e.key === Mt || 35 === e.keyCode ? Mt : e.key === Ft || 33 === e.keyCode ? Ft : e.key === Ot || 34 === e.keyCode ? Ot : "";
-  }, t.prototype.getValueForKeyId_ = function (e) {
+  }, t.prototype.handleUp = function () {
+    if (!this.isDisabled && null !== this.thumb) {
+      var e = this.thumb === je.START ? this.valueStartBeforeDownEvent : this.valueBeforeDownEvent,
+          t = this.thumb === je.START ? this.valueStart : this.value;
+      e !== t && this.adapter.emitChangeEvent(t, this.thumb), this.adapter.emitDragEndEvent(t, this.thumb), this.thumb = null;
+    }
+  }, t.prototype.handleThumbMouseenter = function () {
+    this.isDiscrete && this.isRange && (this.adapter.addThumbClass(ot, je.START), this.adapter.addThumbClass(ot, je.END));
+  }, t.prototype.handleThumbMouseleave = function () {
+    this.isDiscrete && this.isRange && (this.adapter.isInputFocused(je.START) || this.adapter.isInputFocused(je.END) || (this.adapter.removeThumbClass(ot, je.START), this.adapter.removeThumbClass(ot, je.END)));
+  }, t.prototype.handleMousedownOrTouchstart = function (e) {
     var t = this,
-        i = t.max_,
-        s = t.min_,
-        n = t.step_ || (i - s) / 100;
+        i = "mousedown" === e.type ? "mousemove" : "touchmove";
+    this.adapter.registerBodyEventHandler(i, this.moveListener);
 
-    switch (this.adapter.isRTL() && (e === It || e === Nt) && (n = -n), e) {
-      case It:
-      case Rt:
-        return this.value_ - n;
+    var r = function () {
+      t.handleUp(), t.adapter.deregisterBodyEventHandler(i, t.moveListener), t.adapter.deregisterEventHandler("mouseup", r), t.adapter.deregisterEventHandler("touchend", r);
+    };
 
-      case Nt:
-      case zt:
-        return this.value_ + n;
-
-      case Ht:
-        return this.min_;
-
-      case Mt:
-        return this.max_;
-
-      case Ft:
-        return this.value_ + n * Ct.PAGE_FACTOR;
-
-      case Ot:
-        return this.value_ - n * Ct.PAGE_FACTOR;
-
-      default:
-        return NaN;
+    this.adapter.registerBodyEventHandler("mouseup", r), this.adapter.registerBodyEventHandler("touchend", r), this.handleDown(e);
+  }, t.prototype.handlePointerdown = function (e) {
+    this.adapter.setPointerCapture(e.pointerId), this.adapter.registerEventHandler("pointermove", this.moveListener), this.handleDown(e);
+  }, t.prototype.handleInputChange = function (e) {
+    var t = Number(this.adapter.getInputValue(e));
+    e === je.START ? this.setValueStart(t) : this.setValue(t), this.adapter.emitChangeEvent(e === je.START ? this.valueStart : this.value, e), this.adapter.emitInputEvent(e === je.START ? this.valueStart : this.value, e);
+  }, t.prototype.handleInputFocus = function (e) {
+    if (this.adapter.addThumbClass(st, e), this.isDiscrete && (this.adapter.addThumbClass(ot, e), this.isRange)) {
+      var t = e === je.START ? je.END : je.START;
+      this.adapter.addThumbClass(ot, t);
     }
-  }, t.prototype.handleFocus_ = function () {
-    this.preventFocusState_ || this.adapter.addClass(St.FOCUS);
-  }, t.prototype.handleBlur_ = function () {
-    this.preventFocusState_ = !1, this.adapter.removeClass(St.FOCUS);
-  }, t.prototype.setValue_ = function (e, t, i) {
-    if (void 0 === i && (i = !1), e !== this.value_ || i) {
-      var s = this.min_,
-          n = this.max_,
-          r = e === s || e === n;
-      this.step_ && !r && (e = this.quantize_(e)), e < s ? e = s : e > n && (e = n), e = e || 0, this.value_ = e, this.adapter.setAttribute(xt.ARIA_VALUENOW, String(this.value_)), this.updateUIForCurrentValue_(), t && (this.adapter.notifyInput(), this.isDiscrete_ && this.adapter.setMarkerValue(e));
+  }, t.prototype.handleInputBlur = function (e) {
+    if (this.adapter.removeThumbClass(st, e), this.isDiscrete && (this.adapter.removeThumbClass(ot, e), this.isRange)) {
+      var t = e === je.START ? je.END : je.START;
+      this.adapter.removeThumbClass(ot, t);
     }
-  }, t.prototype.quantize_ = function (e) {
-    return Math.round(e / this.step_) * this.step_;
-  }, t.prototype.updateUIForCurrentValue_ = function () {
-    var e = this,
-        t = this,
-        i = t.max_,
-        s = t.min_,
-        n = (t.value_ - s) / (i - s),
-        r = n * this.rect_.width;
-    this.adapter.isRTL() && (r = this.rect_.width - r);
-    var o = kt ? function (e, t) {
-      if (wt(e) && t in gt) {
-        var i = e.document.createElement("div"),
-            s = gt[t],
-            n = s.standard,
-            r = s.prefixed;
-        return n in i.style ? n : r;
-      }
+  }, t.prototype.handleDragStart = function (e, t, i) {
+    this.adapter.emitDragStartEvent(t, i), this.adapter.focusInput(i), e.preventDefault();
+  }, t.prototype.getThumbFromDownEvent = function (e, t) {
+    if (!this.isRange) return je.END;
+    var i = this.adapter.getThumbBoundingClientRect(je.START),
+        r = this.adapter.getThumbBoundingClientRect(je.END),
+        s = e >= i.left && e <= i.right,
+        n = e >= r.left && e <= r.right;
+    return s && n ? null : s ? je.START : n ? je.END : t < this.valueStart ? je.START : t > this.value ? je.END : t - this.valueStart <= this.value - t ? je.START : je.END;
+  }, t.prototype.getThumbFromMoveEvent = function (e) {
+    if (null !== this.thumb) return this.thumb;
+    if (null === this.downEventClientX) throw new Error("`downEventClientX` is null after move event.");
+    return Math.abs(this.downEventClientX - e) < ct ? this.thumb : e < this.downEventClientX ? this.adapter.isRTL() ? je.END : je.START : this.adapter.isRTL() ? je.START : je.END;
+  }, t.prototype.updateUI = function (e) {
+    this.updateThumbAndInputAttributes(e), this.updateThumbAndTrackUI(e), this.updateValueIndicatorUI(e), this.updateTickMarksUI();
+  }, t.prototype.updateThumbAndInputAttributes = function (e) {
+    if (e) {
+      var t = this.isRange && e === je.START ? this.valueStart : this.value,
+          i = String(t);
+      this.adapter.setInputAttribute(mt, i, e), this.isRange && e === je.START ? this.adapter.setInputAttribute(pt, i, je.END) : this.isRange && e === je.END && this.adapter.setInputAttribute(ut, i, je.START), this.adapter.getInputValue(e) !== i && this.adapter.setInputValue(i, e);
+      var r = this.adapter.getValueToAriaValueTextFn();
+      r && this.adapter.setInputAttribute(lt, r(t), e);
+    }
+  }, t.prototype.updateValueIndicatorUI = function (e) {
+    if (this.isDiscrete) {
+      var t = this.isRange && e === je.START ? this.valueStart : this.value;
+      this.adapter.setValueIndicatorText(t, e === je.START ? je.START : je.END), !e && this.isRange && this.adapter.setValueIndicatorText(this.valueStart, je.START);
+    }
+  }, t.prototype.updateTickMarksUI = function () {
+    if (this.isDiscrete && this.hasTickMarks) {
+      var e = (this.valueStart - this.min) / this.step,
+          t = (this.value - this.valueStart) / this.step + 1,
+          i = (this.max - this.value) / this.step,
+          r = Array.from({
+        length: e
+      }).fill(Be.INACTIVE),
+          s = Array.from({
+        length: t
+      }).fill(Be.ACTIVE),
+          n = Array.from({
+        length: i
+      }).fill(Be.INACTIVE);
+      this.adapter.updateTickMarks(r.concat(s).concat(n));
+    }
+  }, t.prototype.mapClientXOnSliderScale = function (e) {
+    var t = (e - this.rect.left) / this.rect.width;
+    this.adapter.isRTL() && (t = 1 - t);
+    var i = this.min + t * (this.max - this.min);
+    return i === this.max || i === this.min ? i : Number(this.quantize(i).toFixed(this.numDecimalPlaces));
+  }, t.prototype.quantize = function (e) {
+    var t = Math.round((e - this.min) / this.step);
+    return this.min + t * this.step;
+  }, t.prototype.updateValue = function (e, t, i) {
+    var r = (void 0 === i ? {} : i).emitInputEvent;
 
-      return t;
-    }(window, "transform") : "transform",
-        a = kt ? function (e, t) {
-      if (wt(e) && t in yt) {
-        var i = e.document.createElement("div"),
-            s = yt[t],
-            n = s.standard,
-            r = s.prefixed;
-        return s.cssProperty in i.style ? n : r;
-      }
-
-      return t;
-    }(window, "transitionend") : "transitionend";
-
-    if (this.inTransit_) {
-      var d = function () {
-        e.setInTransit_(!1), e.adapter.deregisterThumbContainerInteractionHandler(a, d);
-      };
-
-      this.adapter.registerThumbContainerInteractionHandler(a, d);
+    if (e = this.clampValue(e, t), this.isRange && t === je.START) {
+      if (this.valueStart === e) return;
+      this.valueStart = e;
+    } else {
+      if (this.value === e) return;
+      this.value = e;
     }
 
-    requestAnimationFrame(function () {
-      e.adapter.setThumbContainerStyleProperty(o, "translateX(" + r + "px) translateX(-50%)"), e.adapter.setTrackStyleProperty(o, "scaleX(" + n + ")");
+    this.updateUI(t), r && this.adapter.emitInputEvent(t === je.START ? this.valueStart : this.value, t);
+  }, t.prototype.clampValue = function (e, t) {
+    return e = Math.min(Math.max(e, this.min), this.max), this.isRange && t === je.START && e > this.value ? this.value : this.isRange && t === je.END && e < this.valueStart ? this.valueStart : e;
+  }, t.prototype.updateThumbAndTrackUI = function (e) {
+    var t = this,
+        i = this.max,
+        r = this.min,
+        s = (this.value - this.valueStart) / (i - r),
+        n = s * this.rect.width,
+        o = this.adapter.isRTL(),
+        a = ft ? Qe(window, "transform") : "transform";
+
+    if (this.isRange) {
+      var d = this.adapter.isRTL() ? (i - this.value) / (i - r) * this.rect.width : (this.valueStart - r) / (i - r) * this.rect.width,
+          c = d + n;
+      this.animFrame.request(et.SLIDER_UPDATE, function () {
+        !o && e === je.START || o && e !== je.START ? (t.adapter.setTrackActiveStyleProperty("transform-origin", "right"), t.adapter.setTrackActiveStyleProperty("left", "unset"), t.adapter.setTrackActiveStyleProperty("right", t.rect.width - c + "px")) : (t.adapter.setTrackActiveStyleProperty("transform-origin", "left"), t.adapter.setTrackActiveStyleProperty("right", "unset"), t.adapter.setTrackActiveStyleProperty("left", d + "px")), t.adapter.setTrackActiveStyleProperty(a, "scaleX(" + s + ")");
+        var i = o ? c : d,
+            r = t.adapter.isRTL() ? d : c;
+        e !== je.START && e && t.initialStylesRemoved || t.adapter.setThumbStyleProperty(a, "translateX(" + i + "px)", je.START), e !== je.END && e && t.initialStylesRemoved || t.adapter.setThumbStyleProperty(a, "translateX(" + r + "px)", je.END), t.removeInitialStyles(o), t.updateOverlappingThumbsUI(i, r, e);
+      });
+    } else this.animFrame.request(et.SLIDER_UPDATE, function () {
+      var e = o ? t.rect.width - n : n;
+      t.adapter.setThumbStyleProperty(a, "translateX(" + e + "px)", je.END), t.adapter.setTrackActiveStyleProperty(a, "scaleX(" + s + ")"), t.removeInitialStyles(o);
     });
-  }, t.prototype.setActive_ = function (e) {
-    this.active_ = e, this.toggleClass_(St.ACTIVE, this.active_);
-  }, t.prototype.setInTransit_ = function (e) {
-    this.inTransit_ = e, this.toggleClass_(St.IN_TRANSIT, this.inTransit_);
-  }, t.prototype.toggleClass_ = function (e, t) {
-    t ? this.adapter.addClass(e) : this.adapter.removeClass(e);
-  }, t;
-}(bt);
-/**
- * @license
- * Copyright 2017 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-/**
- * @license
- * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-
-class Ut {
-  constructor(e) {
-    this.classes = new Set(), this.changed = !1, this.element = e;
-    const t = (e.getAttribute("class") || "").split(/\s+/);
-
-    for (const e of t) this.classes.add(e);
-  }
-
-  add(e) {
-    this.classes.add(e), this.changed = !0;
-  }
-
-  remove(e) {
-    this.classes.delete(e), this.changed = !0;
-  }
-
-  commit() {
-    if (this.changed) {
-      let e = "";
-      this.classes.forEach(t => e += t + " "), this.element.setAttribute("class", e);
+  }, t.prototype.removeInitialStyles = function (e) {
+    if (!this.initialStylesRemoved) {
+      var t = e ? "right" : "left";
+      this.adapter.removeThumbStyleProperty(t, je.END), this.isRange && this.adapter.removeThumbStyleProperty(t, je.START), this.initialStylesRemoved = !0, this.resetTrackAndThumbAnimation();
     }
-  }
+  }, t.prototype.resetTrackAndThumbAnimation = function () {
+    var e = this;
 
+    if (this.isDiscrete) {
+      var t = ft ? Qe(window, "transition") : "transition",
+          i = "all 0s ease 0s";
+      this.adapter.setThumbStyleProperty(t, i, je.END), this.isRange && this.adapter.setThumbStyleProperty(t, i, je.START), this.adapter.setTrackActiveStyleProperty(t, i), requestAnimationFrame(function () {
+        e.adapter.removeThumbStyleProperty(t, je.END), e.adapter.removeTrackActiveStyleProperty(t), e.isRange && e.adapter.removeThumbStyleProperty(t, je.START);
+      });
+    }
+  }, t.prototype.updateOverlappingThumbsUI = function (e, t, i) {
+    var r = !1;
+
+    if (this.adapter.isRTL()) {
+      var s = e - this.startThumbKnobWidth / 2;
+      r = t + this.endThumbKnobWidth / 2 >= s;
+    } else {
+      r = e + this.startThumbKnobWidth / 2 >= t - this.endThumbKnobWidth / 2;
+    }
+
+    r ? (this.adapter.addThumbClass(nt, i || je.END), this.adapter.removeThumbClass(nt, i === je.START ? je.END : je.START)) : (this.adapter.removeThumbClass(nt, je.START), this.adapter.removeThumbClass(nt, je.END));
+  }, t.prototype.convertAttributeValueToNumber = function (e, t) {
+    if (null === e) throw new Error("MDCSliderFoundation: `" + t + "` must be non-null.");
+    var i = Number(e);
+    if (isNaN(i)) throw new Error("MDCSliderFoundation: `" + t + "` value is `" + e + "`, but must be a number.");
+    return i;
+  }, t.prototype.validateProperties = function (e) {
+    var t = e.min,
+        i = e.max,
+        r = e.value,
+        s = e.valueStart,
+        n = e.step;
+    if (t >= i) throw new Error("MDCSliderFoundation: min must be strictly less than max. Current: [min: " + t + ", max: " + i + "]");
+    if (n <= 0) throw new Error("MDCSliderFoundation: step must be a positive number. Current step: " + this.step);
+
+    if (this.isRange) {
+      if (r < t || r > i || s < t || s > i) throw new Error("MDCSliderFoundation: values must be in [min, max] range. Current values: [start value: " + s + ", end value: " + r + "]");
+      if (s > r) throw new Error("MDCSliderFoundation: start value must be <= end value. Current values: [start value: " + s + ", end value: " + r + "]");
+      var o = (r - t) / n;
+      if ((s - t) / n % 1 != 0 || o % 1 != 0) throw new Error("MDCSliderFoundation: Slider values must be valid based on the step value. Current values: [start value: " + s + ", end value: " + r + "]");
+    } else {
+      if (r < t || r > i) throw new Error("MDCSliderFoundation: value must be in [min, max] range. Current value: " + r);
+      if ((o = (r - t) / n) % 1 != 0) throw new Error("MDCSliderFoundation: Slider value must be valid based on the step value. Current value: " + r);
+    }
+  }, t.prototype.registerEventHandlers = function () {
+    this.adapter.registerWindowEventHandler("resize", this.resizeListener), t.SUPPORTS_POINTER_EVENTS ? (this.adapter.registerEventHandler("pointerdown", this.pointerdownListener), this.adapter.registerEventHandler("pointerup", this.pointerupListener)) : (this.adapter.registerEventHandler("mousedown", this.mousedownOrTouchstartListener), this.adapter.registerEventHandler("touchstart", this.mousedownOrTouchstartListener)), this.isRange && (this.adapter.registerThumbEventHandler(je.START, "mouseenter", this.thumbMouseenterListener), this.adapter.registerThumbEventHandler(je.START, "mouseleave", this.thumbMouseleaveListener), this.adapter.registerInputEventHandler(je.START, "change", this.inputStartChangeListener), this.adapter.registerInputEventHandler(je.START, "focus", this.inputStartFocusListener), this.adapter.registerInputEventHandler(je.START, "blur", this.inputStartBlurListener)), this.adapter.registerThumbEventHandler(je.END, "mouseenter", this.thumbMouseenterListener), this.adapter.registerThumbEventHandler(je.END, "mouseleave", this.thumbMouseleaveListener), this.adapter.registerInputEventHandler(je.END, "change", this.inputEndChangeListener), this.adapter.registerInputEventHandler(je.END, "focus", this.inputEndFocusListener), this.adapter.registerInputEventHandler(je.END, "blur", this.inputEndBlurListener);
+  }, t.prototype.deregisterEventHandlers = function () {
+    this.adapter.deregisterWindowEventHandler("resize", this.resizeListener), t.SUPPORTS_POINTER_EVENTS ? (this.adapter.deregisterEventHandler("pointerdown", this.pointerdownListener), this.adapter.deregisterEventHandler("pointerup", this.pointerupListener)) : (this.adapter.deregisterEventHandler("mousedown", this.mousedownOrTouchstartListener), this.adapter.deregisterEventHandler("touchstart", this.mousedownOrTouchstartListener)), this.isRange && (this.adapter.deregisterThumbEventHandler(je.START, "mouseenter", this.thumbMouseenterListener), this.adapter.deregisterThumbEventHandler(je.START, "mouseleave", this.thumbMouseleaveListener), this.adapter.deregisterInputEventHandler(je.START, "change", this.inputStartChangeListener), this.adapter.deregisterInputEventHandler(je.START, "focus", this.inputStartFocusListener), this.adapter.deregisterInputEventHandler(je.START, "blur", this.inputStartBlurListener)), this.adapter.deregisterThumbEventHandler(je.END, "mouseenter", this.thumbMouseenterListener), this.adapter.deregisterThumbEventHandler(je.END, "mouseleave", this.thumbMouseleaveListener), this.adapter.deregisterInputEventHandler(je.END, "change", this.inputEndChangeListener), this.adapter.deregisterInputEventHandler(je.END, "focus", this.inputEndFocusListener), this.adapter.deregisterInputEventHandler(je.END, "blur", this.inputEndBlurListener);
+  }, t.prototype.handlePointerup = function () {
+    this.handleUp(), this.adapter.deregisterEventHandler("pointermove", this.moveListener);
+  }, t.SUPPORTS_POINTER_EVENTS = ft && Boolean(window.PointerEvent) && !(["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(navigator.platform) || navigator.userAgent.includes("Mac") && "ontouchend" in document), t;
+}(xe);
+
+function yt(e) {
+  var t = /(?:\.(\d+))?(?:[eE]([+\-]?\d+))?$/.exec(String(e));
+  if (!t) return 0;
+  var i = t[1] || "",
+      r = t[2] || 0;
+  return Math.max(0, ("0" === i ? 0 : i.length) - Number(r));
 }
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 
-const Lt = new WeakMap(),
-      Dt = ge(e => t => {
-  if (!(t instanceof Te) || t instanceof ze || "class" !== t.committer.name || t.committer.parts.length > 1) throw new Error("The `classMap` directive must be used in the `class` attribute and must be the only part in the attribute.");
-  const {
-    committer: i
-  } = t,
-        {
-    element: s
-  } = i;
-  let n = Lt.get(t);
-  void 0 === n && (s.setAttribute("class", i.strings.join(" ")), Lt.set(t, n = new Set()));
-  const r = s.classList || new Ut(s);
-  n.forEach(t => {
-    t in e || (r.remove(t), n.delete(t));
-  });
 
-  for (const t in e) {
-    const i = e[t];
-    i != n.has(t) && (i ? (r.add(t), n.add(t)) : (r.remove(t), n.delete(t)));
-  }
+const bt = e => null != e ? e : D
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+;
 
-  "function" == typeof r.commit && r.commit();
-}),
-      $t = new WeakMap(),
-      jt = ge(e => t => {
-  const i = $t.get(t);
-
-  if (void 0 === e && t instanceof Te) {
-    if (void 0 !== i || !$t.has(t)) {
-      const e = t.committer.name;
-      t.committer.element.removeAttribute(e);
-    }
-  } else e !== i && t.setValue(e);
-
-  $t.set(t, e);
-}),
-      Bt = new WeakMap(),
-      Wt = ge(e => t => {
-  if (!(t instanceof Te) || t instanceof ze || "style" !== t.committer.name || t.committer.parts.length > 1) throw new Error("The `styleMap` directive must be used in the style attribute and must be the only part in the attribute.");
-  const {
-    committer: i
-  } = t,
-        {
-    style: s
-  } = i.element;
-  let n = Bt.get(t);
-  void 0 === n && (s.cssText = i.strings.join(" "), Bt.set(t, n = new Set())), n.forEach(t => {
-    t in e || (n.delete(t), -1 === t.indexOf("-") ? s[t] = null : s.removeProperty(t));
-  });
-
-  for (const t in e) n.add(t), -1 === t.indexOf("-") ? s[t] = e[t] : s.setProperty(t, e[t]);
-});
-
-class qt extends mt {
+class _t extends Ke {
   constructor() {
-    super(...arguments), this.mdcFoundationClass = Vt, this.min = 0, this.max = 100, this._value = 0, this.step = 0, this.disabled = !1, this.pin = !1, this.markers = !1, this.pinMarkerText = "", this.trackMarkerContainerStyles = {}, this.thumbContainerStyles = {}, this.trackStyles = {}, this.isFoundationDestroyed = !1;
+    super(...arguments), this.mdcFoundationClass = gt, this.disabled = !1, this.min = 0, this.max = 100, this.valueEnd = 0, this.name = "", this.step = 1, this.withTickMarks = !1, this.discrete = !1, this.tickMarks = [], this.trackTransformOriginStyle = "", this.trackLeftStyle = "", this.trackRightStyle = "", this.trackTransitionStyle = "", this.endThumbWithIndicator = !1, this.endThumbTop = !1, this.shouldRenderEndRipple = !1, this.endThumbTransformStyle = "", this.endThumbTransitionStyle = "", this.valueToAriaTextTransform = null, this.valueToValueIndicatorTransform = e => `${e}`, this.boundMoveListener = null, this.endRippleHandlers = new Ye(() => (this.shouldRenderEndRipple = !0, this.endRipple));
   }
 
-  set value(e) {
-    this.mdcFoundation && this.mdcFoundation.setValue(e), this._value = e, this.requestUpdate("value", e);
-  }
+  update(e) {
+    if (e.has("valueEnd") && this.mdcFoundation) {
+      this.mdcFoundation.setValue(this.valueEnd);
+      const e = this.mdcFoundation.getValue();
+      e !== this.valueEnd && (this.valueEnd = e);
+    }
 
-  get value() {
-    return this.mdcFoundation ? this.mdcFoundation.getValue() : this._value;
+    e.has("discrete") && (this.discrete || (this.tickMarks = [])), super.update(e);
   }
 
   render() {
-    const e = 0 !== this.step,
-          t = {
-      "mdc-slider--discrete": e,
-      "mdc-slider--display-markers": this.markers && e
-    };
-    let i = "";
-    e && this.markers && (i = De`
-        <div
-            class="mdc-slider__track-marker-container"
-            style="${Wt(this.trackMarkerContainerStyles)}">
-        </div>`);
-    let s = "";
-    return this.pin && (s = De`
-      <div class="mdc-slider__pin">
-        <span class="mdc-slider__pin-value-marker">${this.pinMarkerText}</span>
-      </div>`), De`
-      <div class="mdc-slider ${Dt(t)}"
-           tabindex="0" role="slider"
-           aria-label="${jt(this.ariaLabel)}"
-           aria-labelledby="${jt(this.ariaLabelledBy)}"
-           aria-valuemin="${this.min}" aria-valuemax="${this.max}"
-           aria-valuenow="${this.value}"
-           aria-disabled="${this.disabled.toString()}"
-           data-step="${this.step}"
-           @mousedown=${this.layout}
-           @touchstart=${this.layout}>
-        <div class="mdc-slider__track-container">
-          <div
-              class="mdc-slider__track"
-              style="${Wt(this.trackStyles)}">
-          </div>
-          ${i}
-        </div>
-        <div
-            class="mdc-slider__thumb-container"
-            style="${Wt(this.thumbContainerStyles)}">
-          <!-- TODO: use cache() directive -->
-          ${s}
-          <svg class="mdc-slider__thumb" width="21" height="21">
-            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-          </svg>
-        <div class="mdc-slider__focus-ring"></div>
-      </div>
+    return this.renderRootEl(I`
+      ${this.renderStartInput()}
+      ${this.renderEndInput()}
+      ${this.renderTrack()}
+      ${this.renderTickMarks()}
+      ${this.renderStartThumb()}
+      ${this.renderEndThumb()}`);
+  }
+
+  renderRootEl(e) {
+    const t = Me({
+      "mdc-slider--disabled": this.disabled,
+      "mdc-slider--discrete": this.discrete
+    });
+    return I`
+    <div
+        class="mdc-slider ${t}"
+        @pointerdown=${this.onPointerdown}
+        @pointerup=${this.onPointerup}
+        @contextmenu=${this.onContextmenu}>
+      ${e}
     </div>`;
   }
 
-  connectedCallback() {
-    super.connectedCallback(), this.mdcRoot && this.isFoundationDestroyed && (this.isFoundationDestroyed = !1, this.mdcFoundation.init());
+  renderStartInput() {
+    return D;
   }
 
-  updated(e) {
-    const t = e.has("min"),
-          i = e.has("max");
-    t && i ? this.max < this.mdcFoundation.getMin() ? (this.mdcFoundation.setMin(this.min), this.mdcFoundation.setMax(this.max)) : (this.mdcFoundation.setMax(this.max), this.mdcFoundation.setMin(this.min)) : t ? this.mdcFoundation.setMin(this.min) : i && this.mdcFoundation.setMax(this.max), super.updated(e);
+  renderEndInput() {
+    var e;
+    return I`
+      <input
+          class="mdc-slider__input end"
+          type="range"
+          step=${this.step}
+          min=${this.min}
+          max=${this.max}
+          .value=${this.valueEnd}
+          @change=${this.onEndChange}
+          @focus=${this.onEndFocus}
+          @blur=${this.onEndBlur}
+          ?disabled=${this.disabled}
+          name=${this.name}
+          aria-label=${bt(this.ariaLabel)}
+          aria-labelledby=${bt(this.ariaLabelledBy)}
+          aria-describedby=${bt(this.ariaDescribedBy)}
+          aria-valuetext=${bt(null === (e = this.valueToAriaTextTransform) || void 0 === e ? void 0 : e.call(this, this.valueEnd))}>
+    `;
+  }
+
+  renderTrack() {
+    return D;
+  }
+
+  renderTickMarks() {
+    return this.withTickMarks ? I`
+      <div class="mdc-slider__tick-marks">
+        ${this.tickMarks.map(e => {
+      const t = e === Be.ACTIVE;
+      return I`<div class="${t ? "mdc-slider__tick-mark--active" : "mdc-slider__tick-mark--inactive"}"></div>`;
+    })}
+      </div>` : D;
+  }
+
+  renderStartThumb() {
+    return D;
+  }
+
+  renderEndThumb() {
+    const e = Me({
+      "mdc-slider__thumb--with-indicator": this.endThumbWithIndicator,
+      "mdc-slider__thumb--top": this.endThumbTop
+    }),
+          t = Le({
+      "-webkit-transform": this.endThumbTransformStyle,
+      transform: this.endThumbTransformStyle,
+      "-webkit-transition": this.endThumbTransitionStyle,
+      transition: this.endThumbTransitionStyle,
+      left: this.endThumbTransformStyle || "rtl" === getComputedStyle(this).direction ? "" : `calc(${(this.valueEnd - this.min) / (this.max - this.min) * 100}% - 24px)`,
+      right: this.endThumbTransformStyle || "rtl" !== getComputedStyle(this).direction ? "" : `calc(${(this.valueEnd - this.min) / (this.max - this.min) * 100}% - 24px)`
+    }),
+          i = this.shouldRenderEndRipple ? I`<mwc-ripple class="ripple" unbounded></mwc-ripple>` : D;
+    return I`
+      <div
+          class="mdc-slider__thumb end ${e}"
+          style=${t}
+          @mouseenter=${this.onEndMouseenter}
+          @mouseleave=${this.onEndMouseleave}>
+        ${i}
+        ${this.renderValueIndicator(this.valueToValueIndicatorTransform(this.valueEnd))}
+        <div class="mdc-slider__thumb-knob"></div>
+      </div>
+    `;
+  }
+
+  renderValueIndicator(e) {
+    return this.discrete ? I`
+    <div class="mdc-slider__value-indicator-container" aria-hidden="true">
+      <div class="mdc-slider__value-indicator">
+        <span class="mdc-slider__value-indicator-text">
+          ${e}
+        </span>
+      </div>
+    </div>` : D;
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback(), this.isFoundationDestroyed = !0, this.mdcFoundation.destroy();
+    super.disconnectedCallback(), this.mdcFoundation && this.mdcFoundation.destroy();
+  }
+
+  createAdapter() {}
+
+  async firstUpdated() {
+    super.firstUpdated(), await this.layout(!0);
+  }
+
+  updated(e) {
+    super.updated(e), this.mdcFoundation && (e.has("disabled") && this.mdcFoundation.setDisabled(this.disabled), e.has("min") && this.mdcFoundation.setMin(this.min), e.has("max") && this.mdcFoundation.setMax(this.max), e.has("step") && this.mdcFoundation.setStep(this.step), e.has("discrete") && this.mdcFoundation.setIsDiscrete(this.discrete), e.has("withTickMarks") && this.mdcFoundation.setHasTickMarks(this.withTickMarks));
+  }
+
+  async layout(e = !1) {
+    var t;
+    null === (t = this.mdcFoundation) || void 0 === t || t.layout({
+      skipUpdateUI: e
+    }), this.requestUpdate(), await this.updateComplete;
+  }
+
+  onEndChange(e) {
+    var t;
+    this.valueEnd = Number(e.target.value), null === (t = this.mdcFoundation) || void 0 === t || t.handleInputChange(je.END);
+  }
+
+  onEndFocus() {
+    var e;
+    null === (e = this.mdcFoundation) || void 0 === e || e.handleInputFocus(je.END), this.endRippleHandlers.startFocus();
+  }
+
+  onEndBlur() {
+    var e;
+    null === (e = this.mdcFoundation) || void 0 === e || e.handleInputBlur(je.END), this.endRippleHandlers.endFocus();
+  }
+
+  onEndMouseenter() {
+    var e;
+    null === (e = this.mdcFoundation) || void 0 === e || e.handleThumbMouseenter(), this.endRippleHandlers.startHover();
+  }
+
+  onEndMouseleave() {
+    var e;
+    null === (e = this.mdcFoundation) || void 0 === e || e.handleThumbMouseleave(), this.endRippleHandlers.endHover();
+  }
+
+  onPointerdown(e) {
+    this.layout(), this.mdcFoundation && (this.mdcFoundation.handlePointerdown(e), this.boundMoveListener = this.mdcFoundation.handleMove.bind(this.mdcFoundation), this.mdcRoot.addEventListener("pointermove", this.boundMoveListener));
+  }
+
+  onPointerup() {
+    this.mdcFoundation && (this.mdcFoundation.handleUp(), this.boundMoveListener && (this.mdcRoot.removeEventListener("pointermove", this.boundMoveListener), this.boundMoveListener = null));
+  }
+
+  onContextmenu(e) {
+    e.preventDefault();
+  }
+
+  setFormData(e) {
+    this.name && e.append(this.name, `${this.valueEnd}`);
+  }
+
+}
+
+me([we("input.end")], _t.prototype, "formElement", void 0), me([we(".mdc-slider")], _t.prototype, "mdcRoot", void 0), me([we(".end.mdc-slider__thumb")], _t.prototype, "endThumb", void 0), me([we(".end.mdc-slider__thumb .mdc-slider__thumb-knob")], _t.prototype, "endThumbKnob", void 0), me([function (e) {
+  return _e({
+    descriptor: t => ({
+      async get() {
+        var t;
+        return await this.updateComplete, null === (t = this.renderRoot) || void 0 === t ? void 0 : t.querySelector(e);
+      },
+
+      enumerable: !0,
+      configurable: !0
+    })
+  });
+}(".end .ripple")], _t.prototype, "endRipple", void 0), me([ye({
+  type: Boolean,
+  reflect: !0
+})], _t.prototype, "disabled", void 0), me([ye({
+  type: Number
+})], _t.prototype, "min", void 0), me([ye({
+  type: Number
+})], _t.prototype, "max", void 0), me([ye({
+  type: Number
+})], _t.prototype, "valueEnd", void 0), me([ye({
+  type: String
+})], _t.prototype, "name", void 0), me([ye({
+  type: Number
+})], _t.prototype, "step", void 0), me([ye({
+  type: Boolean
+})], _t.prototype, "withTickMarks", void 0), me([ye({
+  type: Boolean
+})], _t.prototype, "discrete", void 0), me([be()], _t.prototype, "tickMarks", void 0), me([be()], _t.prototype, "trackTransformOriginStyle", void 0), me([be()], _t.prototype, "trackLeftStyle", void 0), me([be()], _t.prototype, "trackRightStyle", void 0), me([be()], _t.prototype, "trackTransitionStyle", void 0), me([be()], _t.prototype, "endThumbWithIndicator", void 0), me([be()], _t.prototype, "endThumbTop", void 0), me([be()], _t.prototype, "shouldRenderEndRipple", void 0), me([be()], _t.prototype, "endThumbTransformStyle", void 0), me([be()], _t.prototype, "endThumbTransitionStyle", void 0), me([Xe, ye({
+  type: String,
+  attribute: "aria-label"
+})], _t.prototype, "ariaLabel", void 0), me([Xe, ye({
+  type: String,
+  attribute: "aria-labelledby"
+})], _t.prototype, "ariaLabelledBy", void 0), me([Xe, ye({
+  type: String,
+  attribute: "aria-describedby"
+})], _t.prototype, "ariaDescribedBy", void 0);
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+class wt extends _t {
+  get value() {
+    return this.valueEnd;
+  }
+
+  set value(e) {
+    this.valueEnd = e;
+  }
+
+  renderTrack() {
+    const e = Le({
+      "transform-origin": this.trackTransformOriginStyle,
+      left: this.trackLeftStyle,
+      right: this.trackRightStyle,
+      "-webkit-transform": `scaleX(${(this.valueEnd - this.min) / (this.max - this.min)})`,
+      transform: `scaleX(${(this.valueEnd - this.min) / (this.max - this.min)})`,
+      "-webkit-transition": this.trackTransitionStyle,
+      transition: this.trackTransitionStyle
+    });
+    return I`
+      <div class="mdc-slider__track">
+        <div class="mdc-slider__track--inactive"></div>
+        <div class="mdc-slider__track--active">
+          <div
+              class="mdc-slider__track--active_fill"
+              style=${e}>
+          </div>
+        </div>
+      </div>`;
   }
 
   createAdapter() {
-    return Object.assign(Object.assign({}, (e = this.mdcRoot, {
-      addClass: t => {
-        e.classList.add(t);
+    return {
+      addClass: e => {
+        if ("mdc-slider--disabled" === e) this.disabled = !0;
       },
-      removeClass: t => {
-        e.classList.remove(t);
+      removeClass: e => {
+        if ("mdc-slider--disabled" === e) this.disabled = !1;
       },
-      hasClass: t => e.classList.contains(t)
-    })), {
-      getAttribute: e => this.mdcRoot.getAttribute(e),
-      setAttribute: (e, t) => this.mdcRoot.setAttribute(e, t),
-      removeAttribute: e => this.mdcRoot.removeAttribute(e),
-      computeBoundingRect: () => {
-        const e = this.mdcRoot.getBoundingClientRect();
-        return {
-          bottom: e.bottom,
-          height: e.height,
-          left: e.left + window.pageXOffset,
-          right: e.right,
-          top: e.top,
-          width: e.width
-        };
+      hasClass: e => {
+        switch (e) {
+          case "mdc-slider--disabled":
+            return this.disabled;
+
+          case "mdc-slider--discrete":
+            return this.discrete;
+
+          default:
+            return !1;
+        }
       },
-      getTabIndex: () => this.mdcRoot.tabIndex,
-      registerInteractionHandler: (e, t) => {
-        const i = "touchstart" === e ? lt() : void 0;
-        this.mdcRoot.addEventListener(e, t, i);
+      addThumbClass: (e, t) => {
+        if (t !== je.START && "mdc-slider__thumb--with-indicator" === e) this.endThumbWithIndicator = !0;
       },
-      deregisterInteractionHandler: (e, t) => this.mdcRoot.removeEventListener(e, t),
-      registerThumbContainerInteractionHandler: (e, t) => {
-        const i = "touchstart" === e ? lt() : void 0;
-        this.thumbContainer.addEventListener(e, t, i);
+      removeThumbClass: (e, t) => {
+        if (t !== je.START && "mdc-slider__thumb--with-indicator" === e) this.endThumbWithIndicator = !1;
       },
-      deregisterThumbContainerInteractionHandler: (e, t) => this.thumbContainer.removeEventListener(e, t),
-      registerBodyInteractionHandler: (e, t) => document.body.addEventListener(e, t),
-      deregisterBodyInteractionHandler: (e, t) => document.body.removeEventListener(e, t),
-      registerResizeHandler: e => window.addEventListener("resize", e, lt()),
-      deregisterResizeHandler: e => window.removeEventListener("resize", e),
-      notifyInput: () => {
-        const e = this.mdcFoundation.getValue();
-        e !== this._value && (this.value = e, this.dispatchEvent(new CustomEvent("input", {
-          detail: this,
-          composed: !0,
+      registerEventHandler: () => {},
+      deregisterEventHandler: () => {},
+      registerBodyEventHandler: (e, t) => {
+        document.body.addEventListener(e, t);
+      },
+      deregisterBodyEventHandler: (e, t) => {
+        document.body.removeEventListener(e, t);
+      },
+      registerInputEventHandler: (e, t, i) => {
+        e !== je.START && this.formElement.addEventListener(t, i);
+      },
+      deregisterInputEventHandler: (e, t, i) => {
+        e !== je.START && this.formElement.removeEventListener(t, i);
+      },
+      registerThumbEventHandler: () => {},
+      deregisterThumbEventHandler: () => {},
+      registerWindowEventHandler: (e, t) => {
+        window.addEventListener(e, t);
+      },
+      deregisterWindowEventHandler: (e, t) => {
+        window.addEventListener(e, t);
+      },
+      emitChangeEvent: (e, t) => {
+        if (t === je.START) return;
+        const i = new CustomEvent("change", {
           bubbles: !0,
-          cancelable: !0
-        })));
-      },
-      notifyChange: () => {
-        this.dispatchEvent(new CustomEvent("change", {
-          detail: this,
           composed: !0,
+          detail: {
+            value: e,
+            thumb: t
+          }
+        });
+        this.dispatchEvent(i);
+      },
+      emitDragEndEvent: (e, t) => {
+        t !== je.START && this.endRippleHandlers.endPress();
+      },
+      emitDragStartEvent: (e, t) => {
+        t !== je.START && this.endRippleHandlers.startPress();
+      },
+      emitInputEvent: (e, t) => {
+        if (t === je.START) return;
+        const i = new CustomEvent("input", {
           bubbles: !0,
-          cancelable: !0
-        }));
+          composed: !0,
+          detail: {
+            value: e,
+            thumb: t
+          }
+        });
+        this.dispatchEvent(i);
       },
-      setThumbContainerStyleProperty: (e, t) => {
-        this.thumbContainerStyles[e] = t, this.requestUpdate();
+      focusInput: e => {
+        e !== je.START && this.formElement.focus();
       },
-      setTrackStyleProperty: (e, t) => {
-        this.trackStyles[e] = t, this.requestUpdate();
-      },
-      setMarkerValue: e => this.pinMarkerText = e.toLocaleString(),
-      setTrackMarkers: (e, t, i) => {
-        const s = e.toLocaleString(),
-              n = `linear-gradient(to right, currentColor 2px, transparent 0) ${`0 center / calc((100% - 2px) / ${`((${t.toLocaleString()} - ${i.toLocaleString()}) / ${s})`}) 100% repeat-x`}`;
-        this.trackMarkerContainerStyles.background = n, this.requestUpdate();
-      },
-      isRTL: () => "rtl" === getComputedStyle(this.mdcRoot).direction
-    });
-    var e;
-  }
+      getAttribute: () => "",
+      getBoundingClientRect: () => this.mdcRoot.getBoundingClientRect(),
+      getInputAttribute: (e, t) => {
+        if (t === je.START) return null;
 
-  resetFoundation() {
-    this.mdcFoundation && (this.mdcFoundation.destroy(), this.mdcFoundation.init());
-  }
+        switch (e) {
+          case "min":
+            return this.min.toString();
 
-  async firstUpdated() {
-    await super.firstUpdated(), this.mdcFoundation.setValue(this._value);
-  }
+          case "max":
+            return this.max.toString();
 
-  layout() {
-    this.mdcFoundation.layout();
+          case "value":
+            return this.valueEnd.toString();
+
+          case "step":
+            return this.step.toString();
+
+          default:
+            return null;
+        }
+      },
+      getInputValue: e => e === je.START ? "" : this.valueEnd.toString(),
+      getThumbBoundingClientRect: e => e === je.START ? this.getBoundingClientRect() : this.endThumb.getBoundingClientRect(),
+      getThumbKnobWidth: e => e === je.START ? 0 : this.endThumbKnob.getBoundingClientRect().width,
+      getValueToAriaValueTextFn: () => this.valueToAriaTextTransform,
+      isInputFocused: e => {
+        if (e === je.START) return !1;
+
+        const t = ((e = window.document) => {
+          let t = e.activeElement;
+          const i = [];
+          if (!t) return i;
+
+          for (; t && (i.push(t), t.shadowRoot);) t = t.shadowRoot.activeElement;
+
+          return i;
+        })();
+
+        return t[t.length - 1] === this.formElement;
+      },
+      isRTL: () => "rtl" === getComputedStyle(this).direction,
+      setInputAttribute: (e, t, i) => {
+        je.START;
+      },
+      removeInputAttribute: e => {},
+      setThumbStyleProperty: (e, t, i) => {
+        if (i !== je.START) switch (e) {
+          case "transform":
+          case "-webkit-transform":
+            this.endThumbTransformStyle = t;
+            break;
+
+          case "transition":
+          case "-webkit-transition":
+            this.endThumbTransitionStyle = t;
+        }
+      },
+      removeThumbStyleProperty: (e, t) => {
+        if (t !== je.START) switch (e) {
+          case "left":
+          case "right":
+            break;
+
+          case "transition":
+          case "-webkit-transition":
+            this.endThumbTransitionStyle = "";
+        }
+      },
+      setTrackActiveStyleProperty: (e, t) => {
+        switch (e) {
+          case "transform-origin":
+            this.trackTransformOriginStyle = t;
+            break;
+
+          case "left":
+            this.trackLeftStyle = t;
+            break;
+
+          case "right":
+            this.trackRightStyle = t;
+            break;
+
+          case "transform":
+          case "-webkit-transform":
+            break;
+
+          case "transition":
+          case "-webkit-transition":
+            this.trackTransitionStyle = t;
+        }
+      },
+      removeTrackActiveStyleProperty: e => {
+        switch (e) {
+          case "transition":
+          case "-webkit-transition":
+            this.trackTransitionStyle = "";
+        }
+      },
+      setInputValue: (e, t) => {
+        t !== je.START && (this.valueEnd = Number(e));
+      },
+      setPointerCapture: e => {
+        this.mdcRoot.setPointerCapture(e);
+      },
+      setValueIndicatorText: () => {},
+      updateTickMarks: e => {
+        this.tickMarks = e;
+      }
+    };
   }
 
 }
 
-var Kt;
-se([tt(".mdc-slider")], qt.prototype, "mdcRoot", void 0), se([tt(".mdc-slider")], qt.prototype, "formElement", void 0), se([tt(".mdc-slider__thumb-container")], qt.prototype, "thumbContainer", void 0), se([tt(".mdc-slider__pin-value-marker")], qt.prototype, "pinMarker", void 0), se([Qe({
+me([ye({
   type: Number
-})], qt.prototype, "min", void 0), se([Qe({
-  type: Number
-})], qt.prototype, "max", void 0), se([Qe({
-  type: Number
-})], qt.prototype, "value", null), se([Qe({
-  type: Number
-}), ft(function (e, t) {
-  0 !== t !== (0 !== e) && this.resetFoundation(), this.mdcFoundation.setStep(e);
-})], qt.prototype, "step", void 0), se([Qe({
-  type: Boolean,
-  reflect: !0
-}), ft(function (e) {
-  this.mdcFoundation.setDisabled(e);
-})], qt.prototype, "disabled", void 0), se([Qe({
-  type: Boolean,
-  reflect: !0
-})], qt.prototype, "pin", void 0), se([Qe({
-  type: Boolean,
-  reflect: !0
-}), ft(function () {
-  this.mdcFoundation.setupTrackMarker();
-})], qt.prototype, "markers", void 0), se([et()], qt.prototype, "pinMarkerText", void 0), se([et()], qt.prototype, "trackMarkerContainerStyles", void 0), se([et()], qt.prototype, "thumbContainerStyles", void 0), se([et()], qt.prototype, "trackStyles", void 0), se([ct, Qe({
-  attribute: "aria-label"
-})], qt.prototype, "ariaLabel", void 0), se([ct, Qe({
-  attribute: "aria-labelledby"
-})], qt.prototype, "ariaLabelledBy", void 0), se([(Kt = {
-  capture: !0,
-  passive: !0
-}, (e, t) => void 0 !== t ? ((e, t, i) => {
-  Object.assign(t[i], e);
-})(Kt, e, t) : ((e, t) => Object.assign(Object.assign({}, t), {
-  finisher(i) {
-    Object.assign(i.prototype[t.key], e);
-  }
-
-}))(Kt, e))], qt.prototype, "layout", null);
+})], wt.prototype, "value", null);
 /**
-@license
-Copyright 2018 Google Inc. All Rights Reserved.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+let St = class extends wt {};
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-const Xt = ((e, ...t) => {
-  const i = t.reduce((t, i, s) => t + (e => {
-    if (e instanceof ot) return e.cssText;
-    if ("number" == typeof e) return e;
-    throw new Error(`Value passed to 'css' function must be a 'css' function result: ${e}. Use 'unsafeCSS' to pass non-literal values, but\n            take care to ensure page security.`);
-  })(i) + e[s + 1], e[0]);
-  return new ot(i, rt);
-})`@keyframes mdc-slider-emphasize{0%{animation-timing-function:ease-out}50%{animation-timing-function:ease-in;transform:scale(0.85)}100%{transform:scale(0.571)}}.mdc-slider{position:relative;width:100%;height:48px;cursor:pointer;touch-action:pan-x;-webkit-tap-highlight-color:rgba(0,0,0,0)}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__track{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786)}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__track-container::after{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786);opacity:.26}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__track-marker-container{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786)}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__thumb{fill:#018786;fill:var(--mdc-theme-secondary, #018786);stroke:#018786;stroke:var(--mdc-theme-secondary, #018786)}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__focus-ring{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786)}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__pin{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786)}.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__pin{color:#fff;color:var(--mdc-theme-text-primary-on-dark, white)}.mdc-slider--disable-touch-action{touch-action:none}.mdc-slider--disabled{cursor:auto}.mdc-slider--disabled .mdc-slider__track{background-color:#9a9a9a}.mdc-slider--disabled .mdc-slider__track-container::after{background-color:#9a9a9a;opacity:.26}.mdc-slider--disabled .mdc-slider__track-marker-container{background-color:#9a9a9a}.mdc-slider--disabled .mdc-slider__thumb{fill:#9a9a9a;stroke:#9a9a9a}.mdc-slider--disabled .mdc-slider__thumb{stroke:#fff;stroke:var(--mdc-slider-bg-color-behind-component, white)}.mdc-slider:focus{outline:none}.mdc-slider__track-container{position:absolute;top:50%;width:100%;height:2px;overflow:hidden}.mdc-slider__track-container::after{position:absolute;top:0;left:0;display:block;width:100%;height:100%;content:""}.mdc-slider__track{position:absolute;width:100%;height:100%;transform-origin:left top;will-change:transform}.mdc-slider[dir=rtl] .mdc-slider__track,[dir=rtl] .mdc-slider .mdc-slider__track{transform-origin:right top}.mdc-slider__track-marker-container{display:flex;margin-right:0;margin-left:-1px;visibility:hidden}.mdc-slider[dir=rtl] .mdc-slider__track-marker-container,[dir=rtl] .mdc-slider .mdc-slider__track-marker-container{margin-right:-1px;margin-left:0}.mdc-slider__track-marker-container::after{display:block;width:2px;height:2px;content:""}.mdc-slider__track-marker{flex:1}.mdc-slider__track-marker::after{display:block;width:2px;height:2px;content:""}.mdc-slider__track-marker:first-child::after{width:3px}.mdc-slider__thumb-container{position:absolute;top:15px;left:0;width:21px;height:100%;user-select:none;will-change:transform}.mdc-slider__thumb{position:absolute;top:0;left:0;transform:scale(0.571);stroke-width:3.5;transition:transform 100ms ease-out,fill 100ms ease-out,stroke 100ms ease-out}.mdc-slider__focus-ring{width:21px;height:21px;border-radius:50%;opacity:0;transition:transform 266.67ms ease-out,opacity 266.67ms ease-out,background-color 266.67ms ease-out}.mdc-slider__pin{display:flex;position:absolute;top:0;left:0;align-items:center;justify-content:center;width:26px;height:26px;margin-top:-2px;margin-left:-2px;transform:rotate(-45deg) scale(0) translate(0, 0);border-radius:50% 50% 50% 0%;z-index:1;transition:transform 100ms ease-out}.mdc-slider__pin-value-marker{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-body2-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.875rem;font-size:var(--mdc-typography-body2-font-size, 0.875rem);line-height:1.25rem;line-height:var(--mdc-typography-body2-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-body2-font-weight, 400);letter-spacing:0.0178571429em;letter-spacing:var(--mdc-typography-body2-letter-spacing, 0.0178571429em);text-decoration:inherit;text-decoration:var(--mdc-typography-body2-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-body2-text-transform, inherit);transform:rotate(45deg)}.mdc-slider--active .mdc-slider__thumb{transform:scale3d(1, 1, 1)}.mdc-slider--focus .mdc-slider__thumb{animation:mdc-slider-emphasize 266.67ms linear}.mdc-slider--focus .mdc-slider__focus-ring{transform:scale3d(1.55, 1.55, 1.55);opacity:.25}.mdc-slider--in-transit .mdc-slider__thumb{transition-delay:140ms}.mdc-slider--in-transit .mdc-slider__thumb-container,.mdc-slider--in-transit .mdc-slider__track,.mdc-slider:focus:not(.mdc-slider--active) .mdc-slider__thumb-container,.mdc-slider:focus:not(.mdc-slider--active) .mdc-slider__track{transition:transform 80ms ease}.mdc-slider--discrete.mdc-slider--active .mdc-slider__thumb{transform:scale(calc(12 / 21))}.mdc-slider--discrete.mdc-slider--active .mdc-slider__pin{transform:rotate(-45deg) scale(1) translate(19px, -20px)}.mdc-slider--discrete.mdc-slider--focus .mdc-slider__thumb{animation:none}.mdc-slider--discrete.mdc-slider--display-markers .mdc-slider__track-marker-container{visibility:visible}:host{display:inline-block;min-width:120px;outline:none}`;
-let Jt = class extends qt {};
-var Yt;
-
-function Zt(e, t) {
+function Tt(e, t) {
   (null == t || t > e.length) && (t = e.length);
 
-  for (var i = 0, s = new Array(t); i < t; i++) s[i] = e[i];
+  for (var i = 0, r = new Array(t); i < t; i++) r[i] = e[i];
 
-  return s;
+  return r;
 }
 
-Jt.styles = Xt, Jt = se([(Yt = "mwc-slider", e => "function" == typeof e ? ((e, t) => (window.customElements.define(e, t), t))(Yt, e) : ((e, t) => {
-  const {
-    kind: i,
-    elements: s
-  } = t;
-  return {
-    kind: i,
-    elements: s,
+St.styles = [Se], St = me([fe("mwc-slider")], St);
 
-    finisher(t) {
-      window.customElements.define(e, t);
-    }
-
-  };
-})(Yt, e))], Jt);
-
-var Gt = function () {
+var Et = function () {
   try {
     var e = function () {
-      if (!ei) return ei = !0, Promise.resolve(Promise.resolve(!1)).then(function (e) {
-        ei = e, window[Qt].dispatchEvent(new Event("change"));
+      if (!xt) return xt = !0, Promise.resolve(Promise.resolve(!1)).then(function (e) {
+        xt = e, window[At].dispatchEvent(new Event("change"));
       });
     }();
 
@@ -3065,17 +3399,17 @@ var Gt = function () {
     return Promise.reject(e);
   }
 },
-    Qt = "__foldables__",
-    ei = !1,
-    ti = function () {
+    At = "__foldables__",
+    xt = !1,
+    Rt = function () {
   function e() {
     var e = this;
-    if (void 0 !== window[Qt]) return window[Qt];
+    if (void 0 !== window[At]) return window[At];
     var t = document.createDocumentFragment();
     this.addEventListener = t.addEventListener.bind(t), this.removeEventListener = t.removeEventListener.bind(t), this.dispatchEvent = function (i) {
       if ("change" === i.type) {
-        var s = "on" + i.type;
-        return "function" == typeof e[s] && e[s](i), t.dispatchEvent(i);
+        var r = "on" + i.type;
+        return "function" == typeof e[r] && e[r](i), t.dispatchEvent(i);
       }
     }, window.addEventListener("message", function (t) {
       "update" === t.data.action && Object.assign(e, t.data.value);
@@ -3084,112 +3418,126 @@ var Gt = function () {
         var i;
         return function () {
           var t = arguments,
-              s = this;
+              r = this;
           clearTimeout(i), i = setTimeout(function () {
-            return e.apply(s, t);
+            return e.apply(r, t);
           }, 200);
         };
-      }(Gt());
+      }(Et());
     });
   }
 
-  var t;
-  return e.prototype.getSegments = function () {
-    if ("none" === this.screenSpanning) return [{
+  var t,
+      i = e.prototype;
+  return i.getSegments = function () {
+    if (1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments) return [{
       left: 0,
       top: 0,
       width: window.innerWidth,
       height: window.innerHeight
     }];
-
-    if ("single-fold-horizontal" === this.screenSpanning) {
-      var e = (window.innerHeight - this.browserShellSize) / 2,
-          t = window.innerWidth;
-      return [{
-        top: 0,
-        left: 0,
-        width: t,
-        height: e - this.foldSize / 2
-      }, {
-        top: e - this.foldSize / 2,
-        height: this.foldSize,
-        left: 0,
-        width: t
-      }, {
-        top: e + this.foldSize / 2,
-        left: 0,
-        width: t,
-        height: e - this.foldSize / 2
-      }];
-    }
-
-    if ("single-fold-vertical" === this.screenSpanning) {
-      var i = window.innerWidth / 2 - this.foldSize / 2,
-          s = window.innerHeight;
-      return [{
-        top: 0,
-        left: 0,
-        width: i,
-        height: s
-      }, {
-        top: 0,
-        height: s,
-        left: i,
-        width: this.foldSize
-      }, {
-        top: 0,
-        left: window.innerWidth / 2 + this.foldSize / 2,
-        width: i,
-        height: s
-      }];
-    }
+    var e = [];
+    if (this.verticalViewportSegments > 1) for (var t = this.verticalViewportSegments - 1, i = window.innerHeight - this.browserShellSize, r = 0, s = window.innerWidth, n = i / this.verticalViewportSegments - this.foldSize * t / this.verticalViewportSegments, o = 0; o < this.verticalViewportSegments + t; ++o) e[o] = o % 2 == 0 ? {
+      top: r,
+      left: 0,
+      bottom: r + n,
+      right: s,
+      width: s,
+      height: n
+    } : {
+      top: r,
+      left: 0,
+      right: s,
+      bottom: r + this.foldSize,
+      width: s,
+      height: this.foldSize
+    }, r += e[o].height;
+    if (this.horizontalViewportSegments > 1) for (var a = this.horizontalViewportSegments - 1, d = window.innerWidth / this.horizontalViewportSegments - this.foldSize * a / this.horizontalViewportSegments, c = window.innerHeight, l = 0, h = 0; h < this.horizontalViewportSegments + a; ++h) e[h] = h % 2 == 0 ? {
+      top: 0,
+      left: l,
+      right: l + d,
+      bottom: c,
+      width: d,
+      height: c
+    } : {
+      top: 0,
+      left: l,
+      right: l + this.foldSize,
+      bottom: c,
+      width: this.foldSize,
+      height: c
+    }, l += e[h].width;
+    return e;
+  }, i.randomizeSegmentsConfiguration = function (e) {
+    var t = Math.random() < .5,
+        i = Math.round(Math.random() * (e - 1) + 1);
+    t ? (this.verticalViewportSegments = i, this.horizontalViewportSegments = 1) : (this.horizontalViewportSegments = i, this.verticalViewportSegments = 1);
   }, (t = [{
-    key: "screenSpanning",
+    key: "horizontalViewportSegments",
     get: function () {
-      return sessionStorage.getItem(Qt + "-spanning") || "none";
+      return +sessionStorage.getItem(At + "-horizontal-viewport-segments") || 1;
     },
     set: function (e) {
-      if (!["none", "single-fold-horizontal", "single-fold-vertical"].includes(e)) throw new TypeError(e);
-      sessionStorage.setItem(Qt + "-spanning", e), Gt();
+      if (isNaN(e)) throw new TypeError(e);
+      sessionStorage.setItem(At + "-horizontal-viewport-segments", e), Et();
+    }
+  }, {
+    key: "verticalViewportSegments",
+    get: function () {
+      return +sessionStorage.getItem(At + "-vertical-viewport-segments") || 1;
+    },
+    set: function (e) {
+      if (isNaN(e)) throw new TypeError(e);
+      sessionStorage.setItem(At + "-vertical-viewport-segments", e), Et();
     }
   }, {
     key: "foldSize",
     get: function () {
-      return +sessionStorage.getItem(Qt + "-fold-size") || 0;
+      return +sessionStorage.getItem(At + "-fold-size") || 0;
     },
     set: function (e) {
       if (!(Number(e) >= 0)) throw new TypeError(e);
-      sessionStorage.setItem(Qt + "-fold-size", e), Gt();
+      sessionStorage.setItem(At + "-fold-size", e), Et();
     }
   }, {
     key: "browserShellSize",
     get: function () {
-      return +sessionStorage.getItem(Qt + "-browser-shell-size") || 0;
+      return +sessionStorage.getItem(At + "-browser-shell-size") || 0;
     },
     set: function (e) {
       if (!(Number(e) >= 0)) throw new TypeError(e);
-      sessionStorage.setItem(Qt + "-browser-shell-size", e), Gt();
+      sessionStorage.setItem(At + "-browser-shell-size", e), Et();
     }
   }]) && function (e, t) {
     for (var i = 0; i < t.length; i++) {
-      var s = t[i];
-      s.enumerable = s.enumerable || !1, s.configurable = !0, "value" in s && (s.writable = !0), Object.defineProperty(e, s.key, s);
+      var r = t[i];
+      r.enumerable = r.enumerable || !1, r.configurable = !0, "value" in r && (r.writable = !0), Object.defineProperty(e, r.key, r);
     }
   }(e.prototype, t), e;
 }();
 
-window[Qt] = new ti(), void 0 === window.getWindowSegments && (window.getWindowSegments = function () {
-  var e = window[Qt].getSegments();
-  return 1 === e.length ? e : [e[0], e[2]];
+window[At] = new Rt(), void 0 === window.visualViewport.segments && (window.visualViewport.segments = function () {
+  var e = window[At].getSegments();
+  return 1 === e.length ? e : e.filter(function (e, t) {
+    return t % 2 == 0;
+  });
 });
-var ii = /\((.*?)\)/gi,
-    si = /@media[^\(]+/gi;
+var Ct = /\((.*?)\)/gi,
+    kt = /@media[^\(]+/gi,
+    $t = /(horizontal-viewport-segments:)\s?(\d)/gi,
+    It = /(vertical-viewport-segments:)\s?(\d)/gi;
 
-function ni(e) {
-  var t,
-      i = function (e) {
+function Pt(e, t) {
+  var i = e.matchAll(t);
+  return null === i ? [] : Array.from(i, function (e) {
+    return e[2];
+  })[0];
+}
+
+function Dt(e) {
+  var t = function (e) {
     var t,
-        i = new RegExp("(\\s*)(@media.*?\\bscreen-spanning\\b[^{]+)\\{([\\s\\S]+?\\})(\\s*)\\}", "gi");
+        i = new RegExp("(\\s*)(@media.*?\\b-viewport-segments\\b[^{]+)\\{([\\s\\S]+?\\})(\\s*)\\}", "gi");
     if ("function" == typeof e.matchAll) t = Array.from(e.matchAll(i));else {
       for (t = []; t[t.length] = i.exec(e););
 
@@ -3197,115 +3545,128 @@ function ni(e) {
     }
     return t;
   }(e),
-      s = ((t = {})["single-fold-horizontal"] = "", t["single-fold-vertical"] = "", t.none = "", t);
+      i = [[]];
 
-  return i.forEach(function (e) {
+  return t.forEach(function (e) {
     var t = e[1],
-        i = e[2],
-        n = e[3],
-        r = e[4],
-        o = "none";
-    i.indexOf("single-fold-horizontal") > -1 && (o = "single-fold-horizontal"), i.indexOf("single-fold-vertical") > -1 && (o = "single-fold-vertical");
-    var a = i.match(si) || [],
-        d = i.match(ii) || [];
-    d = d.filter(function (e) {
-      return !e.includes("screen-spanning");
-    }).join(" and "), s[o] += "" + t + a + d + "{" + n + r + "}";
-  }), s;
+        r = e[2],
+        s = e[3],
+        n = e[4],
+        o = r.match(kt) || [],
+        a = r.match(Ct) || [],
+        d = Pt(r, It);
+    void 0 === d && (d = 1);
+    var c = Pt(r, $t);
+    void 0 === c && (c = 1), a = a.filter(function (e) {
+      return !e.includes("-viewport-segments");
+    }).join(" and "), void 0 === i[d] && (i[d] = new Array()), i[d][c] = "" + t + o + a + "{" + s + n + "}";
+  }), i;
 }
 
-var ri = window.matchMedia("(screen-spanning: single-fold-horizontal)").matches || window.matchMedia("(screen-spanning: single-fold-vertical)").matches || window.matchMedia("(screen-spanning: none)").matches || !1;
-console.info("CSS Spanning Media Queries are supported? " + ri);
-var oi,
-    ai = new ti();
+var zt = window.matchMedia("(vertical-viewport-segments)").matches || window.matchMedia("(horizontal-viewport-segments)").matches || !1;
+console.info("CSS Viewport Segments are supported? " + zt);
+var Vt,
+    Ft = new Rt();
 
-if (!ri) {
-  var di = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'));
-  (oi = di, Promise.all(oi.map(function (e) {
+if (!zt) {
+  var Ht = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'));
+  (Vt = Ht, Promise.all(Vt.map(function (e) {
     return e.href ? fetch(e.href).then(function (e) {
       return e.text();
     }) : e.textContent;
   }))).then(function (e) {
     var t = new DocumentFragment();
     e.forEach(function (e, i) {
-      for (var s = function (e, t) {
-        return e.replace(new RegExp("(\\s*)(@media.*?\\bscreen-spanning\\b[^{]+)\\{([\\s\\S]+?\\})(\\s*)\\}", "gi"), t);
-      }(e, ""), n = ni(e), r = di[i].href || "inline", o = 0, a = Object.entries(n); o < a.length; o++) {
-        var d = a[o];
-        li[d[0]] += "/* origin: " + r + " */" + d[1];
+      for (var r = function (e, t) {
+        return e.replace(new RegExp("(\\s*)(@media.*?\\b-viewport-segments\\b[^{]+)\\{([\\s\\S]+?\\})(\\s*)\\}", "gi"), t);
+      }(e, ""), s = Dt(e), n = Ht[i].href || "inline", o = 0, a = Object.entries(s); o < a.length; o++) {
+        var d = a[o],
+            c = d[0],
+            l = d[1];
+        null == Mt[c] && (Mt[c] = []);
+
+        for (var h = 0, p = Object.entries(l); h < p.length; h++) {
+          var u = p[h];
+          Mt[c][u[0]] = "/* origin: " + n + " */" + u[1];
+        }
       }
 
-      var l = document.createElement("style");
-      l.setAttribute("data-css-origin", r), l.textContent = s, t.appendChild(l);
-    }), di.forEach(function (e) {
+      var m = document.createElement("style");
+      m.setAttribute("data-css-origin", n), m.textContent = r, t.appendChild(m);
+    }), Ht.forEach(function (e) {
       return null != e.parentElement && e.parentElement.removeChild(e);
     }), document.head.appendChild(t), function (e) {
-      ri || (ci(e), ai.addEventListener("change", function () {
-        return ci(e);
+      zt || (Lt(e), Ft.addEventListener("change", function () {
+        return Lt(e);
       }));
     }();
   });
 }
 
-var li = {
-  "single-fold-horizontal": "",
-  "single-fold-vertical": "",
-  none: ""
-};
+var Mt = [[]];
 
-function ci(e) {
-  for (var t = ai, i = e ? li[e.nodeName.toLowerCase()][t.screenSpanning] : li[t.screenSpanning], s = e ? li[e.nodeName.toLowerCase()]["non-spanning"] : null, n = ai.getSegments(), r = 0, o = Object.entries(1 === n.length ? {} : n[1]); r < o.length; r++) {
-    var a = o[r];
-    d = a[1] + "px", i = i.replace(new RegExp("env\\(\\s*fold-" + a[0] + "\\s*\\)", "gi"), d);
-  }
+function Lt(e) {
+  var t,
+      i = Ft,
+      r = null;
+  (t = e ? Mt[e.nodeName.toLowerCase()] : Mt)[i.verticalViewportSegments] && (r = t[i.verticalViewportSegments][i.horizontalViewportSegments]);
+  var s,
+      n = t[0][0] ? t[0][0] : null;
 
-  var d,
-      l = "__foldables_sheet__",
-      c = function (e, t) {
-    for (var i, s = function (e, t) {
-      var i = "undefined" != typeof Symbol && e[Symbol.iterator] || e["@@iterator"];
-      if (i) return (i = i.call(e)).next.bind(i);
+  if (r) {
+    for (var o = window.visualViewport.segments(), a = !(o[0].height < window.innerHeight), d = 0, c = Object.entries(o); d < c.length; d++) for (var l = c[d], h = l[0], p = 0, u = Object.entries(l[1]); p < u.length; p++) {
+      var m = u[p],
+          v = m[0];
+      s = m[1] + "px", r = r.replace(new RegExp("env\\(\\s*" + (a ? "viewport-segment-" + v + " " + h + " 0" : "viewport-segment-" + v + " 0 " + h) + "\\s*\\)", "gi"), s);
+    }
 
-      if (Array.isArray(e) || (i = function (e, t) {
-        if (e) {
-          if ("string" == typeof e) return Zt(e, t);
-          var i = Object.prototype.toString.call(e).slice(8, -1);
-          return "Object" === i && e.constructor && (i = e.constructor.name), "Map" === i || "Set" === i ? Array.from(e) : "Arguments" === i || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i) ? Zt(e, t) : void 0;
-        }
-      }(e))) {
-        i && (e = i);
-        var s = 0;
-        return function () {
-          return s >= e.length ? {
-            done: !0
-          } : {
-            done: !1,
-            value: e[s++]
+    var f = "__foldables_sheet__",
+        g = function (e, t) {
+      for (var i, r = function (e, t) {
+        var i = "undefined" != typeof Symbol && e[Symbol.iterator] || e["@@iterator"];
+        if (i) return (i = i.call(e)).next.bind(i);
+
+        if (Array.isArray(e) || (i = function (e, t) {
+          if (e) {
+            if ("string" == typeof e) return Tt(e, t);
+            var i = Object.prototype.toString.call(e).slice(8, -1);
+            return "Object" === i && e.constructor && (i = e.constructor.name), "Map" === i || "Set" === i ? Array.from(e) : "Arguments" === i || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i) ? Tt(e, t) : void 0;
+          }
+        }(e))) {
+          i && (e = i);
+          var r = 0;
+          return function () {
+            return r >= e.length ? {
+              done: !0
+            } : {
+              done: !1,
+              value: e[r++]
+            };
           };
-        };
-      }
+        }
 
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }(e.querySelectorAll("." + l)); !(i = s()).done;) i.value.remove();
+        throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+      }(e.querySelectorAll("." + f)); !(i = r()).done;) i.value.remove();
 
-    var n = document.createElement("style");
-    n.className = l, n.textContent = t, e === document ? document.head.appendChild(n) : e.appendChild(n);
-  };
+      var s = document.createElement("style");
+      s.className = f, s.textContent = t, e === document ? document.head.appendChild(s) : e.appendChild(s);
+    };
 
-  if (e) {
-    var h = e.shadowRoot;
-    "adoptedStyleSheets" in h && h.adoptedStyleSheets.length > 0 ? h.adoptedStyleSheets[0].replace(s + i) : c(h, i);
-  } else c(document, i);
+    if (e) {
+      var y = e.shadowRoot;
+      "adoptedStyleSheets" in y && y.adoptedStyleSheets.length > 0 ? y.adoptedStyleSheets[0].replace(n + r) : g(y, r);
+    } else g(document, r);
+  }
 }
 
-const hi = {
+const Nt = {
   Foldable: "foldable",
   Dual: "dual"
 };
 
-class ui extends ie {}
+class Ut extends ce {}
 
-e(ui, "styles", o`
+e(Ut, "styles", Z`
     :host {
       width: 20px;
       height: 20px;
@@ -3325,9 +3686,9 @@ e(ui, "styles", o`
       height: 100%;
     }
   `);
-customElements.define("close-icon", class extends ui {
+customElements.define("close-icon", class extends Ut {
   render() {
-    return O`
+    return I`
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
         <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/>
       </svg>
@@ -3335,9 +3696,9 @@ customElements.define("close-icon", class extends ui {
   }
 
 });
-customElements.define("fullscreen-icon", class extends ui {
+customElements.define("fullscreen-icon", class extends Ut {
   render() {
-    return O`
+    return I`
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="-6 -6 18 18" >
         <path d="M4.5 11H3v4h4v-1.5H4.5V11zM3 7h1.5V4.5H7V3H3v4zm10.5 6.5H11V15h4v-4h-1.5v2.5zM11 3v1.5h2.5V7H15V3h-4z"  transform="translate(-6,-6)"/>
         <animate attributeName="fill" values="#797979;#ca0700;#797979" dur="2s" repeatCount="10" />
@@ -3348,9 +3709,9 @@ customElements.define("fullscreen-icon", class extends ui {
   }
 
 });
-customElements.define("splitview-icon", class extends ui {
+customElements.define("splitview-icon", class extends Ut {
   render() {
-    return O`
+    return I`
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" >
           <path d="M 11.110169,20.601695 V 3.6016952 c 0,-0.55 -0.45,-1 -1,-1 H 4.1101692 c -0.55,0 -1,0.45 -1,1 V 20.601695 c 0,0.55 0.45,1 1,1 h 5.9999998 c 0.55,0 1,-0.45 1,-1 z m 10,0 V 3.6016952 c 0,-0.55 -0.45,-1 -1,-1 h -6 c -0.55,0 -1,0.45 -1,1 V 20.601695 c 0,0.55 0.45,1 1,1 h 6 c 0.55,0 1,-0.45 1,-1 z"/>
         </svg>
@@ -3358,9 +3719,9 @@ customElements.define("splitview-icon", class extends ui {
   }
 
 });
-customElements.define("rotate-icon", class extends ui {
+customElements.define("rotate-icon", class extends Ut {
   render() {
-    return O`
+    return I`
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" >
         <path d="M7.34 6.41L.86 12.9l6.49 6.48 6.49-6.48-6.5-6.49zM3.69 12.9l3.66-3.66L11 12.9l-3.66 3.66-3.65-3.66zm15.67-6.26C17.61 4.88 15.3 4 13 4V.76L8.76 5 13 9.24V6c1.79 0 3.58.68 4.95 2.05 2.73 2.73 2.73 7.17 0 9.9C16.58 19.32 14.79 20 13 20c-.97 0-1.94-.21-2.84-.61l-1.49 1.49C10.02 21.62 11.51 22 13 22c2.3 0 4.61-.88 6.36-2.64 3.52-3.51 3.52-9.21 0-12.72z"/>
       </svg>
@@ -3368,9 +3729,9 @@ customElements.define("rotate-icon", class extends ui {
   }
 
 });
-customElements.define("minimize-icon", class extends ui {
+customElements.define("minimize-icon", class extends Ut {
   render() {
-    return O`
+    return I`
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" >
         <path d="M6 19h12v2H6z"/><path d="M0 0h24v24H0V0z" fill="none"/>
       </svg>
@@ -3379,11 +3740,14 @@ customElements.define("minimize-icon", class extends ui {
 
 });
 
-class pi extends ie {
+class Ot extends ce {
   static get properties() {
     return {
-      spanning: {
-        type: String
+      verticalViewportSegments: {
+        type: Number
+      },
+      horizontalViewportSegments: {
+        type: Number
       }
     };
   }
@@ -3397,7 +3761,7 @@ class pi extends ie {
   }
 
   constructor() {
-    super(), e(this, "_mini_configurator_header", void 0), e(this, "_mini_configurator", void 0), e(this, "_configurator", void 0), e(this, "_configurator_header", void 0), e(this, "_device_type_select", void 0), e(this, "_orientation_select", void 0), e(this, "_seam_slider", void 0), e(this, "_seam_container", void 0), e(this, "_preview", void 0), e(this, "_preview_container", void 0), e(this, "_device", void 0), e(this, "_frame", void 0), e(this, "_device_hinge", void 0), e(this, "_currentOrientation", void 0), e(this, "_currentDevice", void 0), e(this, "_isFullscreen", !1), e(this, "_spanning", void 0), e(this, "_fold_width", void 0), e(this, "_browser_shell_size", void 0), e(this, "_x", 0), e(this, "_y", 0), e(this, "_offset_x", 0), e(this, "_offset_y", 0), e(this, "_resizeHandler", void 0), e(this, "_handleKeyUp", e => {
+    super(), e(this, "_mini_configurator_header", void 0), e(this, "_mini_configurator", void 0), e(this, "_configurator", void 0), e(this, "_configurator_header", void 0), e(this, "_device_type_select", void 0), e(this, "_orientation_select", void 0), e(this, "_seam_slider", void 0), e(this, "_seam_container", void 0), e(this, "_preview", void 0), e(this, "_preview_container", void 0), e(this, "_device", void 0), e(this, "_frame", void 0), e(this, "_device_hinge", void 0), e(this, "_currentOrientation", void 0), e(this, "_currentDevice", void 0), e(this, "_isFullscreen", !1), e(this, "_verticalViewportSegments", 1), e(this, "_horizontalViewportSegments", 1), e(this, "_fold_width", void 0), e(this, "_browser_shell_size", void 0), e(this, "_x", 0), e(this, "_y", 0), e(this, "_offset_x", 0), e(this, "_offset_y", 0), e(this, "_resizeHandler", void 0), e(this, "_handleKeyUp", e => {
       73 == e.keyCode && e.ctrlKey && this._showMiniConfigurator();
     }), e(this, "_startDragMiniConfigurator", async e => {
       this._startDrag(e), this._mini_configurator_header.setPointerCapture(this._pointerId), this._mini_configurator_header.onpointerup = this._stopDragMiniConfigurator, this._mini_configurator_header.onpointercancel = this._stopDragMiniConfigurator, this._mini_configurator_header.onpointermove = this._miniConfiguratorMove;
@@ -3414,10 +3778,10 @@ class pi extends ie {
       if (e.clientY < 0 || e.clientX < 0 || e.clientX > window.innerWidth || e.clientY > window.innerHeight) return;
       let t = e.clientX - this._x,
           i = e.clientY - this._y;
-      const s = window.getComputedStyle(this.shadowRoot.host),
-            n = parseFloat(s.width),
-            r = parseFloat(s.height);
-      t < 0 && (t = 0), i < 0 && (i = 0), i + r >= window.innerHeight && (i = window.innerHeight - r), t + n >= window.innerWidth && (t = window.innerWidth - n), this._updateConfiguratorPosition(t, i), e.preventDefault();
+      const r = window.getComputedStyle(this.shadowRoot.host),
+            s = parseFloat(r.width),
+            n = parseFloat(r.height);
+      t < 0 && (t = 0), i < 0 && (i = 0), i + n >= window.innerHeight && (i = window.innerHeight - n), t + s >= window.innerWidth && (t = window.innerWidth - s), this._updateConfiguratorPosition(t, i), e.preventDefault();
     }), e(this, "_stopDragConfigurator", async e => {
       this._configurator_header.onpointerup = null, this._configurator_header.onpointermove = null, this._configurator_header.releasePointerCapture(this._pointerId), this._stopDrag(e);
     }), e(this, "_stopDragMiniConfigurator", async e => {
@@ -3430,33 +3794,27 @@ class pi extends ie {
       this.foldWidth = e.target.value, this.shadowRoot.host.style.setProperty("--device-fold-width", e.target.value + "px"), this._updateFoldablesFeature();
     }), e(this, "_rotationFinished", e => {
       this._preview.style.transition = "";
-    }), this._spanning = "none";
+    }), this._verticalViewportSegments = 1, this._horizontalViewportSegments = 1;
   }
 
   firstUpdated() {
     if (this._inIframe()) return void (this.shadowRoot.host.style.display = "none");
-    if (window.matchMedia("(screen-spanning: single-fold-horizontal)").matches || window.matchMedia("(screen-spanning: single-fold-vertical)").matches || window.matchMedia("(screen-spanning: none)").matches || !1) return console.info("CSS Spanning Media Queries are supported, the configurator will hide itself."), void (this.shadowRoot.host.style.display = "none");
+    if (window.matchMedia("(vertical-viewport-segments)").matches || window.matchMedia("(horizontal-viewport-segments)").matches || !1) return console.info("CSS Viewport Segments Media Queries are supported, the configurator will hide itself."), void (this.shadowRoot.host.style.display = "none");
     this._mini_configurator_header = this.shadowRoot.querySelector("#mini-configurator-header"), this._mini_configurator = this.shadowRoot.querySelector("#mini-configurator"), this._configurator = this.shadowRoot.querySelector("#configurator"), this._configurator_header = this.shadowRoot.querySelector("#configurator-header"), this._device_type_select = this.shadowRoot.querySelector("#device-select"), this._orientation_select = this.shadowRoot.querySelector("#orientation-select"), this._seam_slider = this.shadowRoot.getElementById("seam"), this._seam_container = this.shadowRoot.getElementById("seam-container"), this._configurator_header.onpointerdown = this._startDragConfigurator.bind(this), this._mini_configurator_header.onpointerdown = this._startDragMiniConfigurator.bind(this), this._device_type_select.onchange = this._deviceTypeChanged.bind(this), this._orientation_select.onchange = this._orientationChanged.bind(this), this._seam_slider.oninput = this._seamValueUpdated.bind(this);
     const e = window.getComputedStyle(this.shadowRoot.host);
     parseFloat(e.width);
     const t = parseFloat(e.height);
-    this._updateConfiguratorPosition(20, window.innerHeight - t - 20), this._orientation_select.disabled = !0, this._seam_slider.disabled = !0, this._browser_shell_size = 0, this._spanning = "none", this.foldWidth = 0, this._preview = this.shadowRoot.querySelector("#preview"), this._preview_container = this.shadowRoot.querySelector("#preview-container"), this._device = this.shadowRoot.querySelector("#device"), this._frame = this.shadowRoot.querySelector("#frame"), this._device_hinge = this.shadowRoot.querySelector("#device-hinge"), this._updateFoldablesFeature(), this._currentOrientation = "none", this._deviceType = hi.Dual, document.addEventListener("keyup", this._handleKeyUp, !1), console.log("Device Pixel Ratio : " + window.devicePixelRatio);
+    this._updateConfiguratorPosition(20, window.innerHeight - t - 20), this._orientation_select.disabled = !0, this._seam_slider.disabled = !0, this._browser_shell_size = 0, this._verticalViewportSegments = 1, this._horizontalViewportSegments = 1, this.foldWidth = 0, this._preview = this.shadowRoot.querySelector("#preview"), this._preview_container = this.shadowRoot.querySelector("#preview-container"), this._device = this.shadowRoot.querySelector("#device"), this._frame = this.shadowRoot.querySelector("#frame"), this._device_hinge = this.shadowRoot.querySelector("#device-hinge"), this._updateFoldablesFeature(), this._currentOrientation = "portrait", this._deviceType = Nt.Dual, document.addEventListener("keyup", this._handleKeyUp, !1), console.log("Device Pixel Ratio : " + window.devicePixelRatio);
   }
 
   _handleAsusSpanning() {
-    console.log(window.innerHeight), window.innerHeight > 752 ? (this.spanning = "single-fold-horizontal", this.foldWidth = 30, this._updateFoldablesFeature(), setTimeout(() => {
-      for (const e of document.styleSheets) if ("__foldables_sheet__" === e.ownerNode.className) {
-        this._addZenbookVariables(e);
+    console.log(window.innerHeight), window.innerHeight > 752 ? (this.horizontalViewportSegments = 1, this.verticalViewportSegments = 2, this.foldWidth = 30, this._updateFoldablesFeature(), setTimeout(() => {
+      this._addZenbookVariables(document.styleSheets[0]), this._addZenbookVariables(this._frame.contentDocument.styleSheets[0]);
+    }, 300)) : (this.horizontalViewportSegments = 1, this.verticalViewportSegments = 1, this.foldWidth = 0, this._updateFoldablesFeature()), this._currentOrientation = this._orientationFromSegments();
+  }
 
-        break;
-      }
-
-      for (const e of this._frame.contentDocument.styleSheets) if ("__foldables_sheet__" === e.ownerNode.className) {
-        this._addZenbookVariables(e);
-
-        break;
-      }
-    }, 200)) : (this.spanning = "none", this.foldWidth = 0, this._updateFoldablesFeature()), this._currentOrientation = this.spanning;
+  _orientationFromSegments() {
+    return 2 === this.horizontalViewportSegments && 1 === this.verticalViewportSegments ? "portrait" : 1 === this.horizontalViewportSegments && 2 === this.verticalViewportSegments ? "landscape" : "portrait";
   }
 
   _addZenbookVariables(e) {
@@ -3473,7 +3831,7 @@ class pi extends ie {
 
   _orientationChanged(e) {
     const t = this._orientation_select.selectedIndex;
-    this.spanning = this._orientation_select[t].value, this._updatePreviewRotation(), this._updateFoldablesFeature(), this._calculateAndApplyScaleFactor();
+    "portrait" === this._orientation_select[t].value ? (this.horizontalViewportSegments = 2, this.verticalViewportSegments = 1) : (this.horizontalViewportSegments = 1, this.verticalViewportSegments = 2), this._updatePreviewRotation(), this._updateFoldablesFeature(), this._calculateAndApplyScaleFactor();
   }
 
   _applyVerticalRotation() {
@@ -3485,73 +3843,54 @@ class pi extends ie {
   }
 
   _updatePreviewRotation() {
-    switch (this.spanning != this._currentOrientation && (this._preview.style.transition = "transform 0.7s ease-in-out", this._preview.addEventListener("transitionend", this._rotationFinished)), this._currentOrientation = this.spanning, this.spanning) {
-      case "none":
-        "asus" === this._currentDevice ? this._applyHorizontalRotation() : this._applyVerticalRotation();
-        break;
-
-      case "single-fold-vertical":
-        this._applyVerticalRotation();
-
-        break;
-
-      case "single-fold-horizontal":
-        this._applyHorizontalRotation();
-
-    }
+    this._orientationFromSegments() != this._currentOrientation && (this._preview.style.transition = "transform 0.7s ease-in-out", this._preview.addEventListener("transitionend", this._rotationFinished)), this._currentOrientation = this._orientationFromSegments(), 1 === this.horizontalViewportSegments && 1 === this.verticalViewportSegments ? "asus" === this._currentDevice ? this._applyHorizontalRotation() : this._applyVerticalRotation() : 2 === this.horizontalViewportSegments ? this._applyVerticalRotation() : this._applyHorizontalRotation();
   }
 
-  get spanning() {
-    return this._spanning;
+  get horizontalViewportSegments() {
+    return this._horizontalViewportSegments;
   }
 
-  set spanning(e) {
-    let t = this._spanning;
+  set horizontalViewportSegments(e) {
+    let t = this._horizontalViewportSegments;
+    this._orientation_select.selectedIndex = 2 === e ? 0 : 1, this._horizontalViewportSegments = e, this.requestUpdate("horizontalViewportSegments", t);
+  }
 
-    switch (e) {
-      case "none":
-      case "single-fold-vertical":
-        this._orientation_select.selectedIndex = 0;
-        break;
+  get verticalViewportSegments() {
+    return this._verticalViewportSegments;
+  }
 
-      case "single-fold-horizontal":
-        this._orientation_select.selectedIndex = 1;
-        break;
-
-      default:
-        e = "none", this._orientation_select.selectedIndex = 0;
-    }
-
-    this._spanning = e, this.requestUpdate("spanning", t);
+  set verticalViewportSegments(e) {
+    let t = this._verticalViewportSegments;
+    this._orientation_select.selectedIndex = 2 === e ? 1 : 0, this._verticalViewportSegments = e, this.requestUpdate("verticalViewportSegments", t);
   }
 
   _deviceTypeChanged(e) {
     const t = this._device_type_select.selectedIndex,
           i = this._device_type_select[t].value;
 
-    switch (window.removeEventListener("resize", this._resizeHandler), this._resizeHandler = null, "none" === this.spanning && (this._currentOrientation = this.spanning = "single-fold-vertical"), i) {
+    switch (window.removeEventListener("resize", this._resizeHandler), this._resizeHandler = null, 1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments && (this.verticalViewportSegments = 1, this.horizontalViewportSegments = 2, this._currentOrientation = "portrait"), i) {
       case "custom":
-        this._seam_container.style.display = "flex", this._orientation_select.disabled = !1, this._seam_slider.disabled = !1, this._seam_slider.layout(), this.foldWidth = 24, this._deviceType = hi.Dual, this._currentDevice = "custom";
+        this._seam_container.style.display = "flex", this._orientation_select.disabled = !1, this._seam_slider.disabled = !1, this._seam_slider.layout(), this.foldWidth = 24, this._deviceType = Nt.Dual, this._currentDevice = "custom";
         break;
 
       case "neo":
-        this._orientation_select.disabled = !1, this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._deviceType = hi.Dual, this.foldWidth = 24, this._currentDevice = "neo";
+        this._orientation_select.disabled = !1, this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._deviceType = Nt.Dual, this.foldWidth = 24, this._currentDevice = "neo";
         break;
 
       case "duo":
-        this._orientation_select.disabled = !1, this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._deviceType = hi.Dual, this.foldWidth = 28, this._currentDevice = "duo";
+        this._orientation_select.disabled = !1, this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._deviceType = Nt.Dual, this.foldWidth = 28, this._currentDevice = "duo";
         break;
 
       case "asus":
-        this._resizeHandler = this._debounce(this._onResize, 200), window.addEventListener("resize", this._resizeHandler), this._deviceType = hi.Dual, this._handleAsusSpanning(), this._currentDevice = "asus", this._orientation_select.disabled = !0, this._seam_slider.disabled = !0, this._seam_container.style.display = "none";
+        this._resizeHandler = this._debounce(this._onResize, 200), window.addEventListener("resize", this._resizeHandler), this._deviceType = Nt.Dual, this._handleAsusSpanning(), this._currentDevice = "asus", this._orientation_select.disabled = !0, this._seam_slider.disabled = !0, this._seam_container.style.display = "none";
         break;
 
       case "fold":
-        this._orientation_select.disabled = !1, this._seam_container.style.display = "flex", this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._deviceType = hi.Foldable, this._seam_slider.layout(), this.foldWidth = 10, this._currentDevice = "fold";
+        this._orientation_select.disabled = !1, this._seam_container.style.display = "flex", this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._deviceType = Nt.Foldable, this._seam_slider.layout(), this.foldWidth = 10, this._currentDevice = "fold";
         break;
 
       default:
-        this._orientation_select.disabled = !0, this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this._currentOrientation = this.spanning = "none", this._currentDevice = "duo", this.foldWidth = 0, this._deviceType = hi.Dual;
+        this._orientation_select.disabled = !0, this._seam_slider.disabled = !0, this._seam_container.style.display = "none", this.verticalViewportSegments = 1, this.horizontalViewportSegments = 1, this._currentOrientation = "portrait", this._currentDevice = "duo", this.foldWidth = 0, this._deviceType = Nt.Dual;
     }
 
     this._updatePreviewConfiguration(), this._updateFoldablesFeature(), this._frame.contentWindow.location.reload(!0);
@@ -3561,14 +3900,14 @@ class pi extends ie {
     const e = window.getComputedStyle(this._preview_container),
           t = window.getComputedStyle(this._device),
           i = parseInt(e.width, 10),
-          s = parseInt(e.height, 10);
-    let n = parseInt(t.width, 10),
-        r = parseInt(t.height, 10),
+          r = parseInt(e.height, 10);
+    let s = parseInt(t.width, 10),
+        n = parseInt(t.height, 10),
         o = 1;
 
-    if ("single-fold-horizontal" == this._currentOrientation && (n = parseInt(t.height, 10), r = parseInt(t.width, 10)), r > s || n > i) {
-      const e = s / r,
-            t = i / n;
+    if ("landscape" === this._currentOrientation && (s = parseInt(t.height, 10), n = parseInt(t.width, 10)), n > r || s > i) {
+      const e = r / n,
+            t = i / s;
       o = t < e ? t : e;
     }
 
@@ -3594,12 +3933,12 @@ class pi extends ie {
         this.shadowRoot.host.style.setProperty("--device-screen1-width", "440px"), this.shadowRoot.host.style.setProperty("--device-screen2-width", "720px"), this.shadowRoot.host.style.setProperty("--device-screen1-height", "1396px"), this.shadowRoot.host.style.setProperty("--device-screen2-height", "1396px"), this.shadowRoot.host.style.setProperty("--device-fold-width", "30px");
     }
 
-    this._deviceType === hi.Foldable ? (this._device_hinge.classList.add("fold"), this._device_hinge.classList.remove("hinge")) : (this._device_hinge.classList.remove("fold"), this._device_hinge.classList.add("hinge")), this._updatePreviewRotation(), this._calculateAndApplyScaleFactor();
+    this._deviceType === Nt.Foldable ? (this._device_hinge.classList.add("fold"), this._device_hinge.classList.remove("hinge")) : (this._device_hinge.classList.remove("fold"), this._device_hinge.classList.add("hinge")), this._updatePreviewRotation(), this._calculateAndApplyScaleFactor();
   }
 
   _updateFoldablesFeature() {
-    const e = new ti();
-    e.foldSize = this.foldWidth, e.screenSpanning = this.spanning, this._seam_slider.value = this.foldWidth;
+    const e = new Rt();
+    e.foldSize = this.foldWidth, e.horizontalViewportSegments = this.horizontalViewportSegments, e.verticalViewportSegments = this.verticalViewportSegments, this._seam_slider.value = this.foldWidth;
   }
 
   _debounce(e, t) {
@@ -3629,9 +3968,9 @@ class pi extends ie {
     let e = this._offset_x,
         t = this._offset_y;
     const i = window.getComputedStyle(this.shadowRoot.host),
-          s = parseFloat(i.width),
-          n = parseFloat(i.height);
-    this._offset_y + n >= window.innerHeight && (t = window.innerHeight - n), this._offset_x + s >= window.innerWidth && (e = window.innerWidth - s), this._updateConfiguratorPosition(e, t), this._updatePreviewConfiguration();
+          r = parseFloat(i.width),
+          s = parseFloat(i.height);
+    this._offset_y + s >= window.innerHeight && (t = window.innerHeight - s), this._offset_x + r >= window.innerWidth && (e = window.innerWidth - r), this._updateConfiguratorPosition(e, t), this._updatePreviewConfiguration();
   }
 
   _updateConfiguratorPosition(e, t) {
@@ -3639,19 +3978,19 @@ class pi extends ie {
   }
 
   _toggleSpanning() {
-    "none" != this.spanning ? this._device_type_select.selectedIndex = 0 : this._device_type_select.selectedIndex = 2, this._deviceTypeChanged();
+    1 != this.verticalViewportSegments || 1 != this.horizontalViewportSegments ? this._device_type_select.selectedIndex = 0 : this._device_type_select.selectedIndex = 2, this._deviceTypeChanged();
   }
 
   _changeOrientation() {
-    "none" !== this.spanning && ("single-fold-vertical" === this.spanning ? this.spanning = "single-fold-horizontal" : this.spanning = "single-fold-vertical", this._updatePreviewRotation(), this._updateFoldablesFeature(), this._calculateAndApplyScaleFactor());
+    1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments || (2 === this.verticalViewportSegments ? (this.verticalViewportSegments = 1, this.horizontalViewportSegments = 2) : (this.verticalViewportSegments = 2, this.horizontalViewportSegments = 1), this._updatePreviewRotation(), this._updateFoldablesFeature(), this._calculateAndApplyScaleFactor());
   }
 
   render() {
-    return O`
+    return I`
     <div id="mini-configurator">
       <div class="header-background header" id="mini-configurator-header">Foldable Configurator</div>
       <div class="icon-row">
-        <splitview-icon @click="${this._toggleSpanning}" class="${"none" != this.spanning ? "toggle" : ""}"></splitview-icon>
+        <splitview-icon @click="${this._toggleSpanning}" class="${1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments ? "" : "toggle"}"></splitview-icon>
         <rotate-icon @click="${this._changeOrientation}"></rotate-icon>
         <fullscreen-icon @click="${this._showConfigurator}"></fullscreen-icon>
         <close-icon @click="${this._closeConfigurator}"></close-icon>
@@ -3680,8 +4019,8 @@ class pi extends ie {
         </select>
         <label for="orientation-select" class="category">Orientation</label>
         <select id="orientation-select" disabled>
-          <option value="single-fold-vertical">Vertical</option>
-          <option value="single-fold-horizontal">Horizontal</option>
+          <option value="portrait">Portrait</option>
+          <option value="landscape">Landscape</option>
         </select>
         <div id="preview-text">Below is an emulated version on the device when spanning :</div>
         <div id="preview-container">
@@ -3709,7 +4048,7 @@ class pi extends ie {
 
 }
 
-e(pi, "styles", o`
+e(Ot, "styles", Z`
     :host {
       z-index: 9999;
       position: absolute;
@@ -3850,7 +4189,7 @@ e(pi, "styles", o`
     }
 
     mwc-slider {
-      --mdc-theme-secondary: black;
+      --mdc-theme-primary: black;
       width: 80%;
       margin-left: 12px;
     }
@@ -3977,6 +4316,6 @@ e(pi, "styles", o`
       text-align: center;
       grid-column: span 2;
     }
-  `), customElements.define("foldable-device-configurator", pi);
+  `), customElements.define("foldable-device-configurator", Ot);
 
-export { hi as DeviceType, pi as FoldableDeviceConfigurator };
+export { Nt as DeviceType, Ot as FoldableDeviceConfigurator };
