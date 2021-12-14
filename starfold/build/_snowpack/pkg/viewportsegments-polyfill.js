@@ -1,5 +1,7 @@
 var e = function () {
   try {
+    window[t].updateSegments();
+
     var e = function () {
       if (!i) return i = !0, Promise.resolve(Promise.resolve(!1)).then(function (e) {
         i = e, window[t].dispatchEvent(new Event("change"));
@@ -44,45 +46,26 @@ var r = /*#__PURE__*/function () {
 
   var r,
       o = i.prototype;
-  return o.getSegments = function () {
-    if (1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments) return [{
-      left: 0,
-      top: 0,
-      width: window.innerWidth,
-      height: window.innerHeight
-    }];
+  return o.updateSegments = function () {
+    1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments && (window.visualViewport.segments = null);
     var e = [];
-    if (this.verticalViewportSegments > 1) for (var t = this.verticalViewportSegments - 1, i = window.innerHeight - this.browserShellSize, n = 0, r = window.innerWidth, o = i / this.verticalViewportSegments - this.foldSize * t / this.verticalViewportSegments, s = 0; s < this.verticalViewportSegments + t; ++s) e[s] = s % 2 == 0 ? {
-      top: n,
+    if (this.verticalViewportSegments > 1) for (var t = window.innerHeight - this.browserShellSize, i = 0, n = window.innerWidth, r = t / this.verticalViewportSegments - this.foldSize * (this.verticalViewportSegments - 1) / this.verticalViewportSegments, o = 0; o < this.verticalViewportSegments; ++o) e[o] = {
+      top: i,
       left: 0,
-      bottom: n + o,
-      right: r,
-      width: r,
-      height: o
-    } : {
-      top: n,
-      left: 0,
-      right: r,
-      bottom: n + this.foldSize,
-      width: r,
-      height: this.foldSize
-    }, n += e[s].height;
-    if (this.horizontalViewportSegments > 1) for (var h = this.horizontalViewportSegments - 1, a = window.innerWidth / this.horizontalViewportSegments - this.foldSize * h / this.horizontalViewportSegments, w = window.innerHeight, g = 0, l = 0; l < this.horizontalViewportSegments + h; ++l) e[l] = l % 2 == 0 ? {
+      bottom: i + r,
+      right: n,
+      width: n,
+      height: r
+    }, i += e[o].height, i += this.foldSize;
+    if (this.horizontalViewportSegments > 1) for (var s = window.innerWidth / this.horizontalViewportSegments - this.foldSize * (this.horizontalViewportSegments - 1) / this.horizontalViewportSegments, a = window.innerHeight, h = 0, w = 0; w < this.horizontalViewportSegments; ++w) e[w] = {
       top: 0,
-      left: g,
-      right: g + a,
-      bottom: w,
-      width: a,
-      height: w
-    } : {
-      top: 0,
-      left: g,
-      right: g + this.foldSize,
-      bottom: w,
-      width: this.foldSize,
-      height: w
-    }, g += e[l].width;
-    return e;
+      left: h,
+      right: h + s,
+      bottom: a,
+      width: s,
+      height: a
+    }, h += e[w].width, h += this.foldSize;
+    window.visualViewport.segments = e;
   }, o.randomizeSegmentsConfiguration = function (e) {
     var t = Math.random() < .5,
         i = Math.round(Math.random() * (e - 1) + 1);
@@ -131,11 +114,6 @@ var r = /*#__PURE__*/function () {
   }(i.prototype, r), i;
 }();
 
-window[t] = new r(), void 0 === window.visualViewport.segments && (window.visualViewport.segments = function () {
-  var e = window[t].getSegments();
-  return 1 === e.length ? e : e.filter(function (e, t) {
-    return t % 2 == 0;
-  });
-});
+window[t] = new r(), void 0 === window.visualViewport.segments && window[t].updateSegments();
 
 export { r as FoldablesFeature };

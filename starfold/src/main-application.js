@@ -725,7 +725,7 @@ export class MainApplication extends LitElement {
   }
 
   _handleSpanning() {
-    this._spanning = window.visualViewport.segments().length > 1;
+    this._spanning = (window.visualViewport.segments && window.visualViewport.segments.length > 1);
     this._updateGameLayout();
     if (!this._spanning)
       this._showPauseButton();
@@ -750,29 +750,8 @@ export class MainApplication extends LitElement {
     let oldPlayArea;
     if (this._playAreaSize)
       oldPlayArea = { width: this._playAreaSize.width, height:  this._playAreaSize.height };
-    const segments = window.visualViewport.segments();
-    if (segments.length === 1) {
-      this._playAreaSize = { width: this._canvas.width, height: this._canvas.height };
-      this._controllerArea = { left: 0, top: 0, width: 0, height: 0 };
-      this._leftControllerPos = {
-        x: 0,
-        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
-      this._rightControllerPos = {
-        x: 2 * this._controllerSizeTouch,
-        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
-      this._upControllerPos = {
-        x: this._controllerSizeTouch,
-        y: this._playAreaSize.height - 3 * this._controllerSizeTouch};
-      this._rightControllerPos = {
-        x: 2 * this._controllerSizeTouch,
-        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
-      this._downControllerPos = {
-        x: this._controllerSizeTouch,
-        y: this._playAreaSize.height - this._controllerSizeTouch};
-      this._pauseButtonPos = {x: 0, y: 0};
-      this._yButtonPos = {x: this._playAreaSize.width - this._yButtonSize - 10,
-        y: this._playAreaSize.height - this._yButtonSize - 10};
-    } else {
+    const segments = window.visualViewport.segments;
+    if (segments && segments.length > 1) {
       this._playAreaSize = {
         left: segments[0].left,
         top: segments[0].top,
@@ -801,6 +780,27 @@ export class MainApplication extends LitElement {
       this._downControllerPos = {
           x: this._controllerArea.left + this._controllerSize,
           y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize / 2};
+    } else {
+      this._playAreaSize = { width: this._canvas.width, height: this._canvas.height };
+      this._controllerArea = { left: 0, top: 0, width: 0, height: 0 };
+      this._leftControllerPos = {
+        x: 0,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._rightControllerPos = {
+        x: 2 * this._controllerSizeTouch,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._upControllerPos = {
+        x: this._controllerSizeTouch,
+        y: this._playAreaSize.height - 3 * this._controllerSizeTouch};
+      this._rightControllerPos = {
+        x: 2 * this._controllerSizeTouch,
+        y: this._playAreaSize.height - 2 * this._controllerSizeTouch};
+      this._downControllerPos = {
+        x: this._controllerSizeTouch,
+        y: this._playAreaSize.height - this._controllerSizeTouch};
+      this._pauseButtonPos = {x: 0, y: 0};
+      this._yButtonPos = {x: this._playAreaSize.width - this._yButtonSize - 10,
+        y: this._playAreaSize.height - this._yButtonSize - 10};
     }
     if (oldPlayArea) {
       // Update ship position

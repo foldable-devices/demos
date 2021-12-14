@@ -751,7 +751,7 @@ export class MainApplication extends LitElement {
   }
 
   _handleSpanning() {
-    this._spanning = window.visualViewport.segments().length > 1;
+    this._spanning = window.visualViewport.segments && window.visualViewport.segments.length > 1;
 
     this._updateGameLayout();
 
@@ -786,9 +786,46 @@ export class MainApplication extends LitElement {
       width: this._playAreaSize.width,
       height: this._playAreaSize.height
     };
-    const segments = window.visualViewport.segments();
+    const segments = window.visualViewport.segments;
 
-    if (segments.length === 1) {
+    if (segments && segments.length > 1) {
+      this._playAreaSize = {
+        left: segments[0].left,
+        top: segments[0].top,
+        width: segments[0].width,
+        height: segments[0].height
+      };
+      this._controllerArea = {
+        left: segments[1].left,
+        top: segments[1].top,
+        width: segments[1].width,
+        height: segments[1].height
+      };
+      this._pauseButtonPos = {
+        x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2
+      };
+      this._yButtonPos = {
+        x: this._controllerArea.left + this._controllerArea.width - this._yButtonSize * 1.5,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._yButtonSize / 2
+      };
+      this._leftControllerPos = {
+        x: this._controllerArea.left,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2
+      };
+      this._rightControllerPos = {
+        x: this._controllerArea.left + 2 * this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2
+      };
+      this._upControllerPos = {
+        x: this._controllerArea.left + this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize * 3 / 2
+      };
+      this._downControllerPos = {
+        x: this._controllerArea.left + this._controllerSize,
+        y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize / 2
+      };
+    } else {
       this._playAreaSize = {
         width: this._canvas.width,
         height: this._canvas.height
@@ -826,43 +863,6 @@ export class MainApplication extends LitElement {
       this._yButtonPos = {
         x: this._playAreaSize.width - this._yButtonSize - 10,
         y: this._playAreaSize.height - this._yButtonSize - 10
-      };
-    } else {
-      this._playAreaSize = {
-        left: segments[0].left,
-        top: segments[0].top,
-        width: segments[0].width,
-        height: segments[0].height
-      };
-      this._controllerArea = {
-        left: segments[1].left,
-        top: segments[1].top,
-        width: segments[1].width,
-        height: segments[1].height
-      };
-      this._pauseButtonPos = {
-        x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
-        y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2
-      };
-      this._yButtonPos = {
-        x: this._controllerArea.left + this._controllerArea.width - this._yButtonSize * 1.5,
-        y: this._controllerArea.top + this._controllerArea.height / 2 - this._yButtonSize / 2
-      };
-      this._leftControllerPos = {
-        x: this._controllerArea.left,
-        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2
-      };
-      this._rightControllerPos = {
-        x: this._controllerArea.left + 2 * this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize / 2
-      };
-      this._upControllerPos = {
-        x: this._controllerArea.left + this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2 - this._controllerSize * 3 / 2
-      };
-      this._downControllerPos = {
-        x: this._controllerArea.left + this._controllerSize,
-        y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize / 2
       };
     }
 

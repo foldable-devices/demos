@@ -11,8 +11,8 @@ export class Menu extends LitElement {
   }
 
   handleSpanning() {
-    const segments = window.visualViewport.segments();
-    this._spanning = segments.length > 1;
+    const segments = window.visualViewport.segments;
+    this._spanning = segments && segments.length > 1;
     let rootStyle = this.shadowRoot.host.style;
 
     if (this._spanning) {
