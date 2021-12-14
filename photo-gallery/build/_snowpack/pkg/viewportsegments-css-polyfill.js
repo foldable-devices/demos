@@ -8,6 +8,8 @@ function e(e, t) {
 
 var t = function () {
   try {
+    window[n].updateSegments();
+
     var e = function () {
       if (!r) return r = !0, Promise.resolve(Promise.resolve(!1)).then(function (e) {
         r = e, window[n].dispatchEvent(new Event("change"));
@@ -49,45 +51,26 @@ var t = function () {
 
   var r,
       i = e.prototype;
-  return i.getSegments = function () {
-    if (1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments) return [{
-      left: 0,
-      top: 0,
-      width: window.innerWidth,
-      height: window.innerHeight
-    }];
+  return i.updateSegments = function () {
+    1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments && (window.visualViewport.segments = null);
     var e = [];
-    if (this.verticalViewportSegments > 1) for (var t = this.verticalViewportSegments - 1, n = window.innerHeight - this.browserShellSize, r = 0, i = window.innerWidth, o = n / this.verticalViewportSegments - this.foldSize * t / this.verticalViewportSegments, a = 0; a < this.verticalViewportSegments + t; ++a) e[a] = a % 2 == 0 ? {
-      top: r,
+    if (this.verticalViewportSegments > 1) for (var t = window.innerHeight - this.browserShellSize, n = 0, r = window.innerWidth, i = t / this.verticalViewportSegments - this.foldSize * (this.verticalViewportSegments - 1) / this.verticalViewportSegments, o = 0; o < this.verticalViewportSegments; ++o) e[o] = {
+      top: n,
       left: 0,
-      bottom: r + o,
-      right: i,
-      width: i,
-      height: o
-    } : {
-      top: r,
-      left: 0,
-      right: i,
-      bottom: r + this.foldSize,
-      width: i,
-      height: this.foldSize
-    }, r += e[a].height;
-    if (this.horizontalViewportSegments > 1) for (var s = this.horizontalViewportSegments - 1, l = window.innerWidth / this.horizontalViewportSegments - this.foldSize * s / this.horizontalViewportSegments, h = window.innerHeight, c = 0, u = 0; u < this.horizontalViewportSegments + s; ++u) e[u] = u % 2 == 0 ? {
+      bottom: n + i,
+      right: r,
+      width: r,
+      height: i
+    }, n += e[o].height, n += this.foldSize;
+    if (this.horizontalViewportSegments > 1) for (var a = window.innerWidth / this.horizontalViewportSegments - this.foldSize * (this.horizontalViewportSegments - 1) / this.horizontalViewportSegments, s = window.innerHeight, l = 0, c = 0; c < this.horizontalViewportSegments; ++c) e[c] = {
       top: 0,
-      left: c,
-      right: c + l,
-      bottom: h,
-      width: l,
-      height: h
-    } : {
-      top: 0,
-      left: c,
-      right: c + this.foldSize,
-      bottom: h,
-      width: this.foldSize,
-      height: h
-    }, c += e[u].width;
-    return e;
+      left: l,
+      right: l + a,
+      bottom: s,
+      width: a,
+      height: s
+    }, l += e[c].width, l += this.foldSize;
+    window.visualViewport.segments = e;
   }, i.randomizeSegmentsConfiguration = function (e) {
     var t = Math.random() < .5,
         n = Math.round(Math.random() * (e - 1) + 1);
@@ -136,22 +119,17 @@ var t = function () {
   }(e.prototype, r), e;
 }();
 
-window[n] = new i(), void 0 === window.visualViewport.segments && (window.visualViewport.segments = function () {
-  var e = window[n].getSegments();
-  return 1 === e.length ? e : e.filter(function (e, t) {
-    return t % 2 == 0;
-  });
-});
+window[n] = new i(), void 0 === window.visualViewport.segments && window[n].updateSegments();
 var o = /\((.*?)\)/gi,
     a = /@media[^\(]+/gi,
     s = /(horizontal-viewport-segments:)\s?(\d)/gi,
     l = /(vertical-viewport-segments:)\s?(\d)/gi;
 
-function h(e, t) {
+function c(e, t) {
   return e.replace(new RegExp("(\\s*)(@media.*?\\b-viewport-segments\\b[^{]+)\\{([\\s\\S]+?\\})(\\s*)\\}", "gi"), t);
 }
 
-function c(e, t) {
+function h(e, t) {
   var n = e.matchAll(t);
   return null === n ? [] : Array.from(n, function (e) {
     return e[2];
@@ -175,69 +153,69 @@ function u(e) {
     var t = e[1],
         r = e[2],
         i = e[3],
-        h = e[4],
+        c = e[4],
         u = r.match(a) || [],
-        d = r.match(o) || [],
-        f = c(r, l);
-    void 0 === f && (f = 1);
-    var m = c(r, s);
-    void 0 === m && (m = 1), d = d.filter(function (e) {
+        m = r.match(o) || [],
+        d = h(r, l);
+    void 0 === d && (d = 1);
+    var v = h(r, s);
+    void 0 === v && (v = 1), m = m.filter(function (e) {
       return !e.includes("-viewport-segments");
-    }).join(" and "), void 0 === n[f] && (n[f] = new Array()), n[f][m] = "" + t + u + d + "{" + i + h + "}";
+    }).join(" and "), void 0 === n[d] && (n[d] = new Array()), n[d][v] = "" + t + u + m + "{" + i + c + "}";
   }), n;
 }
 
-var d = window.matchMedia("(vertical-viewport-segments)").matches || window.matchMedia("(horizontal-viewport-segments)").matches || !1;
-console.info("CSS Viewport Segments are supported? " + d);
-var f,
-    m = new i();
+var m = window.matchMedia("(vertical-viewport-segments)").matches || window.matchMedia("(horizontal-viewport-segments)").matches || !1;
+console.info("CSS Viewport Segments are supported? " + m);
+var d,
+    v = new i();
 
-if (!d) {
-  var g = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'));
-  (f = g, Promise.all(f.map(function (e) {
+if (!m) {
+  var f = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'));
+  (d = f, Promise.all(d.map(function (e) {
     return e.href ? fetch(e.href).then(function (e) {
       return e.text();
     }) : e.textContent;
   }))).then(function (e) {
     var t = new DocumentFragment();
     e.forEach(function (e, n) {
-      for (var r = h(e, ""), i = u(e), o = g[n].href || "inline", a = 0, s = Object.entries(i); a < s.length; a++) {
+      for (var r = c(e, ""), i = u(e), o = f[n].href || "inline", a = 0, s = Object.entries(i); a < s.length; a++) {
         var l = s[a],
-            c = l[0],
-            d = l[1];
-        null == v[c] && (v[c] = []);
+            h = l[0],
+            m = l[1];
+        null == g[h] && (g[h] = []);
 
-        for (var f = 0, m = Object.entries(d); f < m.length; f++) {
-          var w = m[f];
-          v[c][w[0]] = "/* origin: " + o + " */" + w[1];
+        for (var d = 0, v = Object.entries(m); d < v.length; d++) {
+          var w = v[d];
+          g[h][w[0]] = "/* origin: " + o + " */" + w[1];
         }
       }
 
       var p = document.createElement("style");
       p.setAttribute("data-css-origin", o), p.textContent = r, t.appendChild(p);
-    }), g.forEach(function (e) {
+    }), f.forEach(function (e) {
       return null != e.parentElement && e.parentElement.removeChild(e);
     }), document.head.appendChild(t), p();
   });
 }
 
-var v = [[]];
+var g = [[]];
 
 function w(e, t) {
-  if (d) return e;
-  var n = h(e, ""),
+  if (m) return e;
+  var n = c(e, ""),
       r = u(e);
-  t && (v[t] = [[]]);
+  t && (g[t] = [[]]);
 
-  for (var i = t ? v[t] : v, o = t ? "" : "/* origin: inline */", a = 0, s = Object.entries(r); a < s.length; a++) {
+  for (var i = t ? g[t] : g, o = t ? "" : "/* origin: inline */", a = 0, s = Object.entries(r); a < s.length; a++) {
     var l = s[a],
-        c = l[0],
-        f = l[1];
-    null == i[c] && (i[c] = []);
+        h = l[0],
+        d = l[1];
+    null == i[h] && (i[h] = []);
 
-    for (var m = 0, g = Object.entries(f); m < g.length; m++) {
-      var w = g[m];
-      i[c][w[0]] = "" + o + w[1];
+    for (var v = 0, f = Object.entries(d); v < f.length; v++) {
+      var w = f[v];
+      i[h][w[0]] = "" + o + w[1];
     }
   }
 
@@ -245,24 +223,28 @@ function w(e, t) {
 }
 
 function p(e) {
-  d || (S(e), m.addEventListener("change", function () {
+  m || (S(e), v.addEventListener("change", function () {
     return S(e);
   }));
 }
 
 function S(t) {
   var n,
-      r = m,
+      r = v,
       i = null;
-  (n = t ? v[t.nodeName.toLowerCase()] : v)[r.verticalViewportSegments] && (i = n[r.verticalViewportSegments][r.horizontalViewportSegments]);
+  (n = t ? g[t.nodeName.toLowerCase()] : g)[r.verticalViewportSegments] && (i = n[r.verticalViewportSegments][r.horizontalViewportSegments]);
   var o,
       a = n[0][0] ? n[0][0] : null;
 
   if (i) {
-    for (var s = window.visualViewport.segments(), l = !(s[0].height < window.innerHeight), h = 0, c = Object.entries(s); h < c.length; h++) for (var u = c[h], d = u[0], f = 0, g = Object.entries(u[1]); f < g.length; f++) {
-      var w = g[f],
+    var s = window.visualViewport.segments,
+        l = !1;
+    s.length > 1 && (l = !(s[0].height < window.innerHeight));
+
+    for (var c = 0, h = Object.entries(s); c < h.length; c++) for (var u = h[c], m = u[0], d = 0, f = Object.entries(u[1]); d < f.length; d++) {
+      var w = f[d],
           p = w[0];
-      o = w[1] + "px", i = i.replace(new RegExp("env\\(\\s*" + (l ? "viewport-segment-" + p + " " + d + " 0" : "viewport-segment-" + p + " 0 " + d) + "\\s*\\)", "gi"), o);
+      o = w[1] + "px", i = i.replace(new RegExp("env\\(\\s*" + (l ? "viewport-segment-" + p + " " + m + " 0" : "viewport-segment-" + p + " 0 " + m) + "\\s*\\)", "gi"), o);
     }
 
     var S = "__foldables_sheet__",
