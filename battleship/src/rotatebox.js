@@ -1,5 +1,5 @@
 import { LitElement, html, css as litCSS } from 'lit';
-import { adjustCSS, observe } from "spanning-css-polyfill";
+import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 
 import "./infoxbox.js";
 
@@ -51,13 +51,13 @@ export class RotateBox extends LitElement {
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       :host {
         visibility: hidden;
       }
     }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       :host {
         visibility: hidden;
       }

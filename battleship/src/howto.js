@@ -1,5 +1,5 @@
 import { LitElement, html, css as litCSS } from 'lit';
-import { adjustCSS, observe } from "spanning-css-polyfill";
+import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "how-to-screen");
@@ -91,9 +91,9 @@ export class HowToScreen extends LitElement {
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       :host {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
         height: 90vh;
         top: 0;
         left: 0;
@@ -113,7 +113,7 @@ export class HowToScreen extends LitElement {
       }
     }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       :host {
         width: 100vw;
         height: 94vh;

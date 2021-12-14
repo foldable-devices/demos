@@ -1,5 +1,5 @@
 import { LitElement, html, css as litCSS } from 'lit';
-import { adjustCSS, observe } from "spanning-css-polyfill";
+import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 import '@material/mwc-button';
 import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
@@ -128,10 +128,10 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       .fold {
-        height: env(fold-height);
-        width: env(fold-width);
+        height: env(viewport-segment-height 0 0);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
         visibility: visible;
       }
 
@@ -140,13 +140,13 @@ export class MainApplication extends LitElement {
       }
 
       .enemy-fleet {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
         height: 100%;
       }
 
       .fleet {
         height: 100%;
-        width: calc(100vw - env(fold-left) - env(fold-width));
+        width: env(viewport-segment-width 1 0);
       }
 
       .background {
@@ -154,10 +154,10 @@ export class MainApplication extends LitElement {
       }
    }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       .fold {
-        height: env(fold-height);
-        width: env(fold-width);
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
+        width: env(viewport-segment-width 0 0);
         visibility: visible;
       }
 
@@ -166,7 +166,7 @@ export class MainApplication extends LitElement {
       }
 
       .enemy-fleet {
-        height: var(--zenbook-span2-height, env(fold-top));
+        height: var(--zenbook-span2-height, env(viewport-segment-height 0 0));
         width: 100%;
         flex-grow: 0;
         flex-shrink: 0;
@@ -174,7 +174,7 @@ export class MainApplication extends LitElement {
 
       .fleet {
         width: 100%;
-        height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
+        height: var(--zenbook-span1-height, env(viewport-segment-height 0 1));
       }
 
       .background {
@@ -182,7 +182,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (screen-spanning: none) and (orientation:landscape) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) and (orientation:landscape) {
       .fold {
         height: 100%;
         width: 15px;
@@ -197,7 +197,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (screen-spanning: none) and (orientation:portrait) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) and (orientation:portrait) {
       .background {
         z-index: 4;
       }
@@ -285,9 +285,8 @@ export class MainApplication extends LitElement {
 
   _deviceSupportsSpanningMQs() {
     const hasBrowserSupport =
-      window.matchMedia('(screen-spanning: single-fold-horizontal)').matches ||
-      window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
-      window.matchMedia('(screen-spanning: none)').matches || false;
+      window.matchMedia('(vertical-viewport-segments)').matches ||
+      window.matchMedia('(horizontal-viewport-segments)').matches || false;
     return hasBrowserSupport;
   }
 
@@ -384,6 +383,7 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <picture>
           <source media="(max-width: 767px)"

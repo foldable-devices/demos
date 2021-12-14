@@ -1,5 +1,5 @@
 import { LitElement, html, css as litCSS } from 'lit';
-import { adjustCSS, observe } from "spanning-css-polyfill";
+import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "info-box");

@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
-import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
+import { adjustCSS, observe } from "../_snowpack/pkg/viewportsegments-css-polyfill.js";
 import "./infoxbox.js";
 
 const css = (strings, ...values) => {
@@ -90,13 +90,13 @@ _defineProperty(RotateBox, "styles", css`
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       :host {
         visibility: hidden;
       }
     }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       :host {
         visibility: hidden;
       }

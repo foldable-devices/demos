@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
-import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
+import { adjustCSS, observe } from "../_snowpack/pkg/viewportsegments-css-polyfill.js";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "how-to-screen");
@@ -195,9 +195,9 @@ _defineProperty(HowToScreen, "styles", css`
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       :host {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
         height: 90vh;
         top: 0;
         left: 0;
@@ -217,7 +217,7 @@ _defineProperty(HowToScreen, "styles", css`
       }
     }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       :host {
         width: 100vw;
         height: 94vh;

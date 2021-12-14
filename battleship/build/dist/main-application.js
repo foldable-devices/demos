@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
-import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
+import { adjustCSS, observe } from "../_snowpack/pkg/viewportsegments-css-polyfill.js";
 import '../_snowpack/pkg/@material/mwc-button.js';
 import '../_snowpack/pkg/@material/mwc-icon-button.js';
 import '../_snowpack/pkg/@material/mwc-snackbar.js';
@@ -102,7 +102,7 @@ export class MainApplication extends LitElement {
   }
 
   _deviceSupportsSpanningMQs() {
-    const hasBrowserSupport = window.matchMedia('(screen-spanning: single-fold-horizontal)').matches || window.matchMedia('(screen-spanning: single-fold-vertical)').matches || window.matchMedia('(screen-spanning: none)').matches || false;
+    const hasBrowserSupport = window.matchMedia('(vertical-viewport-segments)').matches || window.matchMedia('(horizontal-viewport-segments)').matches || false;
     return hasBrowserSupport;
   }
 
@@ -220,6 +220,7 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <picture>
           <source media="(max-width: 767px)"
@@ -406,10 +407,10 @@ _defineProperty(MainApplication, "styles", css`
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       .fold {
-        height: env(fold-height);
-        width: env(fold-width);
+        height: env(viewport-segment-height 0 0);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
         visibility: visible;
       }
 
@@ -418,13 +419,13 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .enemy-fleet {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
         height: 100%;
       }
 
       .fleet {
         height: 100%;
-        width: calc(100vw - env(fold-left) - env(fold-width));
+        width: env(viewport-segment-width 1 0);
       }
 
       .background {
@@ -432,10 +433,10 @@ _defineProperty(MainApplication, "styles", css`
       }
    }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       .fold {
-        height: env(fold-height);
-        width: env(fold-width);
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
+        width: env(viewport-segment-width 0 0);
         visibility: visible;
       }
 
@@ -444,7 +445,7 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .enemy-fleet {
-        height: var(--zenbook-span2-height, env(fold-top));
+        height: var(--zenbook-span2-height, env(viewport-segment-height 0 0));
         width: 100%;
         flex-grow: 0;
         flex-shrink: 0;
@@ -452,7 +453,7 @@ _defineProperty(MainApplication, "styles", css`
 
       .fleet {
         width: 100%;
-        height: var(--zenbook-span1-height, calc(100vh - env(fold-top) - env(fold-height)));
+        height: var(--zenbook-span1-height, env(viewport-segment-height 0 1));
       }
 
       .background {
@@ -460,7 +461,7 @@ _defineProperty(MainApplication, "styles", css`
       }
     }
 
-    @media (screen-spanning: none) and (orientation:landscape) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) and (orientation:landscape) {
       .fold {
         height: 100%;
         width: 15px;
@@ -475,7 +476,7 @@ _defineProperty(MainApplication, "styles", css`
       }
     }
 
-    @media (screen-spanning: none) and (orientation:portrait) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) and (orientation:portrait) {
       .background {
         z-index: 4;
       }

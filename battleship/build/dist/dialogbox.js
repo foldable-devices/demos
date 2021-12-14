@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
-import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
+import { adjustCSS, observe } from "../_snowpack/pkg/viewportsegments-css-polyfill.js";
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "dialog-box");
@@ -114,16 +114,16 @@ _defineProperty(DialogBox, "styles", css`
       filter: drop-shadow(5px 5px 5px black) saturate(30%);
     }
 
-    @media (screen-spanning: single-fold-horizontal) {
+    @media (vertical-viewport-segments: 2) {
       :host {
         width: 32vw;
         height: 15vh;
-        top: calc(env(fold-top) + (100vh - env(fold-top) + env(fold-height)) / 2 - 10vh);
+        top: calc(env(viewport-segment-top 0 1) + (100vh - env(viewport-segment-top 0 1) + calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0))) / 2 - 10vh);
         left: calc(50vw - 15vw);
       }
     }
 
-    @media (screen-spanning: none) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       :host {
         width: 25vw;
         height: 30vh;
@@ -132,16 +132,16 @@ _defineProperty(DialogBox, "styles", css`
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       :host {
         width: 20vw;
         height: 30vh;
         top: calc(50vh - 20vh);
-        left: calc(env(fold-left) + (100vw - env(fold-left) + env(fold-width)) / 2 - 10vw);
+        left: calc(env(viewport-segment-right 0 0) + (100vw - env(viewport-segment-right 0 0) + calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0))) / 2 - 10vw);
       }
     }
 
-    @media (max-width: 1024px) and (orientation: landscape) and (screen-spanning: none) {
+    @media (max-width: 1024px) and (orientation: landscape) and (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .title {
         font-size: 1em;
       }
@@ -154,7 +154,7 @@ _defineProperty(DialogBox, "styles", css`
       }
     }
 
-    @media (max-width: 1024px) and (orientation: portrait) and (screen-spanning: none) {
+    @media (max-width: 1024px) and (orientation: portrait) and (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .title {
         font-size: 1em;
       }
