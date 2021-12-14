@@ -377,8 +377,8 @@ const v = globalThis.trustedTypes,
 }))(1),
       P = Symbol.for("lit-noChange"),
       D = Symbol.for("lit-nothing"),
-      z = new WeakMap(),
-      V = _.createTreeWalker(_, 129, null, !1);
+      V = new WeakMap(),
+      z = _.createTreeWalker(_, 129, null, !1);
 
 class F {
   constructor({
@@ -416,13 +416,13 @@ class F {
       return [void 0 !== f ? f.createHTML(a) : a, r];
     })(e, t);
 
-    if (this.el = F.createElement(d, i), V.currentNode = this.el.content, 2 === t) {
+    if (this.el = F.createElement(d, i), z.currentNode = this.el.content, 2 === t) {
       const e = this.el.content,
             t = e.firstChild;
       t.remove(), e.append(...t.childNodes);
     }
 
-    for (; null !== (r = V.nextNode()) && a.length < o;) {
+    for (; null !== (r = z.nextNode()) && a.length < o;) {
       if (1 === r.nodeType) {
         if (r.hasAttributes()) {
           const e = [];
@@ -456,7 +456,7 @@ class F {
           if (t > 0) {
             r.textContent = v ? v.emptyScript : "";
 
-            for (let i = 0; i < t; i++) r.append(e[i], w()), V.nextNode(), a.push({
+            for (let i = 0; i < t; i++) r.append(e[i], w()), z.nextNode(), a.push({
               type: 2,
               index: ++s
             });
@@ -518,8 +518,8 @@ class M {
       parts: r
     } = this._$AD,
           s = (null !== (t = null == e ? void 0 : e.creationScope) && void 0 !== t ? t : _).importNode(i, !0);
-    V.currentNode = s;
-    let n = V.nextNode(),
+    z.currentNode = s;
+    let n = z.nextNode(),
         o = 0,
         a = 0,
         d = r[0];
@@ -530,7 +530,7 @@ class M {
         2 === d.type ? t = new L(n, n.nextSibling, this, e) : 1 === d.type ? t = new d.ctor(n, d.name, d.strings, this, e) : 6 === d.type && (t = new W(n, this, e)), this.v.push(t), d = r[++a];
       }
 
-      o !== (null == d ? void 0 : d.index) && (n = V.nextNode(), o++);
+      o !== (null == d ? void 0 : d.index) && (n = z.nextNode(), o++);
     }
 
     return s;
@@ -603,8 +603,8 @@ class L {
   }
 
   _$AC(e) {
-    let t = z.get(e.strings);
-    return void 0 === t && z.set(e.strings, t = new F(e)), t;
+    let t = V.get(e.strings);
+    return void 0 === t && V.set(e.strings, t = new F(e)), t;
   }
 
   M(e) {
@@ -1904,7 +1904,7 @@ var $e = ["touchstart", "pointerdown", "mousedown", "keydown"],
     }, this.adapter.updateCssVariable(r, this.unboundedCoords.left + "px"), this.adapter.updateCssVariable(s, this.unboundedCoords.top + "px"));
   }, t;
 }(xe),
-    ze = De;
+    Ve = De;
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -1912,7 +1912,7 @@ var $e = ["touchstart", "pointerdown", "mousedown", "keydown"],
  */
 
 
-const Ve = 1,
+const ze = 1,
       Fe = e => (...t) => ({
   _$litDirective$: e,
   values: t
@@ -1948,7 +1948,7 @@ class He {
 const Me = Fe(class extends He {
   constructor(e) {
     var t;
-    if (super(e), e.type !== Ve || "class" !== e.name || (null === (t = e.strings) || void 0 === t ? void 0 : t.length) > 2) throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.");
+    if (super(e), e.type !== ze || "class" !== e.name || (null === (t = e.strings) || void 0 === t ? void 0 : t.length) > 2) throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.");
   }
 
   render(e) {
@@ -1983,7 +1983,7 @@ const Me = Fe(class extends He {
       Le = Fe(class extends He {
   constructor(e) {
     var t;
-    if (super(e), e.type !== Ve || "style" !== e.name || (null === (t = e.strings) || void 0 === t ? void 0 : t.length) > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+    if (super(e), e.type !== ze || "style" !== e.name || (null === (t = e.strings) || void 0 === t ? void 0 : t.length) > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
   }
 
   render(e) {
@@ -2033,7 +2033,7 @@ const Me = Fe(class extends He {
 
 class Ne extends Ae {
   constructor() {
-    super(...arguments), this.primary = !1, this.accent = !1, this.unbounded = !1, this.disabled = !1, this.activated = !1, this.selected = !1, this.internalUseStateLayerCustomProperties = !1, this.hovering = !1, this.bgFocused = !1, this.fgActivation = !1, this.fgDeactivation = !1, this.fgScale = "", this.fgSize = "", this.translateStart = "", this.translateEnd = "", this.leftPos = "", this.topPos = "", this.mdcFoundationClass = ze;
+    super(...arguments), this.primary = !1, this.accent = !1, this.unbounded = !1, this.disabled = !1, this.activated = !1, this.selected = !1, this.internalUseStateLayerCustomProperties = !1, this.hovering = !1, this.bgFocused = !1, this.fgActivation = !1, this.fgDeactivation = !1, this.fgScale = "", this.fgSize = "", this.translateStart = "", this.translateEnd = "", this.leftPos = "", this.topPos = "", this.mdcFoundationClass = Ve;
   }
 
   get isActive() {
@@ -3388,6 +3388,8 @@ St.styles = [Se], St = me([fe("mwc-slider")], St);
 
 var Et = function () {
   try {
+    window[At].updateSegments();
+
     var e = function () {
       if (!xt) return xt = !0, Promise.resolve(Promise.resolve(!1)).then(function (e) {
         xt = e, window[At].dispatchEvent(new Event("change"));
@@ -3429,45 +3431,26 @@ var Et = function () {
 
   var t,
       i = e.prototype;
-  return i.getSegments = function () {
-    if (1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments) return [{
-      left: 0,
-      top: 0,
-      width: window.innerWidth,
-      height: window.innerHeight
-    }];
+  return i.updateSegments = function () {
+    1 === this.verticalViewportSegments && 1 === this.horizontalViewportSegments && (window.visualViewport.segments = null);
     var e = [];
-    if (this.verticalViewportSegments > 1) for (var t = this.verticalViewportSegments - 1, i = window.innerHeight - this.browserShellSize, r = 0, s = window.innerWidth, n = i / this.verticalViewportSegments - this.foldSize * t / this.verticalViewportSegments, o = 0; o < this.verticalViewportSegments + t; ++o) e[o] = o % 2 == 0 ? {
-      top: r,
+    if (this.verticalViewportSegments > 1) for (var t = window.innerHeight - this.browserShellSize, i = 0, r = window.innerWidth, s = t / this.verticalViewportSegments - this.foldSize * (this.verticalViewportSegments - 1) / this.verticalViewportSegments, n = 0; n < this.verticalViewportSegments; ++n) e[n] = {
+      top: i,
       left: 0,
-      bottom: r + n,
-      right: s,
-      width: s,
-      height: n
-    } : {
-      top: r,
-      left: 0,
-      right: s,
-      bottom: r + this.foldSize,
-      width: s,
-      height: this.foldSize
-    }, r += e[o].height;
-    if (this.horizontalViewportSegments > 1) for (var a = this.horizontalViewportSegments - 1, d = window.innerWidth / this.horizontalViewportSegments - this.foldSize * a / this.horizontalViewportSegments, c = window.innerHeight, l = 0, h = 0; h < this.horizontalViewportSegments + a; ++h) e[h] = h % 2 == 0 ? {
+      bottom: i + s,
+      right: r,
+      width: r,
+      height: s
+    }, i += e[n].height, i += this.foldSize;
+    if (this.horizontalViewportSegments > 1) for (var o = window.innerWidth / this.horizontalViewportSegments - this.foldSize * (this.horizontalViewportSegments - 1) / this.horizontalViewportSegments, a = window.innerHeight, d = 0, c = 0; c < this.horizontalViewportSegments; ++c) e[c] = {
       top: 0,
-      left: l,
-      right: l + d,
-      bottom: c,
-      width: d,
-      height: c
-    } : {
-      top: 0,
-      left: l,
-      right: l + this.foldSize,
-      bottom: c,
-      width: this.foldSize,
-      height: c
-    }, l += e[h].width;
-    return e;
+      left: d,
+      right: d + o,
+      bottom: a,
+      width: o,
+      height: a
+    }, d += e[c].width, d += this.foldSize;
+    window.visualViewport.segments = e;
   }, i.randomizeSegmentsConfiguration = function (e) {
     var t = Math.random() < .5,
         i = Math.round(Math.random() * (e - 1) + 1);
@@ -3516,12 +3499,7 @@ var Et = function () {
   }(e.prototype, t), e;
 }();
 
-window[At] = new Rt(), void 0 === window.visualViewport.segments && (window.visualViewport.segments = function () {
-  var e = window[At].getSegments();
-  return 1 === e.length ? e : e.filter(function (e, t) {
-    return t % 2 == 0;
-  });
-});
+window[At] = new Rt(), void 0 === window.visualViewport.segments && window[At].updateSegments();
 var Ct = /\((.*?)\)/gi,
     kt = /@media[^\(]+/gi,
     $t = /(horizontal-viewport-segments:)\s?(\d)/gi,
@@ -3563,14 +3541,14 @@ function Dt(e) {
   }), i;
 }
 
-var zt = window.matchMedia("(vertical-viewport-segments)").matches || window.matchMedia("(horizontal-viewport-segments)").matches || !1;
-console.info("CSS Viewport Segments are supported? " + zt);
-var Vt,
+var Vt = window.matchMedia("(vertical-viewport-segments)").matches || window.matchMedia("(horizontal-viewport-segments)").matches || !1;
+console.info("CSS Viewport Segments are supported? " + Vt);
+var zt,
     Ft = new Rt();
 
-if (!zt) {
+if (!Vt) {
   var Ht = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'));
-  (Vt = Ht, Promise.all(Vt.map(function (e) {
+  (zt = Ht, Promise.all(zt.map(function (e) {
     return e.href ? fetch(e.href).then(function (e) {
       return e.text();
     }) : e.textContent;
@@ -3596,7 +3574,7 @@ if (!zt) {
     }), Ht.forEach(function (e) {
       return null != e.parentElement && e.parentElement.removeChild(e);
     }), document.head.appendChild(t), function (e) {
-      zt || (Lt(e), Ft.addEventListener("change", function () {
+      Vt || (Lt(e), Ft.addEventListener("change", function () {
         return Lt(e);
       }));
     }();
@@ -3614,7 +3592,11 @@ function Lt(e) {
       n = t[0][0] ? t[0][0] : null;
 
   if (r) {
-    for (var o = window.visualViewport.segments(), a = !(o[0].height < window.innerHeight), d = 0, c = Object.entries(o); d < c.length; d++) for (var l = c[d], h = l[0], p = 0, u = Object.entries(l[1]); p < u.length; p++) {
+    var o = window.visualViewport.segments,
+        a = !1;
+    o.length > 1 && (a = !(o[0].height < window.innerHeight));
+
+    for (var d = 0, c = Object.entries(o); d < c.length; d++) for (var l = c[d], h = l[0], p = 0, u = Object.entries(l[1]); p < u.length; p++) {
       var m = u[p],
           v = m[0];
       s = m[1] + "px", r = r.replace(new RegExp("env\\(\\s*" + (a ? "viewport-segment-" + v + " " + h + " 0" : "viewport-segment-" + v + " 0 " + h) + "\\s*\\)", "gi"), s);
