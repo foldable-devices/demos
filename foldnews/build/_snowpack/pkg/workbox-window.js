@@ -1,5 +1,5 @@
 try {
-  self["workbox:window:6.1.5"] && _();
+  self["workbox:window:6.4.1"] && _();
 } catch (n) {}
 
 function n(n, t) {
@@ -56,7 +56,7 @@ function e(n, t) {
 }
 
 try {
-  self["workbox:core:6.1.5"] && _();
+  self["workbox:core:6.4.1"] && _();
 } catch (n) {}
 
 var i = function () {
@@ -97,7 +97,7 @@ var v = function (r) {
     return void 0 === t && (t = {}), (e = r.call(this) || this).nn = {}, e.tn = 0, e.rn = new i(), e.en = new i(), e.on = new i(), e.un = 0, e.an = new Set(), e.cn = function () {
       var n = e.fn,
           t = n.installing;
-      e.tn > 0 || !o(t.scriptURL, e.sn) || performance.now() > e.un + 6e4 ? (e.vn = t, n.removeEventListener("updatefound", e.cn)) : (e.hn = t, e.an.add(t), e.rn.resolve(t)), ++e.tn, t.addEventListener("statechange", e.ln);
+      e.tn > 0 || !o(t.scriptURL, e.sn.toString()) || performance.now() > e.un + 6e4 ? (e.vn = t, n.removeEventListener("updatefound", e.cn)) : (e.hn = t, e.an.add(t), e.rn.resolve(t)), ++e.tn, t.addEventListener("statechange", e.ln);
     }, e.ln = function (n) {
       var t = e.fn,
           r = n.target,
@@ -122,12 +122,14 @@ var v = function (r) {
       })), r || e.on.resolve(t);
     }, e.gn = (c = function (n) {
       var t = n.data,
-          r = n.source;
+          r = n.ports,
+          i = n.source;
       return a(e.getSW(), function () {
-        e.an.has(r) && e.dispatchEvent(new u("message", {
+        e.an.has(i) && e.dispatchEvent(new u("message", {
           data: t,
-          sw: r,
-          originalEvent: n
+          originalEvent: n,
+          ports: r,
+          sw: i
         }));
       });
     }, function () {
@@ -165,14 +167,12 @@ var v = function (r) {
             once: !0
           }));
           var t = e.fn.waiting;
-          return t && o(t.scriptURL, e.sn) && (e.hn = t, Promise.resolve().then(function () {
+          return t && o(t.scriptURL, e.sn.toString()) && (e.hn = t, Promise.resolve().then(function () {
             e.dispatchEvent(new u("waiting", {
               sw: t,
               wasWaitingBeforeRegister: !0
             }));
-          }).then(function () {})), e.hn && (e.rn.resolve(e.hn), e.an.add(e.hn)), e.fn.addEventListener("updatefound", e.cn), navigator.serviceWorker.addEventListener("controllerchange", e.dn, {
-            once: !0
-          }), e.fn;
+          }).then(function () {})), e.hn && (e.rn.resolve(e.hn), e.an.add(e.hn)), e.fn.addEventListener("updatefound", e.cn), navigator.serviceWorker.addEventListener("controllerchange", e.dn), e.fn;
         });
       });
     } catch (n) {
@@ -198,7 +198,7 @@ var v = function (r) {
     this.fn && this.fn.waiting && n(this.fn.waiting, f);
   }, w.pn = function () {
     var n = navigator.serviceWorker.controller;
-    return n && o(n.scriptURL, this.sn) ? n : void 0;
+    return n && o(n.scriptURL, this.sn.toString()) ? n : void 0;
   }, w.bn = function () {
     try {
       var n = this;

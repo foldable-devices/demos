@@ -1,5 +1,5 @@
 import { LitElement, html, css as litCSS } from 'lit';
-import { adjustCSS, observe } from "spanning-css-polyfill";
+import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 import "./news-article.js";
 import '@material/mwc-button';
 import '@material/mwc-icon-button';
@@ -235,13 +235,13 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       .header {
         font-size: 2.5em;
       }
 
       .fold {
-        width: env(fold-width);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
       }
 
       .frontpage {
@@ -249,11 +249,11 @@ export class MainApplication extends LitElement {
       }
 
       .title-left {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
       }
 
       .title-right {
-        width: calc(100vw - env(fold-left) - env(fold-width));
+        width: env(viewport-segment-width 1 0);
       }
 
       .grow-right {
@@ -262,7 +262,7 @@ export class MainApplication extends LitElement {
       }
 
       .date-grow {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
       }
 
       .date{
@@ -275,7 +275,7 @@ export class MainApplication extends LitElement {
 
       .cell-1 {
         grid-row: 1 / span 1;
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
       }
 
       .cell-2 {
@@ -283,7 +283,7 @@ export class MainApplication extends LitElement {
       }
 
       .cell-4 {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
         grid-row: 2 / span 1;
         grid-column: 1;
       }
@@ -298,7 +298,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (screen-spanning: none) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .fold {
         width: 0;
       }
@@ -355,7 +355,7 @@ export class MainApplication extends LitElement {
       }
     }
 
-    @media (min-width: 320px) and (max-width: 1024px) and (screen-spanning: none) {
+    @media (min-width: 320px) and (max-width: 1024px) and (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .frontpage {
         display: flex;
         flex-direction: column;
@@ -409,16 +409,9 @@ export class MainApplication extends LitElement {
     this._snackbar.show();
   }
 
-  _deviceSupportsSpanningMQs() {
-    const hasBrowserSupport =
-      window.matchMedia('(screen-spanning: single-fold-horizontal)').matches ||
-      window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
-      window.matchMedia('(screen-spanning: none)').matches || false;
-    return hasBrowserSupport;
-  }
-
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <div class="header">
           <div class="header-main">

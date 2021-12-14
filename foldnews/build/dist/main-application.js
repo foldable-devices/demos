@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
-import { adjustCSS, observe } from "../_snowpack/pkg/spanning-css-polyfill.js";
+import { adjustCSS, observe } from "../_snowpack/pkg/viewportsegments-css-polyfill.js";
 import "./news-article.js";
 import '../_snowpack/pkg/@material/mwc-button.js';
 import '../_snowpack/pkg/@material/mwc-icon-button.js';
@@ -70,13 +70,9 @@ export class MainApplication extends LitElement {
     this._snackbar.show();
   }
 
-  _deviceSupportsSpanningMQs() {
-    const hasBrowserSupport = window.matchMedia('(screen-spanning: single-fold-horizontal)').matches || window.matchMedia('(screen-spanning: single-fold-vertical)').matches || window.matchMedia('(screen-spanning: none)').matches || false;
-    return hasBrowserSupport;
-  }
-
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <div class="header">
           <div class="header-main">
@@ -457,13 +453,13 @@ _defineProperty(MainApplication, "styles", css`
       }
     }
 
-    @media (screen-spanning: single-fold-vertical) {
+    @media (horizontal-viewport-segments: 2) {
       .header {
         font-size: 2.5em;
       }
 
       .fold {
-        width: env(fold-width);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
       }
 
       .frontpage {
@@ -471,11 +467,11 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .title-left {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
       }
 
       .title-right {
-        width: calc(100vw - env(fold-left) - env(fold-width));
+        width: env(viewport-segment-width 1 0);
       }
 
       .grow-right {
@@ -484,7 +480,7 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .date-grow {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
       }
 
       .date{
@@ -497,7 +493,7 @@ _defineProperty(MainApplication, "styles", css`
 
       .cell-1 {
         grid-row: 1 / span 1;
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
       }
 
       .cell-2 {
@@ -505,7 +501,7 @@ _defineProperty(MainApplication, "styles", css`
       }
 
       .cell-4 {
-        width: env(fold-left);
+        width: env(viewport-segment-width 0 0);
         grid-row: 2 / span 1;
         grid-column: 1;
       }
@@ -520,7 +516,7 @@ _defineProperty(MainApplication, "styles", css`
       }
     }
 
-    @media (screen-spanning: none) {
+    @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .fold {
         width: 0;
       }
@@ -577,7 +573,7 @@ _defineProperty(MainApplication, "styles", css`
       }
     }
 
-    @media (min-width: 320px) and (max-width: 1024px) and (screen-spanning: none) {
+    @media (min-width: 320px) and (max-width: 1024px) and (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .frontpage {
         display: flex;
         flex-direction: column;

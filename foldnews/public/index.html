@@ -35,7 +35,20 @@
     <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
   </head>
   <body>
-    <foldable-device-configurator></foldable-device-configurator>
+    <script>
+      // Workaround because Material Web Components have issues when they're included from multiple sources
+      // in this case (foldable-configurator and this demo)
+      const define = window.customElements.define.bind(window.customElements)
+      customElements.define = (name, constructor, options) => {
+        if (customElements.get(name)) {
+          console.warn(`The definition of "${name}" was skipped because it has already been defined.`);
+
+          return;
+        }
+
+        define(name, constructor, options);
+      };
+    </script>
     <main-application></main-application>
     <script type='module' src="./dist/main-application.js"></script>
     <noscript>
