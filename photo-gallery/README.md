@@ -7,10 +7,10 @@ It uses the [device configurator](https://github.com/foldable-devices/device-con
 ## Adapting your web application to foldable/dual screen devices
 
 Currently there are two polyfills you can use to design or adapt web contents for foldable devices :
-- A JavaScript API called Window Segments located [here](https://github.com/foldable-devices/windowsegments-polyfill)
-- CSS Properties called Spanning located [here](https://github.com/foldable-devices/spanning-css-polyfill)
+- A JavaScript API called Viewport Segments located [here](https://github.com/foldable-devices/viewportsegments-polyfill)
+- CSS Properties called Viewport Segments located [here](https://github.com/foldable-devices/viewportsegments-css-polyfill)
 
-Both are proposals from Microsoft and the web community. At this time this demo only react to the spanning media-queries.
+Both are proposals from Microsoft and the web community. At this time this demo only react to the viewport media-queries.
 
 :warning: The two aforementioned APIs are early work in progress and are subject to change anytime.
 

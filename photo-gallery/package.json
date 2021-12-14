@@ -23,7 +23,7 @@
   "devDependencies": {
     "@snowpack/plugin-babel": "^2.1.7",
     "rimraf": "^3.0.2",
-    "snowpack": "^3.7.2",
+    "snowpack": "^3.7.1",
     "workbox-cli": "^6.4.2"
   },
   "keywords": [],
