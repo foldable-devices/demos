@@ -1,7 +1,7 @@
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import { LitElement, html, css } from '../_snowpack/pkg/lit.js';
-import { FoldablesFeature } from '../_snowpack/pkg/windowsegments-polyfill.js';
+import { FoldablesFeature } from '../_snowpack/pkg/viewportsegments-polyfill.js';
 import '../_snowpack/pkg/@material/mwc-button.js';
 import '../_snowpack/pkg/@material/mwc-icon-button.js';
 import '../_snowpack/pkg/@material/mwc-snackbar.js';
@@ -751,7 +751,7 @@ export class MainApplication extends LitElement {
   }
 
   _handleSpanning() {
-    this._spanning = window.getWindowSegments().length > 1;
+    this._spanning = window.visualViewport.segments().length > 1;
 
     this._updateGameLayout();
 
@@ -786,7 +786,7 @@ export class MainApplication extends LitElement {
       width: this._playAreaSize.width,
       height: this._playAreaSize.height
     };
-    const segments = window.getWindowSegments();
+    const segments = window.visualViewport.segments();
 
     if (segments.length === 1) {
       this._playAreaSize = {
@@ -903,6 +903,7 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <canvas id="canvas"></canvas>
       <picture>
         <source srcset="images/pause-button.webp" type="image/webp"/>

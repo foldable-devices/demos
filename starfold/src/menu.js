@@ -102,10 +102,11 @@ export class Menu extends LitElement {
   }
 
   handleSpanning() {
-    this._spanning = window.getWindowSegments().length > 1;
+    const segments = window.visualViewport.segments();
+    this._spanning = segments.length > 1;
     let rootStyle = this.shadowRoot.host.style;
     if (this._spanning) {
-      const segment = window.getWindowSegments()[0];
+      const segment =  segments[0];
       if (segment.width > segment.height) {
         rootStyle.top = 'calc(25vh - 12.5vh)';
         rootStyle.left = 'calc(50vw - 20vw)';
@@ -115,7 +116,7 @@ export class Menu extends LitElement {
         rootStyle.top = 'calc(50vh - 12.5vh)';
         rootStyle.width = '25vw';
         rootStyle.left = 'calc(25vw - 12.5vw)';
-        rootStyle.height = window.getWindowSegments()[0].height / 3 + 'px';
+        rootStyle.height = segments[0].height / 3 + 'px';
       }
     } else {
       rootStyle.top = '';

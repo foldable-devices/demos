@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { FoldablesFeature } from 'windowsegments-polyfill';
+import { FoldablesFeature } from 'viewportsegments-polyfill';
 import '@material/mwc-button';
 import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
@@ -725,7 +725,7 @@ export class MainApplication extends LitElement {
   }
 
   _handleSpanning() {
-    this._spanning = window.getWindowSegments().length > 1;
+    this._spanning = window.visualViewport.segments().length > 1;
     this._updateGameLayout();
     if (!this._spanning)
       this._showPauseButton();
@@ -750,7 +750,7 @@ export class MainApplication extends LitElement {
     let oldPlayArea;
     if (this._playAreaSize)
       oldPlayArea = { width: this._playAreaSize.width, height:  this._playAreaSize.height };
-    const segments = window.getWindowSegments();
+    const segments = window.visualViewport.segments();
     if (segments.length === 1) {
       this._playAreaSize = { width: this._canvas.width, height: this._canvas.height };
       this._controllerArea = { left: 0, top: 0, width: 0, height: 0 };
@@ -842,6 +842,7 @@ export class MainApplication extends LitElement {
 
   render() {
     return html`
+      <foldable-device-configurator></foldable-device-configurator>
       <canvas id="canvas"></canvas>
       <picture>
         <source srcset="images/pause-button.webp" type="image/webp"/>

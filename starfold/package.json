@@ -9,22 +9,22 @@
     "regen-package-lock": "rimraf package-lock.json && rimraf node_modules && npm install"
   },
   "dependencies": {
-    "@material/mwc-button": "^0.21.0",
-    "@material/mwc-icon-button": "^0.21.0",
-    "@material/mwc-snackbar": "^0.21.0",
-    "foldable-device-configurator": "2.1.0",
-    "lit": "^2.0.0-rc.2",
-    "nan": "^2.14.2",
-    "windowsegments-polyfill": "^2.0.6",
-    "workbox-window": "^6.1.5"
+    "@material/mwc-button": "^0.25.3",
+    "@material/mwc-icon-button": "^0.25.3",
+    "@material/mwc-snackbar": "^0.25.3",
+    "foldable-device-configurator": "3.0.0",
+    "lit": "^2.0.2",
+    "nan": "^2.15.0",
+    "viewportsegments-polyfill": "^1.0.0",
+    "workbox-window": "^6.4.2"
   },
   "devDependencies": {
     "@snowpack/plugin-babel": "^2.1.7",
-    "eslint": "^7.28.0",
-    "eslint-plugin-lit": "1.5.1",
+    "eslint": "^8.4.1",
+    "eslint-plugin-lit": "1.6.1",
     "rimraf": "^3.0.2",
-    "snowpack": "3.5.7",
-    "workbox-cli": "^6.1.5"
+    "snowpack": "3.7.1",
+    "workbox-cli": "^6.4.2"
   },
   "keywords": [],
   "license": "BSD-3-Clause",

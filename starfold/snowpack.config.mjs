@@ -11,7 +11,7 @@ export default {
       'lit-element',
       'lit-html',
       'lit',
-      'spanning-css-polyfill']
+      'viewportsegments-polyfill']
     }
   },
 };
