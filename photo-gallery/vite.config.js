@@ -5,5 +5,5 @@ export default defineConfig({
   resolve: {
     dedupe: ['lit']
   },
-  base: '/',
+  base: '/photo-gallery/',
 })
