@@ -4,6 +4,6 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: '/demos/photo-gallery/',
   build: {
-    outDir: '../dist/photo-gallery',
+    outDir: '../docs/photo-gallery',
   }
 })

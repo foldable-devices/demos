@@ -2,13 +2,6 @@
   "name": "photo-gallery",
   "version": "1.0.0",
   "description": "A simple photo gallery that shows how you can support foldable devices.",
-  "main": "dist/demo.js",
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": "./dist/demo.es.js"
-  },
   "scripts": {
     "start": "vite dev",
     "build": "rimraf build && vite build && workbox generateSW workbox-config.js",
