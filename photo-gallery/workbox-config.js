@@ -1,5 +1,5 @@
 module.exports = {
-  "globDirectory": "dist",
+  "globDirectory": "../dist/photo-gallery",
   "inlineWorkboxRuntime": true,
   "globPatterns": [
     "**/*.{ico,html,css,js}",
@@ -10,7 +10,7 @@ module.exports = {
     "images/*-l.webp",
     "assets/*.js"
   ],
-  "swDest": "dist/sw.js",
+  "swDest": "../dist/photo-gallery/sw.js",
 
   // Define runtime caching rules.
   runtimeCaching: [{

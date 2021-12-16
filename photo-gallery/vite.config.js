@@ -2,8 +2,8 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    dedupe: ['lit']
-  },
-  base: '/photo-gallery/',
+  base: '/demos/photo-gallery/',
+  build: {
+    outDir: '../dist/photo-gallery',
+  }
 })
