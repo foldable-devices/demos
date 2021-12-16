@@ -5,5 +5,6 @@ export default defineConfig({
   base: '/demos/photo-gallery/',
   build: {
     outDir: '../docs/photo-gallery',
+    emptyOutDir: true,
   }
 })

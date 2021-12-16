@@ -500,8 +500,9 @@ export class MainApplication extends LitElement {
         // Send a message to the waiting service worker instructing
         // it to skip waiting, which will trigger the `controlling`
         // event listener above.
-        if (this._wbRegistration && this._wbRegistration.waiting)
+        if (this._wbRegistration && this._wbRegistration.waiting) {
           messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
+        }
       }
     });
 
