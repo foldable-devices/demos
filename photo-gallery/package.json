@@ -2,10 +2,17 @@
   "name": "photo-gallery",
   "version": "1.0.0",
   "description": "A simple photo gallery that shows how you can support foldable devices.",
-  "main": "demo.js",
+  "main": "dist/demo.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/demo.es.js"
+  },
   "scripts": {
-    "start": "snowpack dev",
-    "build": "rimraf build && snowpack build && workbox generateSW workbox-config.js",
+    "start": "vite dev",
+    "build": "rimraf build && vite build && workbox generateSW workbox-config.js",
+    "preview": "vite preview",
     "regen-package-lock": "rimraf package-lock.json && rimraf node_modules && npm install"
   },
   "dependencies": {
@@ -17,13 +24,12 @@
     "foldable-device-configurator": "^3.0.1",
     "lit": "^2.0.2",
     "nan": "^2.15.0",
-    "viewportsegments-css-polyfill": "^1.0.1",
+    "viewportsegments-css-polyfill": "^1.0.2",
     "workbox-window": "^6.4.2"
   },
   "devDependencies": {
-    "@snowpack/plugin-babel": "^2.1.7",
     "rimraf": "^3.0.2",
-    "snowpack": "^3.7.1",
+    "vite": "^2.7.2",
     "workbox-cli": "^6.4.2"
   },
   "keywords": [],

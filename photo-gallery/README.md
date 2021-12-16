@@ -1,6 +1,6 @@
 ## Run the demo.
 
-Navigate [here](https://foldable-devices.github.io/demos/photo-gallery/build).
+Navigate [here](https://foldable-devices.github.io/demos/photo-gallery/dist).
 
 It uses the [device configurator](https://github.com/foldable-devices/device-configurator) to emulate various devices.
 
@@ -44,7 +44,12 @@ To build, run
 $ npm run build
 ```
 
-This will update the `build` directory which is committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
+This will update the `dist` directory which is committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
+
+To test the deployment you can run
+```bash
+$ npm run preview
+```
 
 ## Assets
 - Pictures

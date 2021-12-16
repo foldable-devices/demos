@@ -1,5 +1,5 @@
-import { LitElement, html, css as litCSS } from 'lit';
-import {classMap} from 'lit/directives/class-map.js';
+import { LitElement, html, css as litCSS} from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 import '@material/mwc-button';
 import '@material/mwc-checkbox';
 import '@material/mwc-drawer';
@@ -7,7 +7,7 @@ import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
 import 'foldable-device-configurator';
 import { adjustCSS, observe } from "viewportsegments-css-polyfill";
-import { Workbox, messageSW} from 'workbox-window';
+import { Workbox, messageSW } from 'workbox-window';
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
