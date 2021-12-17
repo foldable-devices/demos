@@ -1,77 +1,89 @@
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-import { LitElement, html, css as litCSS } from '../_snowpack/pkg/lit.js';
-import { adjustCSS, observe } from "../_snowpack/pkg/viewportsegments-css-polyfill.js";
-import "./news-article.js";
-import '../_snowpack/pkg/@material/mwc-button.js';
-import '../_snowpack/pkg/@material/mwc-icon-button.js';
-import '../_snowpack/pkg/@material/mwc-snackbar.js';
-import '../_snowpack/pkg/foldable-device-configurator.js';
-import { Workbox, messageSW } from '../_snowpack/pkg/workbox-window.js';
-
-const css = (strings, ...values) => {
-  const string = adjustCSS(strings[0], "main-application");
-  return litCSS([string], ...values);
-};
-
-export class MainApplication extends LitElement {
-  firstUpdated() {
-    this._snackbar = this.shadowRoot.querySelector('#snackbar');
-
-    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
-      if (event.detail.reason === "action") {
-        this._wb.addEventListener('controlling', () => {
-          window.location.reload();
-          this._wbRegistration = undefined;
-        }); // Send a message to the waiting service worker instructing
-        // it to skip waiting, which will trigger the `controlling`
-        // event listener above.
-
-
-        if (this._wbRegistration && this._wbRegistration.waiting) {
-          messageSW(this._wbRegistration.waiting, {
-            type: 'SKIP_WAITING'
-          });
-        }
-      }
-    }); // Check that service workers are supported
-
-
-    if ('serviceWorker' in navigator) {
-      // Use the window load event to keep the page load performant
-      window.addEventListener('load', async () => {
-        this._wb = new Workbox('./sw.js');
-
-        this._wb.addEventListener('waiting', () => this._showSnackbar());
-
-        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
-
-        this._wbRegistration = await this._wb.register();
-      });
+var f=Object.defineProperty;var w=(o,e,i)=>e in o?f(o,e,{enumerable:!0,configurable:!0,writable:!0,value:i}):o[e]=i;var r=(o,e,i)=>(w(o,typeof e!="symbol"?e+"":e,i),i);import{s as l,p as c,a as d,w as p,r as h,n as m,v}from"./vendor.489958d3.js";const b=function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))a(t);new MutationObserver(t=>{for(const s of t)if(s.type==="childList")for(const n of s.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&a(n)}).observe(document,{childList:!0,subtree:!0});function i(t){const s={};return t.integrity&&(s.integrity=t.integrity),t.referrerpolicy&&(s.referrerPolicy=t.referrerpolicy),t.crossorigin==="use-credentials"?s.credentials="include":t.crossorigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function a(t){if(t.ep)return;t.ep=!0;const s=i(t);fetch(t.href,s)}};b();const x=(o,...e)=>{const i=p(o[0],"news-article");return h([i],...e)};class u extends l{static get properties(){return{picturePosition:{type:String,reflectToAttribute:!0,attribute:!0}}}set picturePosition(e){let i=this._picturePosition;this._picturePosition=e,(window.matchMedia("(min-width: 320px) and (max-width: 1024px)").matches||!1)&&(this._picturePosition="top"),this.requestUpdate("picturePosition",i),this._text&&this._togglePicturePosition()}get picturePosition(){return this._picturePosition}constructor(){super();this._picturePosition="top"}firstUpdated(){this._text=this.shadowRoot.querySelector("#text"),this._content=this.shadowRoot.querySelector("#content"),this._togglePicturePosition()}_togglePicturePosition(){switch(this._picturePosition){case"left":this._text.classList.add("large-text"),this._content.style.flexDirection="row";break;case"right":this._text.classList.add("large-text"),this._content.style.flexDirection="row-reverse";break;case"top":this._text.classList.remove("large-text"),this._content.style.flexDirection="column";break;case"bottom":this._text.classList.remove("large-text"),this._content.style.flexDirection="column-reverse";break}}connectedCallback(){super.connectedCallback(),c(this)}render(){return d`
+      <div class="item">
+        <div class="article-title">
+          <slot name="title"></slot>
+        </div>
+        <div class="author">
+          <slot name="author"></slot>
+        </div>
+        <div class="article-content" id="content">
+          <div class="picture-container">
+            <slot name="news-picture"></slot>
+          </div>
+          <div class="text" id="text">
+            <slot name="text"></slot>
+          </div>
+        </div>
+      </div>
+    `}}r(u,"styles",x`
+    .item {
+      min-height: 200px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      font-family: 'Open Sans', sans-serif;
+      padding: 10px;
     }
-  }
 
-  constructor() {
-    super();
+    .article-title {
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+    }
 
-    _defineProperty(this, "_snackbar", void 0);
+    .author {
+      font-style: italic;
+      margin-bottom: 10px;
+    }
 
-    _defineProperty(this, "_wb", void 0);
+    .author:before {
+      border-top: 2px solid black;
+      width: 100%;
+      content: '';
+      height: 7px;
+      display: block;
+    }
 
-    _defineProperty(this, "_wbRegistration", undefined);
-  }
+    .author:after {
+      border-bottom: 2px solid black;
+      width: 100%;
+      content: '';
+      display: block;
+      height: 7px;
+    }
 
-  connectedCallback() {
-    super.connectedCallback();
-    observe(this);
-  }
+    .picture-container {
+      width: 80%;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+    }
 
-  _showSnackbar() {
-    this._snackbar.show();
-  }
+    .text {
+      padding: 15px;
+    }
 
-  render() {
-    return html`
+    .article-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .large-text {
+      width: 70%;
+    }
+
+    @media (min-width: 320px) and (max-width: 1024px) {
+      .article-title {
+        font-size: 1.2em;
+      }
+    }
+
+  `);customElements.define("news-article",u);const y=(o,...e)=>{const i=p(o[0],"main-application");return h([i],...e)};class g extends l{constructor(){super();r(this,"_snackbar");r(this,"_wb");r(this,"_wbRegistration")}firstUpdated(){this._snackbar=this.shadowRoot.querySelector("#snackbar"),this._snackbar.addEventListener("MDCSnackbar:closed",e=>{e.detail.reason==="action"&&(this._wb.addEventListener("controlling",()=>{window.location.reload(),this._wbRegistration=void 0}),this._wbRegistration&&this._wbRegistration.waiting&&m(this._wbRegistration.waiting,{type:"SKIP_WAITING"}))}),"serviceWorker"in navigator&&window.addEventListener("load",async()=>{this._wb=new v("./sw.js"),this._wb.addEventListener("waiting",()=>this._showSnackbar()),this._wb.addEventListener("externalwaiting",()=>this._showSnackbar()),this._wbRegistration=await this._wb.register()})}connectedCallback(){super.connectedCallback(),c(this)}_showSnackbar(){this._snackbar.show()}render(){return d`
       <foldable-device-configurator></foldable-device-configurator>
       <div class="content">
         <div class="header">
@@ -226,12 +238,7 @@ export class MainApplication extends LitElement {
         <mwc-button slot="action">RELOAD</mwc-button>
         <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
       </mwc-snackbar>
-    `;
-  }
-
-}
-
-_defineProperty(MainApplication, "styles", css`
+    `}}r(g,"styles",y`
     :host {
       width: 100vw;
       height: 100vh;
@@ -579,6 +586,4 @@ _defineProperty(MainApplication, "styles", css`
         flex-direction: column;
       }
     }
-  `);
-
-customElements.define("main-application", MainApplication);
+  `);customElements.define("main-application",g);

@@ -1,5 +1,5 @@
 module.exports = {
-  "globDirectory": "build",
+  "globDirectory": "../docs/foldnews",
   "inlineWorkboxRuntime": true,
   "globPatterns": [
     "**/*.{ico,html,css,js}",
@@ -7,10 +7,9 @@ module.exports = {
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
-    "_snowpack/pkg/import-map.json",
-    "dist/*.js"
+    "assets/*.js"
   ],
-  "swDest": "build/sw.js",
+  "swDest": "../docs/foldnews/sw.js",
 
   // Define runtime caching rules.
   runtimeCaching: [{
