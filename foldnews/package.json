@@ -5,7 +5,7 @@
   "main": "src/main-application.js",
   "scripts": {
     "start": "vite dev",
-    "build": "rimraf build && vite build && workbox generateSW workbox-config.js",
+    "build": "vite build && workbox generateSW workbox-config.js",
     "preview": "vite preview",
     "regen-package-lock": "rimraf package-lock.json && rimraf node_modules && npm install"
   },
