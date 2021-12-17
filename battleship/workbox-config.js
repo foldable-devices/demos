@@ -1,5 +1,5 @@
 module.exports = {
-  "globDirectory": "build",
+  "globDirectory": "../docs/foldship",
   "inlineWorkboxRuntime": true,
   "globPatterns": [
     "**/*.{ico,html,css,js}",
@@ -23,10 +23,9 @@ module.exports = {
     "images/restart-button.webp",
     "images/new-game-button.webp",
     "images/how-to-button.webp",
-    "_snowpack/pkg/import-map.json",
-    "dist/*.js"
+    "assets/*.js"
   ],
-  "swDest": "build/sw.js",
+  "swDest": "../docs/foldship/sw.js",
 
   // Define runtime caching rules.
   runtimeCaching: [{
