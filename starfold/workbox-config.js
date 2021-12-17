@@ -1,5 +1,5 @@
 module.exports = {
-  "globDirectory": "build",
+  "globDirectory": "../docs/starfold",
   "inlineWorkboxRuntime": true,
   "globPatterns": [
     "**/*.{ico,html,css,js}",
@@ -26,10 +26,9 @@ module.exports = {
     "images/y-button.webp",
     "images/missile.webp",
     "images/starfield-1024.webp",
-    "_snowpack/pkg/import-map.json",
-    "dist/*.js"
+    "assets/*.js"
   ],
-  "swDest": "build/sw.js",
+  "swDest": "../docs/starfold/sw.js",
 
   // Define runtime caching rules.
   runtimeCaching: [{

@@ -1,6 +1,6 @@
 ## Run the demo.
 
-Navigate [here](https://foldable-devices.github.io/demos/starfold/build).
+Navigate [here](https://foldable-devices.github.io/demos/starfold/).
 
 It uses the [device configurator](https://github.com/foldable-devices/device-configurator) to emulate various devices.
 
@@ -22,7 +22,7 @@ To install app dependencies, run
 $ npm install
 ```
 
-This project makes use of ECMAScript Modules (ESM) and runs them directly in the browser using [Snowpack](snowpack.dev). If you install new dependencies using `npm` like `npm install --save @material/mwc-button`, then please run `npm run build` afterwards to generate the new modules in `build\web_modules` folder. Also, the `build` folder should be committed. Make sure to update the package.json file accordingly.
+This project makes use of ECMAScript Modules (ESM) and runs them directly in the browser using [Vite](https://vitejs.dev/). If you install new dependencies using `npm` like `npm install --save @material/mwc-button`, then please run `npm run build` afterwards to generate the new modules in `docs` folder. Also, the `docs` folder should be committed. Make sure to update the package.json file accordingly.
 
 ESM compatible modules can be found using [pika.dev](pika.de). Material design web components can be found by searching for `@material/mwc-`. You can try out the demo page here: [Material Web Components demo](https://mwc-demos.glitch.me/)
 
@@ -44,7 +44,12 @@ To build, run
 $ npm run build
 ```
 
-This will update the `build` directory which is committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
+To test the deployment you can run
+```bash
+$ npm run preview
+```
+
+This will update the `docs` directory which is committed to the repository. This demo runs a service worker, for development purposes you may want to consider ticking the option "Bypass for Network" in the Application tab of the devtools.
 
 ## Assets
 
