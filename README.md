@@ -9,7 +9,7 @@ Links :
 
 &nbsp;
 
-- Battleship: Navigate [here](https://foldable-devices.github.io/demos/battleship).
+- Foldship: Navigate [here](https://foldable-devices.github.io/demos/foldship).
 
 <p style="text-align: center;">
 <img src="docs/images/battleship-duo.jpg" alt="picture of a Surface Duo running Battleship demo game" style="width:49%;"/>
