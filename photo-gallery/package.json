@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
-    "vite": "^2.7.2",
+    "vite": "^2.9.13",
     "workbox-cli": "^6.4.2"
   },
   "keywords": [],
