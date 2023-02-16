@@ -37,20 +37,6 @@
     <link rel="stylesheet" href="/demos/foldnews/assets/index-600eb951.css">
   </head>
   <body>
-    <script>
-      // Workaround because Material Web Components have issues when they're included from multiple sources
-      // in this case (foldable-configurator and this demo)
-      const define = window.customElements.define.bind(window.customElements)
-      customElements.define = (name, constructor, options) => {
-        if (customElements.get(name)) {
-          console.warn(`The definition of "${name}" was skipped because it has already been defined.`);
-
-          return;
-        }
-
-        define(name, constructor, options);
-      };
-    </script>
     <main-application></main-application>
     <noscript>
       This page requires JavaScript scripting, please turn it on.
