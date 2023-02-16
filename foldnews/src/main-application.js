@@ -1,11 +1,14 @@
 import { LitElement, html, css as litCSS } from 'lit';
 import { adjustCSS, observe } from "viewportsegments-css-polyfill";
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
 import "./news-article.js";
-import '@material/mwc-button';
-import '@material/mwc-icon-button';
-import '@material/mwc-snackbar';
 import 'foldable-device-configurator';
 import { Workbox, messageSW} from 'workbox-window';
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+setBasePath('/demos/foldnews/');
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -26,6 +29,21 @@ export class MainApplication extends LitElement {
       margin: 0;
       padding: 0;
       box-sizing: inherit;
+    }
+
+    .alert-sw {
+      position: absolute;
+      bottom: 3vh;
+      right: 1vw;
+      z-index: 5;
+    }
+
+    .text-sw {
+      padding-bottom: 10px;
+    }
+
+    .reload {
+      margin-left: 5px;
     }
 
     .content {
@@ -363,34 +381,19 @@ export class MainApplication extends LitElement {
     }
   `;
 
-  _snackbar;
+  _swAlert;
   _wb;
   _wbRegistration = undefined;
 
   firstUpdated() {
-    this._snackbar = this.shadowRoot.querySelector('#snackbar');
-    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
-      if (event.detail.reason === "action") {
-        this._wb.addEventListener('controlling', () => {
-          window.location.reload();
-          this._wbRegistration = undefined;
-        });
-        // Send a message to the waiting service worker instructing
-        // it to skip waiting, which will trigger the `controlling`
-        // event listener above.
-        if (this._wbRegistration && this._wbRegistration.waiting) {
-          messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
-        }
-      }
-    });
-
+    this._swAlert = this.shadowRoot.querySelector('#sw-alert');
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', async () => {
         this._wb = new Workbox('./sw.js');
-        this._wb.addEventListener('waiting', () => this._showSnackbar());
-        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
+        this._wb.addEventListener('waiting', () => this._showSWAlert());
+        this._wb.addEventListener('externalwaiting', () => this._showSWAlert());
         this._wbRegistration = await this._wb.register();
       });
     }
@@ -405,8 +408,21 @@ export class MainApplication extends LitElement {
     observe(this);
   }
 
-  _showSnackbar() {
-    this._snackbar.show();
+  _showSWAlert() {
+    this._swAlert.show();
+  }
+
+  _reloadSW() {
+    this._wb.addEventListener('controlling', () => {
+      window.location.reload();
+      this._wbRegistration = undefined;
+    });
+    // Send a message to the waiting service worker instructing
+    // it to skip waiting, which will trigger the `controlling`
+    // event listener above.
+    if (this._wbRegistration && this._wbRegistration.waiting) {
+      messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
+    }
   }
 
   render() {
@@ -561,10 +577,16 @@ export class MainApplication extends LitElement {
           </div>
         </div>
       </div>
-      <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
-        <mwc-button slot="action">RELOAD</mwc-button>
-        <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
-      </mwc-snackbar>
+      <div class="alert-sw">
+        <sl-alert id="sw-alert" variant="primary" closable duration="10000">
+          <sl-icon slot="icon" name="info-circle"></sl-icon>
+          <div class="text-sw">
+            <strong>A newer version of the application is available</strong>
+          </div>
+          Please reload to update: 
+          <sl-button class="reload" size="small" @click="${this._reloadSW}">Reload</sl-button>
+        </sl-alert>
+      </div>
     `;
   }
 }
