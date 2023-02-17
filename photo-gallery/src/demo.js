@@ -1,10 +1,11 @@
 import { LitElement, html, css as litCSS} from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
-import '@material/mwc-button';
-import '@material/mwc-checkbox';
-import '@material/mwc-drawer';
-import '@material/mwc-icon-button';
-import '@material/mwc-snackbar';
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
+import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
 import 'foldable-device-configurator';
 import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 import { Workbox, messageSW } from 'workbox-window';
@@ -14,7 +15,7 @@ const css = (strings, ...values) => {
   return litCSS([string], ...values);
 };
 
-class MaterialSpinner extends LitElement {
+class Spinner extends LitElement {
   static styles = css`
     .spinner {
       width: 65px;
@@ -67,7 +68,7 @@ class MaterialSpinner extends LitElement {
     `;
   }
 }
-customElements.define("mwc-circular-progress", MaterialSpinner);
+customElements.define("circular-progress", Spinner);
 
 class DetailImage extends LitElement {
   static styles = css`
@@ -104,7 +105,7 @@ class DetailImage extends LitElement {
       margin-top: 40px;
     }
 
-    mwc-circular-progress {
+    circular-progress {
       position: absolute;
       top: 50%;
     }
@@ -120,7 +121,7 @@ class DetailImage extends LitElement {
   _legend;
 
   firstUpdated() {
-    this._spinner = this.shadowRoot.querySelector('mwc-circular-progress');
+    this._spinner = this.shadowRoot.querySelector('circular-progress');
     this._image = this.shadowRoot.querySelector('img');
     this._legend = this.shadowRoot.querySelector('#text');
   }
@@ -142,7 +143,7 @@ class DetailImage extends LitElement {
       <div id="wrapper">
         <img/>
         <div id="text"></div>
-        <mwc-circular-progress></mwc-circular-progress>
+        <circular-progress></circular-progress>
       </div>
     `;
   }
@@ -162,6 +163,21 @@ export class MainApplication extends LitElement {
       margin: 0;
       padding: 0;
       box-sizing: inherit;
+    }
+
+    .alert-sw {
+      position: absolute;
+      bottom: 3vh;
+      right: 1vw;
+      z-index: 5;
+    }
+
+    .text-sw {
+      padding-bottom: 10px;
+    }
+
+    .reload {
+      margin-left: 5px;
     }
 
     .fullview-container {
@@ -347,25 +363,13 @@ export class MainApplication extends LitElement {
       display: block;
     }
 
-    mwc-circular-progress {
+    circular-progress {
       position: absolute;
       top: 50%;
     }
 
-    mwc-checkbox {
-      --mdc-theme-secondary: black;
-    }
-
-    mwc-icon-button {
-      z-index: 2;
-    }
-
-    mwc-drawer {
-      z-index: 3;
-    }
-
-    mwc-snackbar {
-      --mdc-snackbar-action-color: white;
+    sl-checkbox {
+      margin-left: 4px;
     }
 
     .menu-icon {
@@ -470,7 +474,7 @@ export class MainApplication extends LitElement {
   _fold;
   _gallery;
   _fullview_container;
-  _snackbar;
+  _swAlert;
   _wb;
   _wbRegistration = undefined;
 
@@ -481,38 +485,21 @@ export class MainApplication extends LitElement {
     this._detail_container = this.shadowRoot.querySelector('.detail-container');
     this._detail = this.shadowRoot.querySelector('.detail');
     this._detail_select = this.shadowRoot.querySelector('.detail-select');
-    this._spinner = this.shadowRoot.querySelector('mwc-circular-progress');
+    this._spinner = this.shadowRoot.querySelector('circular-progress');
     this._drawer = this.shadowRoot.querySelector('#drawer');
-    this._snackbar = this.shadowRoot.querySelector('#snackbar');
+    console.log(this._drawer)
+    this._swAlert = this.shadowRoot.querySelector('#sw-alert');
     this._fold = this.shadowRoot.querySelector('.fold');
-    this._styleCheckbox = this.shadowRoot.querySelector('mwc-checkbox');
-    this._styleCheckbox.addEventListener('change', this._styleChanged);
+    this._styleCheckbox = this.shadowRoot.querySelector('sl-checkbox');
     this._fullview_container = this.shadowRoot.querySelector('.fullview-container');
-
-    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
-      if (event.detail.reason === "action") {
-        this._wb.addEventListener('controlling', (event) => {
-          console.log("reloading")
-          window.location.reload();
-          this._wbRegistration = undefined;
-        });
-
-        // Send a message to the waiting service worker instructing
-        // it to skip waiting, which will trigger the `controlling`
-        // event listener above.
-        if (this._wbRegistration && this._wbRegistration.waiting) {
-          messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
-        }
-      }
-    });
 
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', async () => {
         this._wb = new Workbox('./sw.js');
-        this._wb.addEventListener('waiting', () => this._showSnackbar());
-        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
+        this._wb.addEventListener('waiting', () => this._showSWAlert());
+        this._wb.addEventListener('externalwaiting', () => this._showSWAlert());
         this._wbRegistration = await this._wb.register();
       });
     }
@@ -529,11 +516,26 @@ export class MainApplication extends LitElement {
   }
 
   _openDrawer() {
+    console.log(this._drawer)
     this._drawer.open = true;
+
   }
 
-  _showSnackbar() {
-    this._snackbar.show();
+  _showSWAlert() {
+    this._swAlert.show();
+  }
+
+  _reloadSW() {
+    this._wb.addEventListener('controlling', () => {
+      window.location.reload();
+      this._wbRegistration = undefined;
+    });
+    // Send a message to the waiting service worker instructing
+    // it to skip waiting, which will trigger the `controlling`
+    // event listener above.
+    if (this._wbRegistration && this._wbRegistration.waiting) {
+      messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
+    }
   }
 
   _styleChanged = (event) => {
@@ -650,17 +652,20 @@ export class MainApplication extends LitElement {
 
     return html`
       <foldable-device-configurator></foldable-device-configurator>
-      <mwc-drawer type="modal" hasHeader id="drawer">
-        <span slot="title">Configuration</span>
-        <div class="drawer">
-            Split UX : <mwc-checkbox checked></mwc-checkbox>
-        </div>
-        <div slot="appContent" class="content">
-          <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
-            <mwc-button slot="action">RELOAD</mwc-button>
-            <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
-          </mwc-snackbar>
-          <mwc-icon-button icon="menu" class="menu-icon" @click="${this._openDrawer}"></mwc-icon-button>
+      <div class="content">
+          <div class="alert-sw">
+            <sl-alert id="sw-alert" variant="primary" closable duration="10000">
+              <sl-icon slot="icon" name="info-circle"></sl-icon>
+              <div class="text-sw">
+                <strong>A newer version of the application is available</strong>
+              </div>
+              Please reload to update: 
+              <sl-button class="reload" size="small" @click="${this._reloadSW}">Reload</sl-button>
+            </sl-alert>
+          </div>
+          <sl-icon-button name="list" label="menu" 
+              class="menu-icon" @click="${this._openDrawer}">
+          </sl-icon-button>
           <div class="gallery">
             ${images.map(images => html`
               <figure class="gallery-item">
@@ -684,12 +689,16 @@ export class MainApplication extends LitElement {
           <div class="fullview-container ${classMap(this._full_view_container_classes)}" @click="${this._closePicture}">
             <div class="close" @click="${this._closePicture}"></div>
             <div class="arrow-left" @click="${this._previousPicture}"></div>
-            <mwc-circular-progress></mwc-circular-progress>
+            <circular-progress></circular-progress>
             <img id="full-img">
             <div class="arrow-right" @click="${this._nextPicture}"></div>
           </div>
         </div>
-      </mwc-drawer>
+        <sl-drawer label="Configuration" id="drawer" placement="start">
+          <div class="drawer">
+              Split UX : <sl-checkbox checked @sl-change="${this._styleChanged}"></sl-checkbox>
+          </div>
+        </sl-drawer>
     `;
   }
 }

@@ -29,25 +29,10 @@
     
     
     <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
-    <script type="module" crossorigin src="/demos/photo-gallery/assets/index.220b81e8.js"></script>
-    <link rel="modulepreload" href="/demos/photo-gallery/assets/vendor.82ee55b4.js">
-    <link rel="stylesheet" href="/demos/photo-gallery/assets/index.e34a4890.css">
+    <script type="module" crossorigin src="/demos/photo-gallery/assets/index-68bdd502.js"></script>
+    <link rel="stylesheet" href="/demos/photo-gallery/assets/index-a1a73b33.css">
   </head>
   <body>
-    <script>
-      // Workaround because Material Web Components have issues when they're included from multiple sources
-      // in this case (foldable-configurator and this demo)
-      const define = window.customElements.define.bind(window.customElements)
-      customElements.define = (name, constructor, options) => {
-        if (customElements.get(name)) {
-          console.warn(`The definition of "${name}" was skipped because it has already been defined.`);
-
-          return;
-        }
-
-        define(name, constructor, options);
-      };
-    </script>
     <main-application></main-application>
     <noscript>
       This page requires JavaScript scripting, please turn it on.
