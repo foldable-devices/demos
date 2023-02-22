@@ -1,11 +1,14 @@
 import { LitElement, html, css } from 'lit';
 import { FoldablesFeature } from 'viewportsegments-polyfill';
-import '@material/mwc-button';
-import '@material/mwc-icon-button';
-import '@material/mwc-snackbar';
 import { Workbox, messageSW} from 'workbox-window';
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
 import 'foldable-device-configurator';
-import "./menu.js"
+import "./menu.js";
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+setBasePath('/demos/starfold/');
 
 export class MainApplication extends LitElement {
   static styles = css`
@@ -21,6 +24,21 @@ export class MainApplication extends LitElement {
       margin: 0;
       padding: 0;
       box-sizing: inherit;
+    }
+
+    .alert-sw {
+      position: absolute;
+      bottom: 3vh;
+      right: 1vw;
+      z-index: 5;
+    }
+
+    .text-sw {
+      padding-bottom: 10px;
+    }
+
+    .reload {
+      margin-left: 5px;
     }
 
     #canvas {
@@ -80,7 +98,7 @@ export class MainApplication extends LitElement {
     }
   `;
 
-  _snackbar;
+  _swAlert;
   _wb;
   _wbRegistration = undefined;
   _mainMenu;
@@ -126,7 +144,7 @@ export class MainApplication extends LitElement {
   _yButtonSize = 100;
   _yButtonPos = {x: 0, y: 0};
   _touchingYButton = false;
-   _missileImage;
+  _missileImage;
   _missileWidth = 20;
   _missileHeight = 30;
   _missiles = [];
@@ -154,29 +172,14 @@ export class MainApplication extends LitElement {
       return;
     }
 
-    this._snackbar = this.shadowRoot.querySelector('#snackbar');
-    this._snackbar.addEventListener('MDCSnackbar:closed', event => {
-      if (event.detail.reason === "action") {
-        this._wb.addEventListener('controlling', () => {
-          window.location.reload();
-          this._wbRegistration = undefined;
-        });
-        // Send a message to the waiting service worker instructing
-        // it to skip waiting, which will trigger the `controlling`
-        // event listener above.
-        if (this._wbRegistration && this._wbRegistration.waiting) {
-          messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
-        }
-      }
-    });
-
+    this._swAlert = this.shadowRoot.querySelector('#sw-alert');
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
       window.addEventListener('load', async () => {
         this._wb = new Workbox('./sw.js');
-        this._wb.addEventListener('waiting', () => this._showSnackbar());
-        this._wb.addEventListener('externalwaiting', () => this._showSnackbar());
+        this._wb.addEventListener('waiting', () => this._showSWAlert());
+        this._wb.addEventListener('externalwaiting', () => this._showSWAlert());
         this._wbRegistration = await this._wb.register();
       });
     }
@@ -228,8 +231,21 @@ export class MainApplication extends LitElement {
     this._currentTime = 0;
   }
 
-  _showSnackbar() {
-    this._snackbar.show();
+  _showSWAlert() {
+    this._swAlert.show();
+  }
+
+  _reloadSW() {
+    this._wb.addEventListener('controlling', () => {
+      window.location.reload();
+      this._wbRegistration = undefined;
+    });
+    // Send a message to the waiting service worker instructing
+    // it to skip waiting, which will trigger the `controlling`
+    // event listener above.
+    if (this._wbRegistration && this._wbRegistration.waiting) {
+      messageSW(this._wbRegistration.waiting, {type: 'SKIP_WAITING'})
+    }
   }
 
   _deviceSupportsSpanningMQs() {
@@ -383,7 +399,7 @@ export class MainApplication extends LitElement {
         this._context.restore();
       }
       if (!meteor.destroyed && this._checkCollision(meteor, this._shipObject))
-         this._lostGame();
+        this._lostGame();
       meteor.y += this._velocity;
     }
     // Get rid of out of bounds meteors
@@ -889,42 +905,48 @@ export class MainApplication extends LitElement {
         <img id="missile" src="images/missile.png">
       </picture>
       <picture class="hidden">
-          <source media="(max-width: 767px)"
-                  srcset="images/starfield-412.webp 412w, images/starfield-768.webp 768w, images/starfield-800.webp 800w"
-                  sizes="(max-width: 767px) 412px, 768px, 800px" type="image/webp"/>
-          <source media="(max-width: 767px)"
-                  srcset="images/starfield-412.jpg 412w, images/starfield-768.jpg 768w, images/starfield-800.jpg 800w"
-                  sizes="(max-width: 767px) 412px, 768px, 800px" type="image/jpeg"/>
-          <source media="(max-width: 1366px)"
-                  srcset="images/starfield-1024.webp 1024w, images/starfield-1366.webp 1366w"
-                  sizes="(max-width: 1366px) 1024px, 1366px" type="image/webp"/>
-          <source media="(max-width: 1366px)"
-                  srcset="images/starfield-1024.jpg 1024w, images/starfield-1366.jpg 1366w"
-                  sizes="(max-width: 1366px) 1024px, 1366px" type="image/jpeg"/>
-          <source media="(max-width: 1440px)"
-                  srcset="images/starfield-1440.webp 1440w, images/starfield-1366.webp 1366w"
-                  sizes="(max-width: 1440px) 1440px, 1366px" type="image/webp"/>
-          <source media="(max-width: 1440px)"
-                  srcset="images/starfield-1440.jpg 1440w, images/starfield-1366.jpg 1366w"
-                  sizes="(max-width: 1440px) 1440px, 1366px" type="image/jpeg"/>
-          <source media="(max-width: 1920px)"
-                  srcset="images/starfield-1920.webp 1920w, images/starfield-1440.webp 1440w"
-                  sizes="(max-width: 1920px) 1920px, 1440px" type="image/webp"/>
-          <source media="(max-width: 1920px)"
-                  srcset="images/starfield-1920.jpg 1920w, images/starfield-1440.jpg 1440w"
-                  sizes="(max-width: 1920px) 1920px, 1440px" type="image/jpeg"/>
-          <source media="(min-width: 1920px)"
-                  srcset="images/starfield-4k.webp 2560w, images/starfield-1920.webp 1920w"
-                  sizes="(max-width: 1920px) 2560px, 1920px" type="image/webp"/>
-          <source media="(min-width: 1920px)"
-                  srcset="images/starfield-4k.jpg 2560w, images/starfield-1920.jpg 1920w"
-                  sizes="(max-width: 1920px) 2560px, 1920px" type="image/jpeg"/>
-          <img id="background" src="images/starfield-1024.jpg" alt="Background of a starfield">
-        </picture>
-      <mwc-snackbar id="snackbar" labelText="A newer version of the application is available." leading>
-        <mwc-button slot="action">RELOAD</mwc-button>
-        <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
-      </mwc-snackbar>
+        <source media="(max-width: 767px)"
+                srcset="images/starfield-412.webp 412w, images/starfield-768.webp 768w, images/starfield-800.webp 800w"
+                sizes="(max-width: 767px) 412px, 768px, 800px" type="image/webp"/>
+        <source media="(max-width: 767px)"
+                srcset="images/starfield-412.jpg 412w, images/starfield-768.jpg 768w, images/starfield-800.jpg 800w"
+                sizes="(max-width: 767px) 412px, 768px, 800px" type="image/jpeg"/>
+        <source media="(max-width: 1366px)"
+                srcset="images/starfield-1024.webp 1024w, images/starfield-1366.webp 1366w"
+                sizes="(max-width: 1366px) 1024px, 1366px" type="image/webp"/>
+        <source media="(max-width: 1366px)"
+                srcset="images/starfield-1024.jpg 1024w, images/starfield-1366.jpg 1366w"
+                sizes="(max-width: 1366px) 1024px, 1366px" type="image/jpeg"/>
+        <source media="(max-width: 1440px)"
+                srcset="images/starfield-1440.webp 1440w, images/starfield-1366.webp 1366w"
+                sizes="(max-width: 1440px) 1440px, 1366px" type="image/webp"/>
+        <source media="(max-width: 1440px)"
+                srcset="images/starfield-1440.jpg 1440w, images/starfield-1366.jpg 1366w"
+                sizes="(max-width: 1440px) 1440px, 1366px" type="image/jpeg"/>
+        <source media="(max-width: 1920px)"
+                srcset="images/starfield-1920.webp 1920w, images/starfield-1440.webp 1440w"
+                sizes="(max-width: 1920px) 1920px, 1440px" type="image/webp"/>
+        <source media="(max-width: 1920px)"
+                srcset="images/starfield-1920.jpg 1920w, images/starfield-1440.jpg 1440w"
+                sizes="(max-width: 1920px) 1920px, 1440px" type="image/jpeg"/>
+        <source media="(min-width: 1920px)"
+                srcset="images/starfield-4k.webp 2560w, images/starfield-1920.webp 1920w"
+                sizes="(max-width: 1920px) 2560px, 1920px" type="image/webp"/>
+        <source media="(min-width: 1920px)"
+                srcset="images/starfield-4k.jpg 2560w, images/starfield-1920.jpg 1920w"
+                sizes="(max-width: 1920px) 2560px, 1920px" type="image/jpeg"/>
+        <img id="background" src="images/starfield-1024.jpg" alt="Background of a starfield">
+      </picture>
+      <div class="alert-sw">
+        <sl-alert id="sw-alert" variant="primary" closable duration="10000">
+          <sl-icon slot="icon" name="info-circle"></sl-icon>
+          <div class="text-sw">
+            <strong>A newer version of the application is available</strong>
+          </div>
+          Please reload to update: 
+          <sl-button class="reload" size="small" @click="${this._reloadSW}">Reload</sl-button>
+        </sl-alert>
+      </div>
       <game-menu id="main-menu">
         <div slot="title">Welcome to Star Fold</div>
         <picture slot="button">
@@ -949,8 +971,8 @@ export class MainApplication extends LitElement {
       </game-menu>
       <game-menu id="about-menu">
         <div slot="title">
-           <div class="detail-about">About<br><br>This demo provides a specific experience on dual screens and foldable devices. Make sure to span the window.
-           </div>
+          <div class="detail-about">About<br><br>This demo provides a specific experience on dual screens and foldable devices. Make sure to span the window.
+          </div>
         </div>
         <picture slot="button">
           <source srcset="images/close-button.webp" type="image/webp"/>

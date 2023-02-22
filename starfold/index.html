@@ -31,23 +31,8 @@
     <meta http-equiv="origin-trial" content="Aj/rFh84wVDCkQqGEV+i3USzVzqcOK8cCM5A8sgdQY09b7xrxWnokdT8fe86ubEnBisqBh2UBw3Dpuj3X3+tIwsAAAB2eyJvcmlnaW4iOiJodHRwczovL2ZvbGRhYmxlLWRldmljZXMuZ2l0aHViLmlvOjQ0MyIsImlzU3ViZG9tYWluIjpmYWxzZSwiZmVhdHVyZSI6IldpbmRvd1NlZ21lbnRzIiwiZXhwaXJ5IjoxNjAzMzIwMDM2fQ==">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=block" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Russo+One&display=block" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
   </head>
   <body>
-    <script>
-      // Workaround because Material Web Components have issues when they're included from multiple sources
-      // in this case (foldable-configurator and this demo)
-      const define = window.customElements.define.bind(window.customElements)
-      customElements.define = (name, constructor, options) => {
-        if (customElements.get(name)) {
-          console.warn(`The definition of "${name}" was skipped because it has already been defined.`);
-
-          return;
-        }
-
-        define(name, constructor, options);
-      };
-    </script>
     <main-application></main-application>
     <noscript>
       This page requires JavaScript scripting, please turn it on.
