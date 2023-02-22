@@ -517,7 +517,6 @@ export class MainApplication extends LitElement {
   }
 
   _openDrawer() {
-    console.log(this._drawer)
     this._drawer.open = true;
 
   }
