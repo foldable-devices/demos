@@ -9,6 +9,8 @@ import '@shoelace-style/shoelace/dist/components/button/button.js';
 import 'foldable-device-configurator';
 import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 import { Workbox, messageSW } from 'workbox-window';
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+setBasePath('/demos/photo-gallery/');
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
@@ -487,7 +489,6 @@ export class MainApplication extends LitElement {
     this._detail_select = this.shadowRoot.querySelector('.detail-select');
     this._spinner = this.shadowRoot.querySelector('circular-progress');
     this._drawer = this.shadowRoot.querySelector('#drawer');
-    console.log(this._drawer)
     this._swAlert = this.shadowRoot.querySelector('#sw-alert');
     this._fold = this.shadowRoot.querySelector('.fold');
     this._styleCheckbox = this.shadowRoot.querySelector('sl-checkbox');
