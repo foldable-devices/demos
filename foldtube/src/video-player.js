@@ -238,13 +238,30 @@ export class VideoPlayer extends LitElement {
         this.shadowRoot.host.style.display = "none";
     }
 
+    _openVideo(event) {
+        this._video.pause();
+        const video = event.detail.video;
+        this.src = video.src;
+        this.alt = video.alt;
+        this.title = video.title;
+        this.date = video.date;
+        this.views = video.views;
+        this.channel = video.channel;
+        this.subscribers = video.subscribers;
+        this.description = video.description;
+        this._video.play();
+        const currentUrl = document.location.href;
+        history.pushState({ video : this.src }, null, 
+            currentUrl.substring(0, currentUrl.lastIndexOf('/')) + "/" + this.title);
+    }
+
     render() {
         return html`
             <div class="root">
                 <div class="content">
                     <div class="video-container">
                         <video preload="metadata" alt="${this.alt}" controls id="video">
-                            <source src="${this.src}.mp4" type="video/mp4" id="source">
+                            <source src="videos/${this.src}.mp4" type="video/mp4" id="source">
                         </video>
                         <div class="title">${this.title}</div>
                         <div class="channel-video-actions">
@@ -270,7 +287,7 @@ export class VideoPlayer extends LitElement {
                         </div>
                         <comments-section></comments-section>
                     </div>
-                    <side-bar></side-bar>
+                    <side-bar @video-selected="${this._openVideo}"></side-bar>
                 </div>
             </div>
         `;

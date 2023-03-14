@@ -7,7 +7,9 @@ module.exports = {
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
     "manifest.json",
-    "assets/*.js"
+    "assets/*.js",
+    "images/channels/*.webp",
+    "images/thumbnails/*.webp"
   ],
   "swDest": "../docs/foldtube/sw.js",
 

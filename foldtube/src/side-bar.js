@@ -22,13 +22,21 @@ export class SideBar extends LitElement {
         observe(this);
     }
 
+    _videoClicked(element) {
+        let event = new CustomEvent('video-selected', {
+            detail: { message: 'search text changed', video: element.currentTarget },
+            bubbles: true,
+            composed: true });
+        this.dispatchEvent(event);
+    }
+
     render() {
         return html`
             <div class="root">
                 ${getVideos().map(videos => html`
                     <video-thumbnail src="${videos.name}" alt=${videos.alt} title="${videos.title}" date="${videos.date}"
                     views="${videos.views}" channel="${videos.channel}" subscribers="${videos.subscribers}" 
-                    description="${videos.description}" @click="${this._openVideo}" horizontalLayout>
+                    description="${videos.description}" @click="${this._videoClicked}" horizontalLayout>
                     </video-thumbnail>
                 `)}
             </div>

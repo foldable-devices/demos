@@ -16,7 +16,7 @@ export class VideoThumbnail extends LitElement {
 
         .root {
             display: flex;
-            align-items: center;
+            align-self: start;
             margin: 10px;
         }
 
@@ -29,13 +29,17 @@ export class VideoThumbnail extends LitElement {
             flex-direction: row;
         }
 
-        video {
+        .thumbnail {
             width: 100%;
-            border-radius: 10px;
         }
 
-        .video-horizontal {
+        .thumbnail-horizontal {
             width: 50%;
+        }
+
+        .thumbnail-image {
+            max-width: 100%;
+            border-radius: 10px;
         }
 
         .title {
@@ -65,6 +69,9 @@ export class VideoThumbnail extends LitElement {
             width: 100%;
             display: flex;
             flex-direction: row;
+        }
+
+        .margin-top {
             margin-top: 10px;
         }
 
@@ -183,10 +190,13 @@ export class VideoThumbnail extends LitElement {
     render() {
         return html`
             <div class="root ${this.horizontalLayout ? "horizontal": "vertical"}">
-                <video preload="metadata" alt="${this.alt}" class="${this.horizontalLayout ? "video-horizontal": ""}">
-                    <source src="${this.src}.mp4#t=0.5" type="video/mp4">
-                </video>
-                <div class="details">
+                <div class="thumbnail ${this.horizontalLayout ? "thumbnail-horizontal": ""}">
+                    <picture>
+                        <source srcset="images/thumbnails/${this.src}.webp" type="image/webp">
+                        <img class="thumbnail-image" src="images/thumbnails/${this.src}.jpg" alt="${this.alt}"/>
+                    </picture>
+                </div>
+                <div class="details ${this.horizontalLayout ? "": "margin-top"}">
                     <picture>
                         <source srcset="images/channels/${encodeURI(this.channel)}.webp" type="image/webp">
                         <img class="channel-image ${this.horizontalLayout ? "hidden": ""}" src="images/channels/${this.channel}.png" alt="picture of the channel"/>
