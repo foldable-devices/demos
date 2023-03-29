@@ -6,5 +6,13 @@ export default defineConfig({
   build: {
     outDir: '../docs/starfold',
     emptyOutDir: true,
+  },
+  server: {
+    host: "0.0.0.0",
+    port: 3000,
+    strictPort: true,
+    hmr: {
+        port: 3001,
+    },
   }
 })
