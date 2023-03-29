@@ -11,8 +11,6 @@ export class Menu extends LitElement {
       z-index: 4;
       visibility: hidden;
       user-select: none;
-      transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s;
-      transition-timing-function: ease-out;
     }
 
     *,
@@ -96,7 +94,6 @@ export class Menu extends LitElement {
   `;
 
   _spanning = false;
-  _folded = false;
 
   firstUpdated() {  }
 
@@ -107,8 +104,6 @@ export class Menu extends LitElement {
   handleSpanning() {
     const segments = window.visualViewport.segments;
     this._spanning = (segments && segments.length > 1);
-    if (navigator.devicePosture != undefined)
-      this._folded = navigator.devicePosture.type === 'folded';
     let rootStyle = this.shadowRoot.host.style;
     if (this._spanning) {
       const segment =  segments[0];
@@ -122,18 +117,6 @@ export class Menu extends LitElement {
         rootStyle.width = '25vw';
         rootStyle.left = 'calc(25vw - 12.5vw)';
         rootStyle.height = segments[0].height / 3 + 'px';
-      }
-    } else if (this._folded) {
-      if (screen.availHeight < screen.availWidth) {
-        rootStyle.top = '7vh';
-        rootStyle.left = 'calc(50vw - 20vw)';
-        rootStyle.width = '40vw';
-        rootStyle.height = screen.availHeight / 3 + 'px';
-      } else {
-        rootStyle.top = 'calc(50vh - 15vh)';
-        rootStyle.width = '25vw';
-        rootStyle.left = '7vw';
-        rootStyle.height = screen.availHeight / 3 + 'px';
       }
     } else {
       rootStyle.top = '';

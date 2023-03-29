@@ -129,7 +129,6 @@ export class MainApplication extends LitElement {
   _paused = true;
   _dead = true;
   _spanning = false;
-  _folded = false;
   _playAreaSize = undefined;
   _controllerArea = undefined;
   _enableDebug = false;
@@ -216,17 +215,12 @@ export class MainApplication extends LitElement {
     this._timeSize = this._context.measureText('Elapsed Time : 2222s').width;
 
     this._handleSpanning();
-    this._handlePostureChange();
     this._background.onload = this._drawBackground.bind(this);
 
     if (typeof FoldablesFeature != 'undefined') {
       const foldablesFeat = new FoldablesFeature;
       // This is specific for the polyfill, the browser window won't be resized.
       foldablesFeat.onchange = () => this._handleSpanning();
-    }
-
-    if (navigator.devicePosture != undefined) {
-      navigator.devicePosture.onchange = () => this._handlePostureChange();
     }
 
     window.onorientationchange = (event) => this._handleOrientationChange(event);
@@ -683,7 +677,7 @@ export class MainApplication extends LitElement {
     this._drawMissiles();
     this._drawShip();
     this._drawTime();
-    if (this._spanning || this._folded) {
+    if (this._spanning) {
       this._drawControllerSegment();
       this._drawController(this._controllerSize);
       this._drawControllerHighlight(this._controllerSize);
@@ -746,30 +740,13 @@ export class MainApplication extends LitElement {
       this._drawBackground();
   }
 
-  _handlePostureChange() {
-    if (navigator.devicePosture != undefined) {
-      this._folded = navigator.devicePosture.type === 'folded';
-    }
-    this._updateGameLayout();
-    if (!this._folded)
-      this._showPauseButton();
-    else
-      this._hidePauseButton();
-    this._updateMenus();
-  }
-
   _handleSpanning() {
     this._spanning = (window.visualViewport.segments && window.visualViewport.segments.length > 1);
     this._updateGameLayout();
-    if (!this._spanning) {
+    if (!this._spanning)
       this._showPauseButton();
-    } else {
+    else
       this._hidePauseButton();
-    }
-    this._updateMenus();
-  }
-
-  _updateMenus() {
     this._mainMenu.handleSpanning();
     this._pauseMenu.handleSpanning();
     this._aboutMenu.handleSpanning();
@@ -785,74 +762,22 @@ export class MainApplication extends LitElement {
     this._lostMenu.handleSpanning();
   }
 
-  _updateGameLayoutToFullscreen() {
-    this._playAreaSize = { width: this._canvas.width, height: this._canvas.height };
-    this._controllerArea = { left: 0, top: 0, width: 0, height: 0 };
-    this._leftControllerPos = {
-      x: 0,
-      y: this._playAreaSize.height - 2 * this._controllerSizeTouch
-    };
-    this._rightControllerPos = {
-      x: 2 * this._controllerSizeTouch,
-      y: this._playAreaSize.height - 2 * this._controllerSizeTouch
-    };
-    this._upControllerPos = {
-      x: this._controllerSizeTouch,
-      y: this._playAreaSize.height - 3 * this._controllerSizeTouch
-    };
-    this._rightControllerPos = {
-      x: 2 * this._controllerSizeTouch,
-      y: this._playAreaSize.height - 2 * this._controllerSizeTouch
-    };
-    this._downControllerPos = {
-      x: this._controllerSizeTouch,
-      y: this._playAreaSize.height - this._controllerSizeTouch
-    };
-    this._pauseButtonPos = { x: 0, y: 0 };
-    this._yButtonPos = {
-      x: this._playAreaSize.width - this._yButtonSize - 10,
-      y: this._playAreaSize.height - this._yButtonSize - 10
-    };
-  }
-
   _updateGameLayout() {
     let oldPlayArea;
     if (this._playAreaSize)
       oldPlayArea = { width: this._playAreaSize.width, height:  this._playAreaSize.height };
     const segments = window.visualViewport.segments;
-    if (segments && segments.length > 1 && !this._folded) {
-      this._updateGameLayoutToFullscreen();
-    } else {
-      if (this._spanning) {
-        this._playAreaSize = {
-          left: segments[0].left,
-          top: segments[0].top,
-          width: segments[0].width,
-          height: segments[0].height };
-        this._controllerArea = {
-          left: segments[1].left,
-          top: segments[1].top,
-          width: segments[1].width,
-          height: segments[1].height };
-      } else {
-        if (screen.availHeight > screen.availWidth) {
-          this._playAreaSize = {
-            left: 0,
-            top: 0,
-            width: screen.availWidth,
-            height: screen.availHeight / 2
-          };
-          this._controllerArea = {
-            left: 0,
-            top: screen.availHeight / 2,
-            width: screen.availWidth,
-            height:  screen.availHeight / 2
-          };
-        } else {
-          // Landscape folded is weird.
-          this._updateGameLayoutToFullscreen();
-        }
-      }
+    if (segments && segments.length > 1) {
+      this._playAreaSize = {
+        left: segments[0].left,
+        top: segments[0].top,
+        width: segments[0].width,
+        height: segments[0].height };
+      this._controllerArea = {
+        left: segments[1].left,
+        top: segments[1].top,
+        width: segments[1].width,
+        height: segments[1].height };
       this._pauseButtonPos = {
         x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
         y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2};
@@ -871,6 +796,7 @@ export class MainApplication extends LitElement {
       this._downControllerPos = {
           x: this._controllerArea.left + this._controllerSize,
           y: this._controllerArea.top + this._controllerArea.height / 2 + this._controllerSize / 2};
+    } else {
       this._playAreaSize = { width: this._canvas.width, height: this._canvas.height };
       this._controllerArea = { left: 0, top: 0, width: 0, height: 0 };
       this._leftControllerPos = {
