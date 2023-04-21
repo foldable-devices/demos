@@ -103,6 +103,42 @@ export class MainApplication extends LitElement {
       display: none;
     }
 
+    #fold {
+      visibility: hidden;
+      background-color: black;
+      color: yellow;
+      font-size: 1.4rem;
+      font-style: italic;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .stripes {
+      height: 250px;
+      width: 200px;
+      background-size: 40px 40px;
+    }
+
+    .angled {
+      background-color: #737373;
+      background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%,
+      transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%,
+      transparent 75%, transparent);
+    }
+
+    @media(device-posture: folded) {
+      .not-supported {
+        display: none;
+      }
+
+      .posture-header {
+        top: calc(50vh - 200px);
+        left: calc(50vw - 200px);
+        display: block;
+      }
+    }
+
     @media(device-posture: continuous) {
       .not-supported {
         display: none;
@@ -131,8 +167,14 @@ export class MainApplication extends LitElement {
       #col1 {
         display: flex;
         flex: 0 0 env(viewport-segment-right 0 0);
-        margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
         background-color: steelblue;
+      }
+
+      #fold {
+        visibility: visible;
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+        height: 100%;
+        font-size: 1rem;
       }
 
       #col2 {
@@ -167,8 +209,13 @@ export class MainApplication extends LitElement {
       #col1 {
         display: flex;
         flex: 0 0 env(viewport-segment-bottom 0 0);
-        margin-bottom: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
         background-color: pink;
+      }
+
+      #fold {
+        visibility: visible;
+        width: 100%;
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
       }
 
       #col2 {
@@ -223,6 +270,7 @@ export class MainApplication extends LitElement {
     this._cardText = this.shadowRoot.querySelector('#card-text');
     this._continuousImage = this.shadowRoot.querySelector('#continuous-image');
     this._foldedImage = this.shadowRoot.querySelector('#folded-image');
+    console.log('Viewport Size : ' + window.innerWidth + 'x' + window.innerHeight);
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
@@ -234,14 +282,18 @@ export class MainApplication extends LitElement {
       });
     }
 
-    let mediaQueryList = window.matchMedia("(horizontal-viewport-segments: 2)");
-    mediaQueryList.addEventListener("change", () => this._viewportSegmentsEnabled);
-    if (mediaQueryList.matches)
+    this._mediaQueryHorizontalSegments = window.matchMedia("(horizontal-viewport-segments: 2)");
+    this._mediaQueryHorizontalSegments.onchange = () => {
+        this._viewportSegmentsEnabled();
+    }
+    if (this._mediaQueryHorizontalSegments.matches)
       this._viewportSegmentsEnabled();
 
-    mediaQueryList = window.matchMedia("(vertical-viewport-segments: 2)");
-    mediaQueryList.addEventListener("change", () => this._viewportSegmentsEnabled);
-    if (mediaQueryList.matches)
+    this._mediaQueryVerticalSegments = window.matchMedia("(vertical-viewport-segments: 2)");
+    this._mediaQueryVerticalSegments.onchange = () => {
+      this._viewportSegmentsEnabled();
+    }
+    if (this._mediaQueryVerticalSegments.matches)
       this._viewportSegmentsEnabled();
 
     if (navigator.devicePosture != undefined) {
@@ -251,6 +303,7 @@ export class MainApplication extends LitElement {
       navigator.devicePosture.onchange = () => {
         this._cardText.innerHTML = navigator.devicePosture.type;
         this._showDevicePostureImage(navigator.devicePosture.type);
+        this._viewportSegmentsEnabled();
       };
     } else {
       this._cardText.innerHTML = "Not supported by browser.";
@@ -259,6 +312,7 @@ export class MainApplication extends LitElement {
   }
 
   _showDevicePostureImage(posture) {
+    console.log('Posture Changed ' + posture);
     if (posture === 'continuous') {
       this._foldedImage.style.display = 'none';
       this._continuousImage.style.display = 'block';
@@ -276,6 +330,7 @@ export class MainApplication extends LitElement {
   }
 
   _viewportSegmentsEnabled() {
+    console.log("Viewport Segments changed");
     let computedStyleCol1 = getComputedStyle(this._col1);
     let computedStyleCol2 = getComputedStyle(this._col2);
     this._col1Text.innerHTML = 'Viewport Segment #1 <br> Dimensions: ' + computedStyleCol1.width + ' - ' + computedStyleCol1.height;
@@ -321,6 +376,9 @@ export class MainApplication extends LitElement {
         <div class="not-supported"> CSS Viewport Segments and Device Posture APIs are not supported in this browser.</div>
         <div id="col1">
           <div id="col1-text" class="segment-text"></div>
+        </div>
+        <div id="fold" class="angled stripes">
+          Folded Area
         </div>
         <div id="col2">
           <div id="col2-text" class="segment-text"></div>

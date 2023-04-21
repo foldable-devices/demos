@@ -217,7 +217,7 @@ export class MainApplication extends LitElement {
     this._handleSpanning();
     this._background.onload = this._drawBackground.bind(this);
 
-    if (typeof FoldablesFeature != 'undefined') {
+    if (window.visualViewport == undefined && typeof FoldablesFeature != 'undefined') {
       const foldablesFeat = new FoldablesFeature;
       // This is specific for the polyfill, the browser window won't be resized.
       foldablesFeat.onchange = () => this._handleSpanning();
@@ -741,6 +741,7 @@ export class MainApplication extends LitElement {
   }
 
   _handleSpanning() {
+    console.log(window.visualViewport.segments)
     this._spanning = (window.visualViewport.segments && window.visualViewport.segments.length > 1);
     this._updateGameLayout();
     if (!this._spanning)
