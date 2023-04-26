@@ -62,24 +62,30 @@ export class MainApplication extends LitElement {
       background-color: black;
       display: flex;
       align-items: center;
-      justify-content: center;
     }
 
     .fold-content {
       visibility: hidden;
+      width: 100%;
+      height: 100%;
     }
 
     .fold-text {
       color: #e35e20;
       margin-right: 10px;
       font-size: 3rem;
+      display: inline;
     }
 
     .fold-content {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      justify-content: space-evenly;
+    }
+
+    .time {
+      min-width: 15%;
     }
 
     .enemy-fleet {
@@ -292,10 +298,12 @@ export class MainApplication extends LitElement {
   _playing = false;
   _wb;
   _wbRegistration = undefined;
+  _currentTime = 0;
 
   static get properties() {
-    return { round: { type: String, reflectToAttribute: true, attribute: true},
-             roundDigits: { type: Array, reflectToAttribute: true, attribute: true}};
+    return { round: { type: String},
+             roundDigits: { type: Array},
+             currentTime: { type: String} };
   }
 
   set round(round) {
@@ -314,6 +322,14 @@ export class MainApplication extends LitElement {
   }
 
   get roundDigits() { return this._roundDigits; }
+
+  set currentTime(time) {
+    let oldTime = this._currentTime;
+    this._currentTime = time;
+    this.requestUpdate('currentTime', oldTime);
+  }
+
+  get currentTime() { return this._currentTime; }
 
   firstUpdated() {
     this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
@@ -391,10 +407,13 @@ export class MainApplication extends LitElement {
     this._infobox.style.visibility = 'visible';
     this._playing = true;
     this.shadowRoot.host.style.setProperty('--fold-visibility', 'visible');
+    this._currentTime = 0;
+    this._currentTimerId = setInterval(() => {this.currentTime++}, 1000);
   }
 
   restartGame() {
     this.round = 0;
+    clearInterval(this._currentTimerId);
     this._enemyGrid.classList.remove('blocked');
     this._enemyGrid.restart();
     this._playerGrid.restart();
@@ -458,6 +477,7 @@ export class MainApplication extends LitElement {
     this._endGameMessage.innerHTML = 'You defeated your enemy in ' + this._round + ' rounds.';
     this._endGameMenu.open();
     this._playMessage.innerHTML = 'Oh no :(, you won...';
+    clearInterval(this._currentTimerId);
   }
 
   playerLost() {
@@ -468,6 +488,7 @@ export class MainApplication extends LitElement {
     this._endGameMessage.innerHTML = 'Your enemy defeated you in ' + this._round + ' rounds.';
     this._endGameMenu.open();
     this._playMessage.innerHTML = 'Yeah, I won!';
+    clearInterval(this._currentTimerId);
   }
 
   render() {
@@ -512,10 +533,13 @@ export class MainApplication extends LitElement {
         </div>
         <div class="fold">
           <div class="fold-content">
-            <div class="fold-text">Number of rounds :</div>
-              ${this.roundDigits.map(digit => html`
-                  <img src="images/${digit}.svg" class="fold-rounds" alt="Image of digit ${digit}">
-              `)}
+            <div class="time fold-text">Elapsed time: ${this.currentTime} s</div>
+            <div>
+              <div class="fold-text">Number of rounds :</div>
+                ${this.roundDigits.map(digit => html`
+                    <img src="images/${digit}.svg" class="fold-rounds" alt="Image of digit ${digit}">
+                `)}
+              </div>
             </div>
         </div>
         <div class="fleet">
