@@ -155,6 +155,16 @@ export class MainApplication extends LitElement {
         width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
       }
 
+      .fold-content {
+        flex-direction: column;
+      }
+
+      .fold-text {
+        margin-bottom: 10px;
+        margin-right: 0px;
+        font-size: 1.4rem;
+      }
+
       .fold-rounds {
         width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 20px);
       }
@@ -182,6 +192,16 @@ export class MainApplication extends LitElement {
       .fold {
         height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
         width: env(viewport-segment-width 0 0);
+      }
+
+      .fold-content {
+        flex-direction: row;
+      }
+
+      .fold-text {
+        margin-right: 10px;
+        margin-bottom: 0px;
+        font-size: 3rem;
       }
 
       .fold-rounds {
