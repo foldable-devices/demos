@@ -28,6 +28,7 @@ export class MainApplication extends LitElement {
       width: 100vw;
       height: 100vh;
       font-family: 'Bangers', sans-serif;
+      --fold-visibility: hidden;
     }
 
     *,
@@ -153,6 +154,7 @@ export class MainApplication extends LitElement {
       .fold {
         height: env(viewport-segment-height 0 0);
         width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+        visibility: visible;
       }
 
       .fold-content {
@@ -162,11 +164,11 @@ export class MainApplication extends LitElement {
       .fold-text {
         margin-bottom: 10px;
         margin-right: 0px;
-        font-size: 1.4rem;
+        font-size: 0.9rem;
       }
 
       .fold-rounds {
-        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 20px);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 50px);
       }
 
       .content {
@@ -192,6 +194,7 @@ export class MainApplication extends LitElement {
       .fold {
         height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
         width: env(viewport-segment-width 0 0);
+        visibility: visible;
       }
 
       .fold-content {
@@ -205,7 +208,7 @@ export class MainApplication extends LitElement {
       }
 
       .fold-rounds {
-        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 20px);
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 55px);
       }
 
       .content {
@@ -226,6 +229,22 @@ export class MainApplication extends LitElement {
 
       .background {
         z-index: 0;
+      }
+    }
+
+    @media (device-posture: folded) {
+      .fold {
+        visibility: var(--fold-visibility);
+      }
+
+      .fold-content {
+        visibility: var(--fold-visibility);
+      }
+    }
+
+    @media (device-posture: continuous) {
+      .fold-content {
+        visibility: hidden;
       }
     }
 
@@ -370,13 +389,8 @@ export class MainApplication extends LitElement {
     this._playerGrid.style.visibility = 'visible';
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
-    const hasSegments = window.matchMedia('(horizontal-viewport-segments: 2)').matches ||
-      window.matchMedia('(vertical-viewport-segments: 2)').matches || false;
-    if (hasSegments) {
-      this._fold.style.visibility = 'visible';
-      this._foldContent.style.visibility = 'visible';
-    }
     this._playing = true;
+    this.shadowRoot.host.style.setProperty('--fold-visibility', 'visible');
   }
 
   restartGame() {
