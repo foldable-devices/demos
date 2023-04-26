@@ -156,7 +156,7 @@ export class MainApplication extends LitElement {
       }
 
       .fold-rounds {
-        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 10px);
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 20px);
       }
 
       .content {
@@ -185,7 +185,7 @@ export class MainApplication extends LitElement {
       }
 
       .fold-rounds {
-        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 10px);
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 20px);
       }
 
       .content {
