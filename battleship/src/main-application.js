@@ -65,12 +65,13 @@ export class MainApplication extends LitElement {
     }
 
     .fold-content {
-      visibility: inherit;
+      visibility: hidden;
     }
 
     .fold-text {
       color: #e35e20;
       margin-right: 10px;
+      font-size: 3rem;
     }
 
     .fold-content {
@@ -152,7 +153,6 @@ export class MainApplication extends LitElement {
       .fold {
         height: env(viewport-segment-height 0 0);
         width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
-        visibility: visible;
       }
 
       .fold-rounds {
@@ -182,7 +182,6 @@ export class MainApplication extends LitElement {
       .fold {
         height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
         width: env(viewport-segment-width 0 0);
-        visibility: visible;
       }
 
       .fold-rounds {
@@ -291,6 +290,8 @@ export class MainApplication extends LitElement {
     this._fullscreenRotate.hide();
     this._howTo = this.shadowRoot.querySelector('#how-to');
     this._swAlert = this.shadowRoot.querySelector('#sw-alert');
+    this._fold = this.shadowRoot.querySelector('.fold');
+    this._foldContent = this.shadowRoot.querySelector('.fold-content');
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
@@ -349,6 +350,12 @@ export class MainApplication extends LitElement {
     this._playerGrid.style.visibility = 'visible';
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
+    const hasSegments = window.matchMedia('(horizontal-viewport-segments: 2)').matches ||
+      window.matchMedia('(vertical-viewport-segments: 2)').matches || false;
+    if (hasSegments) {
+      this._fold.style.visibility = 'visible';
+      this._foldContent.style.visibility = 'visible';
+    }
     this._playing = true;
   }
 
