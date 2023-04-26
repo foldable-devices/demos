@@ -85,7 +85,14 @@ export class MainApplication extends LitElement {
     }
 
     .time {
-      min-width: 15%;
+      min-width: 30%;
+    }
+
+    .rounds-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
     }
 
     .enemy-fleet {
@@ -164,6 +171,10 @@ export class MainApplication extends LitElement {
       }
 
       .fold-content {
+        flex-direction: column;
+      }
+
+      .rounds-container {
         flex-direction: column;
       }
 
@@ -534,7 +545,7 @@ export class MainApplication extends LitElement {
         <div class="fold">
           <div class="fold-content">
             <div class="time fold-text">Elapsed time: ${this.currentTime} s</div>
-            <div>
+            <div class="rounds-container">
               <div class="fold-text">Number of rounds :</div>
                 ${this.roundDigits.map(digit => html`
                     <img src="images/${digit}.svg" class="fold-rounds" alt="Image of digit ${digit}">

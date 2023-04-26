@@ -2756,7 +2756,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         <div class="fold">
           <div class="fold-content">
             <div class="time fold-text">Elapsed time: ${this.currentTime} s</div>
-            <div>
+            <div class="rounds-container">
               <div class="fold-text">Number of rounds :</div>
                 ${this.roundDigits.map(e=>O`
                     <img src="images/${e}.svg" class="fold-rounds" alt="Image of digit ${e}">
@@ -2868,7 +2868,14 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     }
 
     .time {
-      min-width: 15%;
+      min-width: 30%;
+    }
+
+    .rounds-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
     }
 
     .enemy-fleet {
@@ -2947,6 +2954,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       }
 
       .fold-content {
+        flex-direction: column;
+      }
+
+      .rounds-container {
         flex-direction: column;
       }
 
