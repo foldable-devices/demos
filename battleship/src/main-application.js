@@ -53,25 +53,31 @@ export class MainApplication extends LitElement {
       z-index: -1;
     }
 
-    .stripes {
-      height: 250px;
-      width: 200px;
-      background-size: 40px 40px;
-    }
-
-    .angled {
-      background-color: #737373;
-      background-image:
-        linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%,
-        transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%,
-        transparent 75%, transparent);
-    }
-
     .fold {
       height: 100%;
       width: 15px;
       z-index: 2;
       visibility: hidden;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fold-content {
+      visibility: hidden;
+    }
+
+    .fold-text {
+      color: #e35e20;
+      margin-right: 10px;
+    }
+
+    .fold-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
     }
 
     .enemy-fleet {
@@ -149,6 +155,10 @@ export class MainApplication extends LitElement {
         visibility: visible;
       }
 
+      .fold-rounds {
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 10px);
+      }
+
       .content {
         flex-direction: row;
       }
@@ -173,6 +183,10 @@ export class MainApplication extends LitElement {
         height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
         width: env(viewport-segment-width 0 0);
         visibility: visible;
+      }
+
+      .fold-rounds {
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 10px);
       }
 
       .content {
@@ -241,6 +255,28 @@ export class MainApplication extends LitElement {
   _wb;
   _wbRegistration = undefined;
 
+  static get properties() {
+    return { round: { type: String, reflectToAttribute: true, attribute: true},
+             roundDigits: { type: Array, reflectToAttribute: true, attribute: true}};
+  }
+
+  set round(round) {
+    let oldRound = this._round;
+    this._round = round;
+    this.requestUpdate('round', oldRound);
+    this.roundDigits = round.toString().split('');
+  }
+
+  get round() { return this._round; }
+
+  set roundDigits(digits) {
+    let oldDigits = this._roundDigits;
+    this._roundDigits = digits;
+    this.requestUpdate('roundDigits', oldDigits);
+  }
+
+  get roundDigits() { return this._roundDigits; }
+
   firstUpdated() {
     this._enemyGrid = this.shadowRoot.querySelector('#enemy-grid');
     this._playerGrid = this.shadowRoot.querySelector('#player-grid');
@@ -255,6 +291,7 @@ export class MainApplication extends LitElement {
     this._fullscreenRotate.hide();
     this._howTo = this.shadowRoot.querySelector('#how-to');
     this._swAlert = this.shadowRoot.querySelector('#sw-alert');
+    this._foldContent = this.shadowRoot.querySelector('.fold-content');
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
@@ -270,6 +307,7 @@ export class MainApplication extends LitElement {
   constructor() {
     super();
     this._round = 0;
+    this._roundDigits = ['0'];
   }
 
   connectedCallback() {
@@ -312,11 +350,12 @@ export class MainApplication extends LitElement {
     this._playerGrid.style.visibility = 'visible';
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
+    this._foldContent.style.visibility = 'visible';
     this._playing = true;
   }
 
   restartGame() {
-    this._round = 0;
+    this.round = 0;
     this._enemyGrid.classList.remove('blocked');
     this._enemyGrid.restart();
     this._playerGrid.restart();
@@ -332,7 +371,7 @@ export class MainApplication extends LitElement {
   }
 
   closeHowTo() {
-    if (this._round > 0)
+    if (this.round > 0)
       this._endGameMenu.open();
     else
       this._welcomeMenu.open();
@@ -343,7 +382,7 @@ export class MainApplication extends LitElement {
     this._enemyGrid.classList.add('blocked');
     this._playMessage.innerHTML = 'You missed!';
     setTimeout( () => this._playerGrid.enemyShoot(), this._timeBetweenRounds);
-    this._round++;
+    this.round++;
   }
 
   enemyPlayed(event) {
@@ -432,7 +471,14 @@ export class MainApplication extends LitElement {
         <div class="enemy-fleet">
           <enemy-grid id="enemy-grid" @player-played=${this.playerPlayed} @player-sank=${this.playerSank} @player-hit=${this.playerHit} @game-over=${this.playerWin}></enemy-grid>
         </div>
-        <div class="fold angled stripes"></div>
+        <div class="fold">
+          <div class="fold-content">
+            <div class="fold-text">Number of rounds :</div>
+              ${this.roundDigits.map(digit => html`
+                  <img src="images/${digit}.svg" class="fold-rounds" alt="Image of digit ${digit}">
+              `)}
+            </div>
+        </div>
         <div class="fleet">
           <player-grid id="player-grid" @player-played=${this.enemyPlayed} @game-over=${this.playerLost} @player-hit=${this.enemyHit} @player-sank=${this.enemySank}></player-grid>
         </div>
