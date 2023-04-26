@@ -65,7 +65,7 @@ export class MainApplication extends LitElement {
     }
 
     .fold-content {
-      visibility: hidden;
+      visibility: inherit;
     }
 
     .fold-text {
@@ -291,7 +291,6 @@ export class MainApplication extends LitElement {
     this._fullscreenRotate.hide();
     this._howTo = this.shadowRoot.querySelector('#how-to');
     this._swAlert = this.shadowRoot.querySelector('#sw-alert');
-    this._foldContent = this.shadowRoot.querySelector('.fold-content');
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
       // Use the window load event to keep the page load performant
@@ -350,7 +349,6 @@ export class MainApplication extends LitElement {
     this._playerGrid.style.visibility = 'visible';
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
-    this._foldContent.style.visibility = 'visible';
     this._playing = true;
   }
 
