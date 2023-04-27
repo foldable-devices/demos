@@ -2755,14 +2755,17 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         </div>
         <div class="fold">
           <div class="fold-content">
+            <img src="images/radar.svg" class="fold-rounds" alt="Image of a radar screen">
             <div class="time fold-text">Elapsed time: ${this.currentTime} s</div>
             <div class="rounds-container">
               <div class="fold-text">Number of rounds :</div>
                 ${this.roundDigits.map(e=>O`
                     <img src="images/${e}.svg" class="fold-rounds" alt="Image of digit ${e}">
                 `)}
-              </div>
             </div>
+            <img src="images/tach.svg" class="fold-rounds" alt="Image of a tachimeter screen">
+            <img src="images/amps.svg" class="fold-rounds" alt="Image of a amp measurement screen">
+          </div>
         </div>
         <div class="fleet">
           <player-grid id="player-grid" @player-played=${this.enemyPlayed} @game-over=${this.playerLost} @player-hit=${this.enemyHit} @player-sank=${this.enemySank}></player-grid>
