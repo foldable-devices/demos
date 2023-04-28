@@ -192,6 +192,10 @@ export class MainApplication extends LitElement {
         flex-direction: column;
       }
 
+      .instruments {
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 30px);
+      }
+
       .fold-text {
         margin-bottom: 10px;
         margin-right: 0px;
@@ -513,7 +517,7 @@ export class MainApplication extends LitElement {
     this._playing = false;
     this._fullscreenRotate.hide();
     this._enemyGrid.classList.add('blocked');
-    this._endGameTitle.innerHTML = 'You won!';
+    this._endGameTitle.innerHTML = 'You lost!';
     this._endGameMessage.innerHTML = 'Your enemy defeated you in ' + this._round + ' rounds.';
     this._endGameMenu.open();
     this._playMessage.innerHTML = 'Yeah, I won!';
