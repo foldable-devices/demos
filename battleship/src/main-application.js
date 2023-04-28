@@ -228,6 +228,10 @@ export class MainApplication extends LitElement {
         height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 55px);
       }
 
+      .instruments {
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0) - 30px);
+      }
+
       .content {
         flex-direction: column;
       }
@@ -544,7 +548,7 @@ export class MainApplication extends LitElement {
         </div>
         <div class="fold">
           <div class="fold-content">
-            <img src="images/radar.svg" class="fold-rounds" alt="Image of a radar screen">
+            <img src="images/radar.svg" class="instruments" alt="Image of a radar screen">
             <div class="time fold-text">Elapsed time: ${this.currentTime} s</div>
             <div class="rounds-container">
               <div class="fold-text">Number of rounds :</div>
@@ -552,8 +556,8 @@ export class MainApplication extends LitElement {
                     <img src="images/${digit}.svg" class="fold-rounds" alt="Image of digit ${digit}">
                 `)}
             </div>
-            <img src="images/tach.svg" class="fold-rounds" alt="Image of a tachimeter screen">
-            <img src="images/amps.svg" class="fold-rounds" alt="Image of a amp measurement screen">
+            <img src="images/tach.svg" class="instruments" alt="Image of a tachimeter screen">
+            <img src="images/amps.svg" class="instruments" alt="Image of a amp measurement screen">
           </div>
         </div>
         <div class="fleet">
