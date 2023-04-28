@@ -68,13 +68,26 @@ export class MainApplication extends LitElement {
       visibility: hidden;
       width: 100%;
       height: 100%;
+      background-image: url( 'images/brushed-metal.svg' );
+      background-repeat: no-repeat;
+    }
+
+    .display {
+      background-color: black;
+      border-radius: 20px;
+      padding: 5px;
+      border: solid 2px gray;
     }
 
     .fold-text {
       color: #e35e20;
       margin-right: 10px;
       font-size: 3rem;
-      display: inline;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-left: 10px;
+      padding-right: 10px;
     }
 
     .fold-content {
@@ -85,7 +98,8 @@ export class MainApplication extends LitElement {
     }
 
     .time {
-      min-width: 30%;
+      width: 4ch;
+      text-align: center;
     }
 
     .rounds-container {
@@ -548,16 +562,20 @@ export class MainApplication extends LitElement {
         </div>
         <div class="fold">
           <div class="fold-content">
-            <img src="images/radar.svg" class="instruments" alt="Image of a radar screen">
-            <div class="time fold-text">Elapsed time: ${this.currentTime} s</div>
-            <div class="rounds-container">
+            <img src="images/radar.svg" class="instruments display" alt="Image of a radar screen">
+            <div class="fold-text display">
+              Elapsed time: 
+              <div class="time">${this.currentTime}</div>
+              s
+            </div>
+            <div class="rounds-container display">
               <div class="fold-text">Number of rounds :</div>
                 ${this.roundDigits.map(digit => html`
                     <img src="images/${digit}.svg" class="fold-rounds" alt="Image of digit ${digit}">
                 `)}
             </div>
-            <img src="images/tach.svg" class="instruments" alt="Image of a tachimeter screen">
-            <img src="images/amps.svg" class="instruments" alt="Image of a amp measurement screen">
+            <img src="images/tach.svg" class="instruments display" alt="Image of a tachimeter screen">
+            <img src="images/amps.svg" class="instruments display" alt="Image of a amp measurement screen">
           </div>
         </div>
         <div class="fleet">
