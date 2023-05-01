@@ -494,7 +494,7 @@ export class MainApplication extends LitElement {
     const hasHorizontalSegments = window.matchMedia("(horizontal-viewport-segments: 2)").matches;
     if (navigator.devicePosture != undefined &&
         ((navigator.devicePosture.type === 'folded' && hasHorizontalSegments) ||
-        (navigator.devicePosture === 'continuous' && (hasVerticalSegments || hasHorizontalSegments)))) {
+        (navigator.devicePosture.type === 'continuous' && (hasVerticalSegments || hasHorizontalSegments)))) {
       this._detail_select.style.display = 'none';
       this._detail.style.visibility = 'visible';
       if (this._detail_img.src === path)
