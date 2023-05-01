@@ -268,23 +268,10 @@ export class MainApplication extends LitElement {
       overflow: hidden;
     }
 
-    .stripes {
-      height: 250px;
-      width: 200px;
-      background-size: 40px 40px;
-    }
-
-    .angled {
-      background-color: #737373;
-      background-image:
-        linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%,
-        transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%,
-        transparent 75%, transparent);
-    }
-
     .fold {
       height: 0;
       width: 0;
+      background-color: black;
     }
 
     .detail {
@@ -503,7 +490,13 @@ export class MainApplication extends LitElement {
   _openPicture(e) {
     const source_image = e.currentTarget.children[1].currentSrc;
     const path = source_image.replace('-l', '');
-    if (navigator.devicePosture != undefined && navigator.devicePosture.type === 'continuous') {
+    const hasVerticalSegments = window.matchMedia("(vertical-viewport-segments: 2)").matches;
+    console.log('v: ' + hasVerticalSegments)
+    const hasHorizontalSegments = window.matchMedia("(horizontal-viewport-segments: 2)").matches;
+    console.log('h: ' + hasHorizontalSegments)
+    if (navigator.devicePosture != undefined && 
+        navigator.devicePosture.type === 'folded' &&
+        hasHorizontalSegments) {
       this._detail_select.style.display = 'none';
       this._detail.style.visibility = 'visible';
       if (this._detail_img.src === path)
@@ -621,7 +614,7 @@ export class MainApplication extends LitElement {
             `)}
           </div>
 
-          <div class="fold angled stripes"></div>
+          <div class="fold"></div>
 
           <div class="detail-container">
             <div class="detail-select">Select an image in the gallery.</div>
