@@ -2258,7 +2258,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       width: 100vw;
       height: 100vh;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       grid-template-rows: repeat(auto-fit, 1fr);
       grid-gap: 2px;
       background-color: black;
