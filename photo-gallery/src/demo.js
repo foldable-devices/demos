@@ -1,11 +1,10 @@
 import { LitElement, html, css as litCSS} from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import '@shoelace-style/shoelace/dist/themes/light.css';
-import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
-import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import 'foldable-device-configurator';
 import { adjustCSS, observe } from "viewportsegments-css-polyfill";
 import { Workbox, messageSW } from 'workbox-window';
@@ -16,61 +15,6 @@ const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], "main-application");
   return litCSS([string], ...values);
 };
-
-class Spinner extends LitElement {
-  static styles = css`
-    .spinner {
-      width: 65px;
-      height: 65px;
-      animation: rotator 1.4s linear infinite;
-    }
-
-    @keyframes rotator {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(270deg); }
-    }
-
-    .path {
-      stroke-dasharray: 187;
-      stroke-dashoffset: 0;
-      transform-origin: center;
-      animation:
-        dash 1.4s ease-in-out infinite,
-        colors 6.4s ease-in-out infinite;
-    }
-
-    @keyframes colors {
-      0% { stroke: #4285F4; }
-      25% { stroke: #DE3E35; }
-      50% { stroke: #F7C223; }
-      75% { stroke: #1B9A59; }
-      100% { stroke: #4285F4; }
-    }
-
-    @keyframes dash {
-      0% {
-        stroke-dashoffset: 187;
-      }
-      50% {
-        stroke-dashoffset: 46.75;
-        transform: rotate(135deg);
-      }
-      100% {
-        stroke-dashoffset: 187;
-        transform: rotate(450deg);
-      }
-    }
-  `;
-
-  render() {
-    return html`
-      <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-      </svg>
-    `;
-  }
-}
-customElements.define("circular-progress", Spinner);
 
 class DetailImage extends LitElement {
   static styles = css`
@@ -107,9 +51,11 @@ class DetailImage extends LitElement {
       margin-top: 40px;
     }
 
-    circular-progress {
+    sl-spinner {
       position: absolute;
       top: 50%;
+      font-size: 3rem;
+      --track-width: 8px;
     }
   `;
 
@@ -123,7 +69,7 @@ class DetailImage extends LitElement {
   _legend;
 
   firstUpdated() {
-    this._spinner = this.shadowRoot.querySelector('circular-progress');
+    this._spinner = this.shadowRoot.querySelector('sl-spinner');
     this._image = this.shadowRoot.querySelector('img');
     this._legend = this.shadowRoot.querySelector('#text');
   }
@@ -145,7 +91,7 @@ class DetailImage extends LitElement {
       <div id="wrapper">
         <img/>
         <div id="text"></div>
-        <circular-progress></circular-progress>
+        <sl-spinner></sl-spinner>
       </div>
     `;
   }
@@ -365,28 +311,11 @@ export class MainApplication extends LitElement {
       display: block;
     }
 
-    circular-progress {
+    sl-spinner {
       position: absolute;
       top: 50%;
-    }
-
-    sl-checkbox {
-      margin-left: 4px;
-    }
-
-    .menu-icon {
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      color: white;
-    }
-
-    .drawer {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      margin-left: 12px;
+      font-size: 3rem;
+      --track-width: 8px;
     }
 
     @media (horizontal-viewport-segments: 2) {
@@ -431,6 +360,46 @@ export class MainApplication extends LitElement {
       }
     }
 
+    @media (vertical-viewport-segments: 2) and (device-posture: folded) {
+      .gallery {
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .fold {
+        height: 0;
+        width: 0;
+      }
+
+      .content {
+        flex-direction: row;
+      }
+
+      .detail-container {
+        height: 0vh;
+        width: 0vw;
+      }
+
+      #full-img {
+        height: env(viewport-segment-bottom 0 0);
+      }
+
+      .fullview-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .arrow-left {
+        margin-top: calc(env(viewport-segment-bottom 0 0) / 2);
+      }
+
+      .arrow-right {
+        margin-top: calc(env(viewport-segment-bottom 0 0) / 2);
+      }
+    }
+
     @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .gallery {
         width: 100vw;
@@ -472,7 +441,6 @@ export class MainApplication extends LitElement {
   _detail_select;
   _drawer;
   _spinner;
-  _styleCheckbox;
   _fold;
   _gallery;
   _fullview_container;
@@ -487,11 +455,10 @@ export class MainApplication extends LitElement {
     this._detail_container = this.shadowRoot.querySelector('.detail-container');
     this._detail = this.shadowRoot.querySelector('.detail');
     this._detail_select = this.shadowRoot.querySelector('.detail-select');
-    this._spinner = this.shadowRoot.querySelector('circular-progress');
+    this._spinner = this.shadowRoot.querySelector('sl-spinner');
     this._drawer = this.shadowRoot.querySelector('#drawer');
     this._swAlert = this.shadowRoot.querySelector('#sw-alert');
     this._fold = this.shadowRoot.querySelector('.fold');
-    this._styleCheckbox = this.shadowRoot.querySelector('sl-checkbox');
     this._fullview_container = this.shadowRoot.querySelector('.fullview-container');
 
     // Check that service workers are supported
@@ -516,11 +483,6 @@ export class MainApplication extends LitElement {
     observe(this);
   }
 
-  _openDrawer() {
-    this._drawer.open = true;
-
-  }
-
   _showSWAlert() {
     this._swAlert.show();
   }
@@ -538,25 +500,10 @@ export class MainApplication extends LitElement {
     }
   }
 
-  _styleChanged = (event) => {
-    if (this._styleCheckbox.checked) {
-      this._fullview_container.style.height = '100vh';
-      this._detail_container.style.display = 'flex';
-      this._fold.style.display = 'flex';
-    } else {
-      let height = window.getComputedStyle(this._gallery).getPropertyValue('height');
-      this._fullview_container.style.height = height;
-      this._detail_container.style.display = 'none';
-      this._fold.style.display = 'none';
-      this._gallery.style.height = '100vh';
-      this._gallery.style.width = '100vw';
-    }
-  }
-
   _openPicture(e) {
     const source_image = e.currentTarget.children[1].currentSrc;
     const path = source_image.replace('-l', '');
-    if (window.getComputedStyle(this._detail_container).width != '0px' && this._styleCheckbox.checked) {
+    if (navigator.devicePosture != undefined && navigator.devicePosture.type === 'continuous') {
       this._detail_select.style.display = 'none';
       this._detail.style.visibility = 'visible';
       if (this._detail_img.src === path)
@@ -663,9 +610,6 @@ export class MainApplication extends LitElement {
               <sl-button class="reload" size="small" @click="${this._reloadSW}">Reload</sl-button>
             </sl-alert>
           </div>
-          <sl-icon-button name="list" label="menu" 
-              class="menu-icon" @click="${this._openDrawer}">
-          </sl-icon-button>
           <div class="gallery">
             ${images.map(images => html`
               <figure class="gallery-item">
@@ -689,16 +633,11 @@ export class MainApplication extends LitElement {
           <div class="fullview-container ${classMap(this._full_view_container_classes)}" @click="${this._closePicture}">
             <div class="close" @click="${this._closePicture}"></div>
             <div class="arrow-left" @click="${this._previousPicture}"></div>
-            <circular-progress></circular-progress>
+            <sl-spinner></sl-spinner>
             <img id="full-img">
             <div class="arrow-right" @click="${this._nextPicture}"></div>
           </div>
         </div>
-        <sl-drawer label="Configuration" id="drawer" placement="start">
-          <div class="drawer">
-              Split UX : <sl-checkbox checked @sl-change="${this._styleChanged}"></sl-checkbox>
-          </div>
-        </sl-drawer>
     `;
   }
 }
