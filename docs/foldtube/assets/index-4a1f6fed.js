@@ -2662,6 +2662,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         </div>
                         <comments-section></comments-section>
                     </div>
+                    <div class="fold"></div>
                     <side-bar @video-selected="${this._openVideo}"></side-bar>
                 </div>
             </div>
@@ -2779,8 +2780,27 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
             font-size: 0.9rem;
         }
 
+        .fold {
+            display: none;
+        }
+
         side-bar {
             width: 40%;
+        }
+
+        @media (horizontal-viewport-segments: 2) {
+            .video-container {
+                width: env(viewport-segment-width 0 0);
+            }
+
+            .fold {
+                display: block;
+                width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+            }
+
+            side-bar {
+                width: env(viewport-segment-width 1 0);
+            }
         }
     `);customElements.define("video-player",Is);const Ga=(e,...t)=>{const i=Bt(e[0],"video-thumbnail");return Ft([i],...t)};class Ds extends J{static get properties(){return{src:{type:String,reflectToAttribute:!0,attribute:!0},title:{type:String,reflectToAttribute:!0,attribute:!0},channel:{type:String,reflectToAttribute:!0,attribute:!0},views:{type:String,reflectToAttribute:!0,attribute:!0},subscribers:{type:String,reflectToAttribute:!0,attribute:!0},date:{type:String,reflectToAttribute:!0,attribute:!0},alt:{type:String,reflectToAttribute:!0,attribute:!0},description:{type:String,reflectToAttribute:!0,attribute:!0},horizontalLayout:{type:Boolean,reflectToAttribute:!0,attribute:!0}}}set src(t){let i=this._src;this._src=t,this.requestUpdate("src",i)}get src(){return this._src}set title(t){let i=this._title;this._title=t,this.requestUpdate("title",i)}get title(){return this._title}set channel(t){let i=this._channel;this._channel=t,this.requestUpdate("channel",i)}get channel(){return this._channel}set views(t){let i=this._views;this._views=t,this.requestUpdate("views",i)}get views(){return this._views}set subscribers(t){let i=this._subscribers;this._subscribers=t,this.requestUpdate("subscribers",i)}get subscribers(){return this._subscribers}set date(t){let i=this._date;this._date=t,this.requestUpdate("date",i)}get date(){return this._date}set alt(t){let i=this._alt;this._alt=t,this.requestUpdate("alt",i)}get alt(){return this._alt}set description(t){let i=this._description;this._description=t,this.requestUpdate("description",i)}get description(){return this._description}set horizontalLayout(t){let i=this._horizontalLayout;this._horizontalLayout=t,this.requestUpdate("horizontalLayout",i)}get horizontalLayout(){return this._horizontalLayout}firstUpdated(){}constructor(){super(),this._src="",this._alt="",this._title="",this._channel="",this._views="",this._date="",this._subscribers="",this._description="",this._horizontalLayout=!1}connectedCallback(){super.connectedCallback(),vt(this)}render(){return X`
             <div class="root ${this.horizontalLayout?"horizontal":"vertical"}">
@@ -2885,6 +2905,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
             description="${i.description}" @click="${this._openVideo}">
             </video-thumbnail>
           `)}
+          <div class="fold"></div>
         </div>
         <video-player id="player"></video-player>
       </div>
@@ -2949,5 +2970,21 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 
     video-player {
       display: none;
+    }
+
+    .fold {
+      display: none;
+    }
+
+    @media (horizontal-viewport-segments: 2) {
+      .grid-list {
+        grid-template-columns: env(viewport-segment-width 0 0) calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)) env(viewport-segment-width 1 0);
+      }
+
+      .fold {
+        display: block;
+        grid-row: 1 / span 30;
+        grid-column: 2;
+      }
     }
   `);customElements.define("main-application",Fs);

@@ -72,6 +72,22 @@ export class MainApplication extends LitElement {
     video-player {
       display: none;
     }
+
+    .fold {
+      display: none;
+    }
+
+    @media (horizontal-viewport-segments: 2) {
+      .grid-list {
+        grid-template-columns: env(viewport-segment-width 0 0) calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)) env(viewport-segment-width 1 0);
+      }
+
+      .fold {
+        display: block;
+        grid-row: 1 / span 30;
+        grid-column: 2;
+      }
+    }
   `;
 
   _filter;
@@ -198,6 +214,7 @@ export class MainApplication extends LitElement {
             description="${videos.description}" @click="${this._openVideo}">
             </video-thumbnail>
           `)}
+          <div class="fold"></div>
         </div>
         <video-player id="player"></video-player>
       </div>

@@ -123,8 +123,27 @@ export class VideoPlayer extends LitElement {
             font-size: 0.9rem;
         }
 
+        .fold {
+            display: none;
+        }
+
         side-bar {
             width: 40%;
+        }
+
+        @media (horizontal-viewport-segments: 2) {
+            .video-container {
+                width: env(viewport-segment-width 0 0);
+            }
+
+            .fold {
+                display: block;
+                width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+            }
+
+            side-bar {
+                width: env(viewport-segment-width 1 0);
+            }
         }
     `;
 
@@ -287,6 +306,7 @@ export class VideoPlayer extends LitElement {
                         </div>
                         <comments-section></comments-section>
                     </div>
+                    <div class="fold"></div>
                     <side-bar @video-selected="${this._openVideo}"></side-bar>
                 </div>
             </div>
