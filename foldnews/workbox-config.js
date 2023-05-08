@@ -6,6 +6,7 @@ module.exports = {
     "images/manifest/icon-512x512.png",
     "images/manifest/icon-192x192.png",
     "images/manifest/safari-pinned-tab.svg",
+    "images/paper_texture.webp",
     "manifest.json",
     "assets/*.js"
   ],

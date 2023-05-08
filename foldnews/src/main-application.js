@@ -57,11 +57,10 @@ export class MainApplication extends LitElement {
       text-transform: uppercase;
       font-weight: 900;
       font-size: 70px;
-      margin-bottom: 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
       flex-direction: column;
+      height: 17vh;
     }
 
     .header-main {
@@ -70,6 +69,7 @@ export class MainApplication extends LitElement {
       align-items: center;
       justify-content: center;
       flex-direction: row;
+      height: 13vh;
     }
 
     .header-title {
@@ -78,11 +78,6 @@ export class MainApplication extends LitElement {
       flex-direction: row;
       justify-content: center;
       align-items: center;
-    }
-
-    .grow {
-      content:'';
-      flex-grow: 2;
     }
 
     .weather {
@@ -129,11 +124,16 @@ export class MainApplication extends LitElement {
       display: block;
     }
 
+    .paper {
+      background-image: url('images/paper_texture.webp');
+      background-position: center;
+      background-repeat: repeat;
+    }
+
     .date {
       text-transform: uppercase;
       border-bottom: 2px solid black;
       border-top: 2px solid black;
-      padding: 20px 0px 20px 0px;
       text-align: center;
       font-weight: 700;
       font-size: 15px;
@@ -142,6 +142,11 @@ export class MainApplication extends LitElement {
       flex-direction: row;
       align-items: center;
       justify-content: center;
+      height: 4vh;
+    }
+
+    .date-text {
+      padding: 20px 0px 20px 0px;
     }
 
     .frontpage {
@@ -163,9 +168,12 @@ export class MainApplication extends LitElement {
       border-left: 1px solid black;
     }
 
+    .fold {
+      display: none;
+    }
+
     .cell {
       padding: 10px;
-      background-color:  var(--background-color);
       border-right: solid 1px black;
       border-bottom: solid 1px black;
     }
@@ -259,55 +267,98 @@ export class MainApplication extends LitElement {
       }
 
       .fold {
-        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)); 
+        height: 100%;
+        flex-shrink: 0;
+        display: flex;
+      }
+
+      .crease {
+        border-right: 2px solid #bcbcbc;
+        width: 50%;
+        height: 100%;
+        background-image:
+          linear-gradient(
+          to right,
+            rgba(76, 53, 73, 0.00) 0%,
+            rgba(76, 53, 73, 0.02) 2%,
+            rgba(76, 53, 73, 0.00) 60%,
+            rgba(76, 53, 73, 0.16) 94%
+          );
+      }
+
+      .crease2 {
+        width: 50%;
+        height: 100%;
+        background-image:
+          linear-gradient(
+          to right,
+            rgba(76, 53, 73, 0.06) 0%,
+            rgba(76, 53, 73, 0.10) 2%,
+            rgba(76, 53, 73, 0.16) 6%,
+            rgba(76, 53, 73, 0.00) 40%
+          );
+      }
+
+      .fold-cell {
+        grid-row: 1 / span 3;
+        grid-column: 2;
       }
 
       .frontpage {
-        display: grid;
+        grid-template-columns: env(viewport-segment-width 0 0) calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
       }
 
       .title-left {
-        width: env(viewport-segment-width 0 0);
-      }
-
-      .title-right {
         width: env(viewport-segment-width 1 0);
       }
 
-      .grow-right {
-        display: block;
-        flex-grow: 2;
-      }
-
-      .date-grow {
+      .title-right {
         width: env(viewport-segment-width 0 0);
+        flex-shrink: 0;
       }
 
-      .date{
-        flex-direction: row-reverse;
+      .date {
+        justify-content: flex-start;
+      }
+
+      .date-text {
+        width: env(viewport-segment-width 0 0);
       }
 
       .header-main {
         flex-direction: row-reverse;
+        justify-content: flex-start;
+      }
+
+      .cell {
+        border-left: solid 1px black;
+        border-right: solid 1px black;
+        border-bottom: solid 1px black;
       }
 
       .cell-1 {
         grid-row: 1 / span 1;
-        width: env(viewport-segment-width 0 0);
+        flex-shrink: 0;
       }
 
       .cell-2 {
-        grid-column: span 2 / span 2;
+        grid-column: 3;
+        flex-shrink: 0;
       }
 
       .cell-4 {
-        width: env(viewport-segment-width 0 0);
         grid-row: 2 / span 1;
         grid-column: 1;
       }
 
       .cell-5 {
-        grid-row: 2 / span 1;
+        grid-row: 3 / span 1;
+      }
+
+      .cell-3 {
+        grid-row: 2;
+        grid-column: 3;
       }
 
       .picture {
@@ -318,19 +369,11 @@ export class MainApplication extends LitElement {
 
     @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       .fold {
-        width: 0;
+        display: none;
       }
 
       .frontpage {
         display: grid;
-      }
-
-      .grow-right {
-        display: none;
-      }
-
-      .date-grow {
-        display: none;
       }
 
       .header-main {
@@ -351,7 +394,6 @@ export class MainApplication extends LitElement {
 
       .cell-1 {
         grid-row: 1 / span 2;
-        width: auto;
       }
 
       .cell-2 {
@@ -364,7 +406,6 @@ export class MainApplication extends LitElement {
       }
 
       .cell-4 {
-        width: auto;
         grid-column: 1 / span 3;
       }
 
@@ -428,10 +469,9 @@ export class MainApplication extends LitElement {
   render() {
     return html`
       <foldable-device-configurator></foldable-device-configurator>
-      <div class="content">
+      <div class="content paper">
         <div class="header">
           <div class="header-main">
-            <div class="grow"></div>
             <div class="title-left">
               <div class="weather">
                 <div class="weather-type">
@@ -445,8 +485,10 @@ export class MainApplication extends LitElement {
                 <div>Wind: 2km/h</div>
               </div>
             </div>
-            <div class="fold angled stripes"></div>
-            <div class="grow-right"></div>
+            <div class="fold">
+              <div class="crease"></div>
+              <div class="crease2"></div>
+            </div>
             <div class="title-right">
               <div>The Fold News</div>
               <div class="logo-container">
@@ -456,15 +498,16 @@ export class MainApplication extends LitElement {
                 </picture>
               </div>
             </div>
-            <div class="grow"></div>
           </div>
           <div class="date">
-            <div class="date-grow"></div>
-            <div class="fold angled stripes"></div>
-            Portland, OR - June 7th, 2011
+            <div class="date-text">Portland, OR - June 7th, 2011</div>
+            <div class="fold">
+              <div class="crease"></div>
+              <div class="crease2"></div>
+            </div>
           </div>
         </div>
-        <div class="frontpage">
+        <div class="frontpage paper">
           <div class="cell cell-1">
             <news-article picturePosition="top">
               <div slot="title">Asus launched its new Zephyrus Duo laptop, two screens in one laptop</div>
@@ -490,6 +533,10 @@ export class MainApplication extends LitElement {
                 </p>
               </div>
             </news-article>
+          </div>
+          <div class="fold fold-cell">
+            <div class="crease"></div>
+            <div class="crease2"></div>
           </div>
           <div class="cell cell-5">
             <news-article picturePosition="top">
