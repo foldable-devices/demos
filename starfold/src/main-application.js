@@ -738,6 +738,7 @@ export class MainApplication extends LitElement {
     this._handleSpanning();
     if (this._paused)
       this._drawBackground();
+    setTimeout( _ => this._handleSpanning(), 2000);
   }
 
   _handleSpanning() {
