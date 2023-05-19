@@ -5,6 +5,12 @@ Links :
 
 <p style="text-align: center;">
 <img src="docs/images/photo-gallery.jpg" alt="picture of a Surface Duo running the photo gallery demo" style="width:49%;"/>
+
+<img src="docs/images/photo-gallery-asus-2.jpg" alt="picture of a Asus Zenbook Fold running the photo gallery demo" style="width:50%;"/>
+
+<img src="docs/images/photo-gallery-asus-3.jpg" alt="picture of a Asus Zenbook Fold running the photo gallery demo" style="width:50%;"/>
+
+<img src="docs/images/photo-gallery-asus-1.jpg" alt="picture of a Asus Zenbook Fold running the photo gallery demo" style="width:50%;"/>
 </p>
 
 &nbsp;
@@ -15,6 +21,20 @@ Links :
 <img src="docs/images/battleship-duo.jpg" alt="picture of a Surface Duo running Battleship demo game" style="width:49%;"/>
 
 <img src="docs/images/battleship-zenbook.jpg" alt="picture of a Asus Zenbook Pro Duo running Battleship demo game" style="width:50%;"/>
+
+<img src="docs/images/battleship-asus-1.jpg" alt="picture of a Asus Zenbook Fold running the Battleship demo game" style="width:50%;"/>
+</p>
+
+&nbsp;
+
+- FoldTube: Navigate [here](https://foldable-devices.github.io/demos/foldtube).
+
+<p style="text-align: center;">
+<img src="docs/images/fold-tube-asus-3.jpg" alt="picture of a Surface Duo running the fold tube demo" style="width:40%;"/>
+
+<img src="docs/images/fold-tube-asus-2.jpg" alt="picture of a Asus Zenbook Fold running the fold tube demo" style="width:40%;"/>
+
+<img src="docs/images/fold-tube-asus-1.jpg" alt="picture of a Asus Zenbook Fold running the fold tube demo" style="width:40%;"/>
 </p>
 
 &nbsp;
@@ -23,6 +43,10 @@ Links :
 
 <p style="text-align: center;">
 <img src="docs/images/fold-news.jpg" alt="picture of a Surface Duo running the fold news demo" style="width:40%;"/>
+
+<img src="docs/images/fold-news-asus-2.jpg" alt="picture of a Asus Zenbook Fold running the fold news demo" style="width:40%;"/>
+
+<img src="docs/images/fold-news-asus-1.jpg" alt="picture of a Asus Zenbook Fold running the fold news demo" style="width:40%;"/>
 </p>
 
 &nbsp;
@@ -31,6 +55,8 @@ Links :
 
 <p style="text-align: center;">
 <img src="docs/images/starfold.jpg" alt="picture of a Surface Duo running the starfold demo" style="width:100%;"/>
+
+<img src="docs/images/starfold-asus-1.jpg" alt="picture of a Asus Zenbook Fold running the starfold demo" style="width:100%;"/>
 </p>
 
 &nbsp;
