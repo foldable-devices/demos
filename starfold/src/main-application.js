@@ -742,8 +742,9 @@ export class MainApplication extends LitElement {
   }
 
   _handleSpanning() {
+    const segments = window.visualViewport.segments;
     console.log(window.visualViewport.segments)
-    this._spanning = (window.visualViewport.segments && window.visualViewport.segments.length > 1);
+    this._spanning = (segments && segments.length > 1 && segments[0].height < this._canvas.height);
     this._updateGameLayout();
     if (!this._spanning)
       this._showPauseButton();
@@ -769,7 +770,7 @@ export class MainApplication extends LitElement {
     if (this._playAreaSize)
       oldPlayArea = { width: this._playAreaSize.width, height:  this._playAreaSize.height };
     const segments = window.visualViewport.segments;
-    if (segments && segments.length > 1) {
+    if (segments && segments.length > 1 && segments[0].height < this._canvas.height) {
       this._playAreaSize = {
         left: segments[0].left,
         top: segments[0].top,
