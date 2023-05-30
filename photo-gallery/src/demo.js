@@ -460,7 +460,7 @@ export class MainApplication extends LitElement {
     }
 
     screen.orientation.addEventListener('change', _ => {
-      //this._closePicture();
+      this._closePicture();
     });
   }
 
