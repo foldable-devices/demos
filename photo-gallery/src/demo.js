@@ -458,6 +458,10 @@ export class MainApplication extends LitElement {
         this._wbRegistration = await this._wb.register();
       });
     }
+
+    screen.orientation.addEventListener('change', _ => {
+      //this._closePicture();
+    });
   }
 
   constructor() {
