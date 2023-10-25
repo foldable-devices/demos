@@ -1,0 +1,37 @@
+{
+  "name": "foldmail",
+  "version": "1.0.0",
+  "description": "A pretend mail application.",
+  "main": "src/main-application.js",
+  "scripts": {
+    "start": "vite dev",
+    "build": "vite build && workbox generateSW workbox-config.js",
+    "preview": "vite preview",
+    "regen-package-lock": "rimraf package-lock.json && rimraf node_modules && npm install"
+  },
+  "dependencies": {
+    "@shoelace-style/shoelace": "^2.11.0",
+    "foldable-device-configurator": "3.0.3",
+    "lit": "^3.0.0",
+    "nan": "^2.18.0",
+    "viewportsegments-polyfill": "^1.0.3",
+    "workbox-window": "^7.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-plugin-lit": "1.10.1",
+    "rimraf": "^5.0.5",
+    "vite": "^4.5.0",
+    "workbox-cli": "^7.0.0"
+  },
+  "keywords": [],
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Alexis Menard",
+    "email": "alexis.menard@intel.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foldable-devices/demos.git"
+  }
+}
