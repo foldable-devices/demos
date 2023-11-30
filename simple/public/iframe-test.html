@@ -1,0 +1,42 @@
+<head>
+    <title>This is an iframe</title>
+  <body>
+    <h2>This is an iframe</h2>
+    <div id="posture"></div>
+    <noscript>
+      This page requires JavaScript scripting, please turn it on.
+    </noscript>
+    <style>
+      body {
+        background-color: white;
+        border: solid 1px grey;
+        padding: 10px;
+      }
+
+      #posture {
+        font-size:20px;
+      }
+
+      @media (device-posture: folded) {
+        #posture {
+          color: green;
+        }
+      }
+
+      @media (device-posture: continuous) {
+        #posture {
+          color: red;
+        }
+      }
+    </style>
+    <script>
+      const posture = navigator.devicePosture.type;
+      document.getElementById('posture').innerHTML = 'Current posture : ' + posture;
+      navigator.devicePosture.addEventListener("change", () => {
+        const posture = navigator.devicePosture.type;
+        document.getElementById('posture').innerHTML = 'Changed posture : ' + posture;
+      })
+  </script>
+  </body>
+  
+  </html>
