@@ -246,19 +246,26 @@ export class MainApplication extends LitElement {
   _cardText;
   _foldedImage;
   _continuousImage;
-  _colors = ["blue", "green", "yellow", "pink", "red"];
 
   static get properties() {
-    return { currentTime: { type: String} };
+    return { viewportWidth: { type: String}, viewportHeight: { type: String} };
   }
 
-  set currentTime(time) {
-    let oldTime = this._currentTime;
-    this._currentTime = time;
-    this.requestUpdate('currentTime', oldTime);
+  set viewportHeight(height) {
+    let oldHeight = this._viewportHeight;
+    this._viewportHeight = height;
+    this.requestUpdate('viewportHeight', oldHeight);
   }
 
-  get currentTime() { return this._currentTime; }
+  get viewportHeight() { return this._viewportHeight; }
+
+  set viewportWidth(width) {
+    let oldWidth = this._viewportWidth;
+    this._viewportWidth = width;
+    this.requestUpdate('viewportWidth', oldWidth);
+  }
+
+  get viewportWidth() { return this._viewportWidth; }
 
   firstUpdated() {
     this._swAlert = this.shadowRoot.querySelector('#sw-alert');
@@ -309,6 +316,8 @@ export class MainApplication extends LitElement {
       this._cardText.innerHTML = "Not supported by browser.";
       this._showDevicePostureImage();
     }
+    this.viewportWidth = window.innerWidth;
+    this.viewportHeight = window.innerHeight;
   }
 
   _showDevicePostureImage(posture) {
@@ -327,6 +336,8 @@ export class MainApplication extends LitElement {
 
   constructor() {
     super();
+    this._viewportWidth = 0;
+    this._viewportHeight = 0;
   }
 
   _viewportSegmentsEnabled() {
@@ -335,6 +346,8 @@ export class MainApplication extends LitElement {
     let computedStyleCol2 = getComputedStyle(this._col2);
     this._col1Text.innerHTML = 'Viewport Segment #1 <br> Dimensions: ' + computedStyleCol1.width + ' - ' + computedStyleCol1.height;
     this._col2Text.innerHTML = 'Viewport Segment #2 <br> Dimensions: ' + computedStyleCol2.width + ' - ' + computedStyleCol2.height;
+    this.viewportWidth = window.innerWidth;
+    this.viewportHeight = window.innerHeight;
   }
 
   _showSWAlert() {
@@ -357,6 +370,7 @@ export class MainApplication extends LitElement {
   render() {
     return html`
       <sl-card class="posture-header">
+        The viewport dimension is ${this.viewportWidth} x ${this.viewportHeight}. <br>
         <img
           slot="image"
           src="images/folded-posture.svg"
