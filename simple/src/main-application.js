@@ -247,7 +247,7 @@ export class MainApplication extends LitElement {
 
       .posture-header {
         top: auto;
-        bottom: 0;
+        bottom: 30px;
         left: calc(50vw - 200px);
         display: block;
       }
@@ -257,7 +257,6 @@ export class MainApplication extends LitElement {
     @media (vertical-viewport-segments: 2) and (max-width: 1024px) {
       .posture-header {
         height: 200px;
-        bottom: 30px;
         left: 50px;
       }
 

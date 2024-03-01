@@ -1674,7 +1674,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 
       .posture-header {
         top: auto;
-        bottom: 0;
+        bottom: 30px;
         left: calc(50vw - 200px);
         display: block;
       }
@@ -1684,7 +1684,6 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     @media (vertical-viewport-segments: 2) and (max-width: 1024px) {
       .posture-header {
         height: 200px;
-        bottom: 30px;
         left: 50px;
       }
 
