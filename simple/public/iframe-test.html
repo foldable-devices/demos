@@ -1,7 +1,7 @@
 <head>
     <title>This is an iframe</title>
   <body>
-    <h2>This is an iframe</h2>
+    <h3>This is an iframe</h3>
     <div id="posture"></div>
     <noscript>
       This page requires JavaScript scripting, please turn it on.
@@ -14,7 +14,8 @@
       }
 
       #posture {
-        font-size:20px;
+        font-size: 20px;
+        color: black;
       }
 
       @media (device-posture: folded) {
@@ -30,12 +31,16 @@
       }
     </style>
     <script>
-      const posture = navigator.devicePosture.type;
-      document.getElementById('posture').innerHTML = 'Current posture : ' + posture;
-      navigator.devicePosture.addEventListener("change", () => {
+      if (navigator.devicePosture != undefined) {
         const posture = navigator.devicePosture.type;
-        document.getElementById('posture').innerHTML = 'Changed posture : ' + posture;
-      })
+        document.getElementById('posture').innerHTML = 'Device posture : ' + posture;
+        navigator.devicePosture.addEventListener("change", () => {
+          const posture = navigator.devicePosture.type;
+          document.getElementById('posture').innerHTML = 'Device posture : ' + posture;
+        })
+      } else {
+        document.getElementById('posture').innerHTML = 'Device Posture API is not supported.'
+      }
   </script>
   </body>
   

@@ -5,6 +5,7 @@ import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 setBasePath('/demos/simple/');
 
@@ -45,6 +46,7 @@ export class MainApplication extends LitElement {
       width: 400px;
       left: calc(25vw - 200px);
       display: none;
+      bottom: auto;
     }
 
     .posture-header [slot='image'] {
@@ -127,13 +129,28 @@ export class MainApplication extends LitElement {
       transparent 75%, transparent);
     }
 
+    #iframe-switch {
+      color: white;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    #iframe {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 20;
+      display: none;
+    }
+
     @media(device-posture: folded) {
       .not-supported {
         display: none;
       }
 
       .posture-header {
-        top: calc(50vh - 200px);
+        bottom: 0;
         left: calc(50vw - 200px);
         display: block;
       }
@@ -184,6 +201,7 @@ export class MainApplication extends LitElement {
 
       .segment-text {
         display: block;
+        margin-top: 50px;
       }
 
       .posture-header {
@@ -228,9 +246,52 @@ export class MainApplication extends LitElement {
       }
 
       .posture-header {
-        top: calc(25vh - 200px);
+        top: auto;
+        bottom: 0;
         left: calc(50vw - 200px);
         display: block;
+      }
+    }
+
+    /* This block is for smaller foldable devices */
+    @media (vertical-viewport-segments: 2) and (max-width: 1024px) {
+      .posture-header {
+        height: 200px;
+        bottom: 30px;
+        left: 50px;
+      }
+
+      .posture-header [slot='image'] {
+        height: 100px;
+      }
+
+      /* Unfortunately on Android the fold is 0 */
+      #fold {
+        visibility: hidden;
+      }
+
+      .segment-text {
+        height: 50px;
+      }
+    }
+
+    @media (horizontal-viewport-segments: 2) and (max-width: 1024px) {
+      .posture-header {
+        width: env(viewport-segment-left 1 0);
+        left: 0;
+      }
+
+      .posture-header [slot='image'] {
+        width: env(viewport-segment-left 1 0);
+      }
+
+      /* Unfortunately on Android the fold is 0 */
+      #fold {
+        visibility: hidden;
+      }
+
+      .segment-text {
+        height: 50px;
       }
     }
   `;
@@ -246,6 +307,7 @@ export class MainApplication extends LitElement {
   _cardText;
   _foldedImage;
   _continuousImage;
+  _iframe;
 
   static get properties() {
     return { viewportWidth: { type: String}, viewportHeight: { type: String} };
@@ -277,6 +339,8 @@ export class MainApplication extends LitElement {
     this._cardText = this.shadowRoot.querySelector('#card-text');
     this._continuousImage = this.shadowRoot.querySelector('#continuous-image');
     this._foldedImage = this.shadowRoot.querySelector('#folded-image');
+    this._iframe = this.shadowRoot.querySelector('#iframe');
+    this._iframeSwitch = this.shadowRoot.querySelector('#iframe-switch');
     console.log('Viewport Size : ' + window.innerWidth + 'x' + window.innerHeight);
     // Check that service workers are supported
     if ('serviceWorker' in navigator) {
@@ -367,6 +431,14 @@ export class MainApplication extends LitElement {
     }
   }
 
+  _toggleIframe() {
+    if (this._iframeSwitch.checked) {
+      this._iframe.style.display = 'block';
+    } else {
+      this._iframe.style.display = 'none';
+    }
+  }
+
   render() {
     return html`
       <sl-card class="posture-header">
@@ -383,6 +455,7 @@ export class MainApplication extends LitElement {
           alt="A picture showing a flat device like a tablet."
           id="continuous-image"
         />
+        <br>
         The current posture of the device is : 
         <div id="card-text"></div>
       </sl-card>
@@ -408,6 +481,8 @@ export class MainApplication extends LitElement {
           <sl-button class="reload" size="small" @click="${this._reloadSW}">Reload</sl-button>
         </sl-alert>
       </div>
+      <sl-switch id="iframe-switch" @click="${this._toggleIframe}">Toggle iframe</sl-switch>
+      <iframe id="iframe" src="iframe-test.html" width="300" height="150" frameborder="0"></iframe>
     `;
   }
 }
