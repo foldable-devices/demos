@@ -142,6 +142,7 @@ export class MainApplication extends LitElement {
       right: 20px;
       z-index: 20;
       display: none;
+      border-radius: 20px;
     }
 
     @media(device-posture: folded) {
