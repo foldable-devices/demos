@@ -199,7 +199,9 @@ export class MainApplication extends LitElement {
       .fold-text {
         margin-bottom: 10px;
         margin-right: 0px;
-        font-size: 0.9rem;
+        font-size: 1vw;
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) - 30px);
+        flex-direction: column;
       }
 
       .fold-rounds {
@@ -240,6 +242,7 @@ export class MainApplication extends LitElement {
         margin-right: 10px;
         margin-bottom: 0px;
         font-size: 3rem;
+        flex-direction: row;
       }
 
       .fold-rounds {
@@ -284,6 +287,47 @@ export class MainApplication extends LitElement {
     @media (device-posture: continuous) {
       .fold-content {
         visibility: hidden;
+      }
+    }
+
+    /* This block is for smaller foldable devices */
+    @media (vertical-viewport-segments: 2) and (max-width: 1024px) {
+      .fold {
+        height: 40px;
+        width: env(viewport-segment-width 0 0);
+      }
+
+      .fold-text {
+        font-size: 1rem;
+      }
+
+      .fold-rounds {
+        height: 20px;
+      }
+
+      .instruments {
+        height: 20px;
+      }
+    }
+
+    /* This block is for smaller foldable devices */
+    @media (horizontal-viewport-segments: 2) and (max-width: 1024px) {
+      .fold {
+        width: 60px;
+        height: env(viewport-segment-height 0 0);
+      }
+
+      .fold-text {
+        font-size: 0.55rem;
+        width: 25px;
+      }
+
+      .fold-rounds {
+        width: 15px;
+      }
+
+      .instruments {
+        width: 40px;
       }
     }
 
@@ -420,7 +464,7 @@ export class MainApplication extends LitElement {
     }
   }
 
-  _deviceSupportsSpanningMQs() {
+  _deviceSupportsViewportMQs() {
     const hasBrowserSupport =
       window.matchMedia('(vertical-viewport-segments)').matches ||
       window.matchMedia('(horizontal-viewport-segments)').matches || false;
@@ -428,9 +472,9 @@ export class MainApplication extends LitElement {
   }
 
   startGame() {
-    if (this._deviceSupportsSpanningMQs()) {
+    if (this._deviceSupportsViewportMQs()) {
       this._fullscreenRotate.setLabel('Ahoy Captain!<br>Please rotate your device to play. \
-                                <br> You can also span the window to play.');
+                                <br> You can also maximize/span the window to play.');
     }
     this._fullscreenRotate.show();
     this._welcomeMenu.close();
@@ -439,7 +483,11 @@ export class MainApplication extends LitElement {
     this._enemyGrid.style.visibility = 'visible';
     this._infobox.style.visibility = 'visible';
     this._playing = true;
-    this.shadowRoot.host.style.setProperty('--fold-visibility', 'visible');
+    const viewportMQs = window.matchMedia("(vertical-viewport-segments: 2), (horizontal-viewport-segments: 2)");
+    viewportMQs.onchange = (mq) => this._viewportSegmentsChanged(mq);
+    if (viewportMQs.matches) {
+      this.shadowRoot.host.style.setProperty('--fold-visibility', 'visible');
+    }
     this._currentTime = 0;
     this._currentTimerId = setInterval(() => {this.currentTime++}, 1000);
   }
@@ -453,6 +501,14 @@ export class MainApplication extends LitElement {
     this._playMessage.innerHTML = 'Let\'s get started, fire first.';
     this._endGameMenu.close();
     this.startGame();
+  }
+
+  _viewportSegmentsChanged = async (mq) => {
+    if (mq.matches) {
+      this.shadowRoot.host.style.setProperty('--fold-visibility', 'visible');
+    } else {
+      this.shadowRoot.host.style.setProperty('--fold-visibility', 'hidden');
+    }
   }
 
   showHowTo() {
@@ -569,8 +625,7 @@ export class MainApplication extends LitElement {
             <img src="images/radar.svg" class="instruments display" alt="Image of a radar screen">
             <div class="fold-text display">
               Elapsed time: 
-              <div class="time">${this.currentTime}</div>
-              s
+              <div class="time">${this.currentTime} s</div>
             </div>
             <div class="rounds-container display">
               <div class="fold-text">Number of rounds :</div>

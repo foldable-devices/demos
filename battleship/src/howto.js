@@ -22,7 +22,7 @@ export class HowToScreen extends LitElement {
       background: linear-gradient(to bottom, rgba(94,205,199,1) 0%, rgba(41,184,229,1) 53%, rgba(56,136,192,1) 100%);
       border-radius: 1em;
       padding: 4px;
-      height: 100%;
+      height: 95%;
     }
 
     .items {
@@ -115,8 +115,6 @@ export class HowToScreen extends LitElement {
 
     @media (vertical-viewport-segments: 2) {
       :host {
-        width: 100vw;
-        height: 94vh;
         top: 0;
         left: 0;
       }

@@ -72,6 +72,13 @@ export class DialogBox extends LitElement {
       }
     }
 
+    @media (vertical-viewport-segments: 2) and (max-width: 1024px) {
+      :host {
+        height: 35vh;
+        top: calc(env(viewport-segment-top 0 1) + (100vh - env(viewport-segment-top 0 1) + calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0))) / 2 - 25vh);
+      }
+    }
+
     @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
       :host {
         width: 25vw;
