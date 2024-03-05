@@ -4,25 +4,25 @@
   "description": "A news-like layout website that supports dual/foldable displays.",
   "main": "src/main-application.js",
   "scripts": {
-    "start": "vite dev",
+    "start": "vite dev --host",
     "build": "vite build && workbox generateSW workbox-config.js",
     "preview": "vite preview",
     "regen-package-lock": "rimraf package-lock.json && rimraf node_modules && npm install"
   },
   "dependencies": {
-    "@shoelace-style/shoelace": "^2.0.0",
+    "@shoelace-style/shoelace": "^2.14.0",
     "foldable-device-configurator": "3.0.3",
-    "lit": "^2.6.1",
-    "nan": "^2.17.0",
+    "lit": "^3.1.2",
+    "nan": "^2.18.0",
     "viewportsegments-css-polyfill": "^1.0.3",
-    "workbox-window": "^6.5.4"
+    "workbox-window": "^7.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.34.0",
-    "eslint-plugin-lit": "1.8.2",
-    "rimraf": "^4.1.2",
-    "vite": "^4.1.1",
-    "workbox-cli": "^6.5.4"
+    "eslint": "^8.57.0",
+    "eslint-plugin-lit": "1.11.0",
+    "rimraf": "^5.0.5",
+    "vite": "^5.1.5",
+    "workbox-cli": "^7.0.0"
   },
   "keywords": [],
   "license": "BSD-3-Clause",

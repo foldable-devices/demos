@@ -21,6 +21,8 @@ export class MainApplication extends LitElement {
       width: 100vw;
       height: 100vh;
       --background-color: #f9f7f1;
+      --default-fold-width: 40px;
+      --default-fold-half-width: 20px;
     }
 
     *,
@@ -364,6 +366,26 @@ export class MainApplication extends LitElement {
       .picture {
         display: block;
         max-width: 100%;
+      }
+    }
+
+    /* This block is for smaller foldable devices */
+    @media (horizontal-viewport-segments: 2) and (max-width: 1024px) {
+      .fold {
+        width: var(--default-fold-width);
+      }
+
+      .title-right {
+        width: calc(env(viewport-segment-width 0 0) - var(--default-fold-half-width));
+      }
+
+      .date-text {
+        width: calc(env(viewport-segment-width 0 0) - var(--default-fold-half-width));
+      }
+
+      .frontpage {
+        display: grid;
+        grid-template-columns: calc(env(viewport-segment-width 0 0) - var(--default-fold-half-width)) var(--default-fold-width);
       }
     }
 
