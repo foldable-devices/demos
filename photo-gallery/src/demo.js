@@ -4,6 +4,7 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/carousel/carousel.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import 'foldable-device-configurator';
 import { adjustCSS, observe } from "viewportsegments-css-polyfill";
@@ -151,37 +152,6 @@ export class MainApplication extends LitElement {
       display: none;
     }
 
-    .arrow-left {
-      width: 30px;
-      height: 30px;
-      border-bottom: solid 10px white;
-      border-left: solid 10px white;
-      opacity: 0.7;
-      border-radius: 15%;
-      transform: rotate(45deg);
-    }
-
-    .arrow-right {
-      width: 30px;
-      height: 30px;
-      border-top: solid 10px white;
-      border-right: solid 10px white;
-      opacity: 0.7;
-      border-radius: 15%;
-      transform: rotate(45deg);
-    }
-
-    .arrow-right:hover, .arrow-left:hover {
-      opacity: 1;
-    }
-
-    #full-img {
-      height: 95%;
-      width: 85%;
-      object-fit: contain;
-      user-select: none;
-    }
-
     .loading {
       min-height: 70%;
       height: 70%;
@@ -200,6 +170,7 @@ export class MainApplication extends LitElement {
       height: 32px;
       opacity: 0.3;
       background-color: white;
+      z-index: 3;
     }
 
     .close:hover {
@@ -221,6 +192,39 @@ export class MainApplication extends LitElement {
 
     .close:after {
       transform: rotate(-45deg);
+    }
+
+    sl-carousel {
+      width: 100%;
+      height: 90%;
+    }
+
+    sl-carousel-item {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .carousel-item {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .carousel-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    sl-carousel::part(navigation-button) {
+      color: white;
+      height: 50px;
+      background-color: gray;
     }
 
     .gallery {
@@ -367,7 +371,7 @@ export class MainApplication extends LitElement {
         width: 0vw;
       }
 
-      #full-img {
+      sl-carousel {
         height: env(viewport-segment-bottom 0 0);
       }
 
@@ -376,14 +380,6 @@ export class MainApplication extends LitElement {
         flex-direction: row;
         justify-content: center;
         align-items: flex-start;
-      }
-
-      .arrow-left {
-        margin-top: calc(env(viewport-segment-bottom 0 0) / 2);
-      }
-
-      .arrow-right {
-        margin-top: calc(env(viewport-segment-bottom 0 0) / 2);
       }
     }
 
@@ -421,7 +417,7 @@ export class MainApplication extends LitElement {
     _full_view_container_classes: { type: String }
   };
 
-  _full_img;
+  _carousel;
   _detail_img;
   _detail_container;
   _detail;
@@ -437,7 +433,7 @@ export class MainApplication extends LitElement {
 
   firstUpdated() {
     this._gallery = this.shadowRoot.querySelector('.gallery');
-    this._full_img = this.shadowRoot.querySelector('#full-img');
+    this._carousel = this.shadowRoot.querySelector('sl-carousel');
     this._detail_img = this.shadowRoot.querySelector('detail-img');
     this._detail_container = this.shadowRoot.querySelector('.detail-container');
     this._detail = this.shadowRoot.querySelector('.detail');
@@ -491,14 +487,14 @@ export class MainApplication extends LitElement {
     }
   }
 
-  _openPicture(e) {
+  _openCarousel(e) {
     const source_image = e.currentTarget.children[1].currentSrc;
     const path = source_image.replace('-l', '');
     const hasVerticalSegments = window.matchMedia("(vertical-viewport-segments: 2)").matches;
     const hasHorizontalSegments = window.matchMedia("(horizontal-viewport-segments: 2)").matches;
     if (navigator.devicePosture != undefined &&
-        ((navigator.devicePosture.type === 'folded' && hasHorizontalSegments) ||
-        (navigator.devicePosture.type === 'continuous' && (hasVerticalSegments || hasHorizontalSegments)))) {
+      ((navigator.devicePosture.type === 'folded' && hasHorizontalSegments) ||
+      (navigator.devicePosture.type === 'continuous' && (hasVerticalSegments || hasHorizontalSegments)))) {
       this._detail_select.style.display = 'none';
       this._detail.style.visibility = 'visible';
       if (this._detail_img.src === path)
@@ -507,13 +503,37 @@ export class MainApplication extends LitElement {
       this._detail_img.src = path;
       this._detail_img.style.visibility = 'hidden';
     } else {
-      this._full_view_container_classes = { hidden: false };
-      this._full_img.setAttribute('src', path);
-      this._spinner.style.visibility = 'visible';
-      this._full_img.addEventListener('load', () => {
-        this._spinner.style.visibility = 'hidden';
-      }, { once: true });
+      this._showSpinner();
       this._current_image = e.currentTarget;
+      this._full_view_container_classes = { hidden: false };
+      this._carousel.updateComplete.then(() => {
+        const index = Number(e.currentTarget.children[1].getAttribute('index'));
+        const galleryImg = this._carousel.children[index+1].children[0].children[1];
+        if (galleryImg.getAttribute('loaded') == 'true') {
+          this._hideSpinner();
+        }
+        this._carousel.goToSlide(index, 'instant');
+      });
+    }
+  }
+
+  _showSpinner() {
+    this._spinner.style.visibility = 'visible';
+  }
+
+  _hideSpinner() {
+    this._spinner.style.visibility = 'hidden';
+  }
+
+  _pictureLoaded(e) {
+    e.target.setAttribute('loaded', 'true');
+    this._hideSpinner();
+  }
+
+  _slideChange(e) {
+    const galleryImg = e.detail.slide.children[0].children[1];
+    if (galleryImg.getAttribute('loaded') == 'false') {
+      this._showSpinner();
     }
   }
 
@@ -521,75 +541,51 @@ export class MainApplication extends LitElement {
     this._full_view_container_classes = { hidden: true };
   }
 
-  _previousPicture(event) {
-    event.stopPropagation();
-
-    if (this._current_image.parentNode.previousElementSibling) {
-      const previous_node_image = this._current_image.parentNode.previousElementSibling.children[0];
-      let previous_image = previous_node_image.children[1].currentSrc;
-      const path = previous_image.replace('-l', '');
-      this._full_img.setAttribute('src', path);
-      this._current_image = previous_node_image;
-    }
-  }
-
-  _nextPicture(event) {
-    event.stopPropagation();
-
-    if (this._current_image.parentNode.nextElementSibling) {
-      const next_node_image = this._current_image.parentNode.nextElementSibling.children[0];
-      let next_image = next_node_image.children[1].currentSrc;
-      const path = next_image.replace('-l', '');
-      this._full_img.setAttribute('src', path);
-      this._current_image = next_node_image;
-    }
-  }
-
   render() {
     const images = [
-      { name: "images/air-balloon-l", alt: "This is a beautiful picture of an air balloon in the sky." },
-      { name: "images/asia-l", alt: "This photo depicts a woman on a boat somewhere in Asia." },
-      { name: "images/china-l", alt: "Architecture in China, a tower of a building." },
-      { name: "images/church-l", alt: "A black church in the middle of nowhere." },
-      { name: "images/city-l", alt: "A modern city somewhere in Asia." },
-      { name: "images/waterfall2-l", alt: "River with a tiny waterfall." },
-      { name: "images/cloud-l", alt: "Clouds in the sky, view from high altitude." },
-      { name: "images/desert-l", alt: "A desert with cactus." },
-      { name: "images/river2-l", alt: "A river inside a canyon." },
-      { name: "images/disney-l", alt: "The Disney castle in Orlando" },
-      { name: "images/forest-l", alt: "A road crossing a green forest" },
-      { name: "images/greece-l", alt: "Greece architecture" },
-      { name: "images/city2-l", alt: "A city street with an arch" },
-      { name: "images/lake-l", alt: "Women coming out of a lake somewhere lost in the nature" },
-      { name: "images/mountain-l", alt: "Peak of a high mountain and a cloudy sky" },
-      { name: "images/new-york-l", alt: "A street in New York" },
-      { name: "images/pool-l", alt: "Relaxing pool in a luxury hotel" },
-      { name: "images/restaurant-l", alt: "Restaurant on the edge of a river somewhere in France" },
-      { name: "images/river-l", alt: "River with people kayaking" },
-      { name: "images/road-l", alt: "Long straight road somewhere in USA" },
-      { name: "images/sand-l", alt: "Desert with rocky mountains on the background" },
-      { name: "images/sea-l", alt: "Beautiful transparent sea water somewhere in the pacific" },
-      { name: "images/sfo-l", alt: "Golden gate in San Francisco" },
-      { name: "images/stars-l", alt: "Wonderful astronomy shot of stars in the sky" },
-      { name: "images/tents-l", alt: "Camping tents hanging on a cliff" },
-      { name: "images/waterfall-l", alt: "Picture of a waterfall between big rocks" },
-      { name: "images/mountain2-l", alt: "Beautiful picture of a mountain landscape" },
-      { name: "images/wave-l", alt: "This is a picture from a wave in the ocean" },
-      { name: "images/aerial-l", alt: "This is an aerial picture of a city" },
-      { name: "images/building-l", alt: "This is a picture from inside a building" },
-      { name: "images/catamaran-l", alt: "This is a picture of a catamaran with blue water" },
-      { name: "images/cats-l", alt: "Thisa picture of two cats sleeping" },
-      { name: "images/egypt-l", alt: "This is a picture from somewhere in Egypt" },
-      { name: "images/feather-l", alt: "This is a picture of colorful feathers" },
-      { name: "images/fruits-l", alt: "This is a picture of a water bottle and fruits" },
-      { name: "images/golden-gate-l", alt: "This is a picture of the Golden Gate" },
-      { name: "images/marocco-l", alt: "This is a picture of ancient building in Marocco" },
-      { name: "images/milky-way-l", alt: "This is a picture from the Milky Way" },
-      { name: "images/palm-tree-l", alt: "This is a picture of palm trees with beautiful weather" },
-      { name: "images/rainbow-l", alt: "This is a picture of a rainbow from a light" },
-      { name: "images/road2-l", alt: "This is a picture from a road with a lot of trees" },
-      { name: "images/surf-l", alt: "This is a picture of a surfer" },
-      { name: "images/volcano-l", alt: "This is an aerial picture of a volcano" }
+      { name: "images/air-balloon-l", hires: "images/air-balloon", alt: "This is a beautiful picture of an air balloon in the sky." },
+      { name: "images/asia-l", hires: "images/asia", alt: "This photo depicts a woman on a boat somewhere in Asia." },
+      { name: "images/china-l", hires: "images/china", alt: "Architecture in China, a tower of a building." },
+      { name: "images/church-l", hires: "images/church", alt: "A black church in the middle of nowhere." },
+      { name: "images/city-l", hires: "images/city", alt: "A modern city somewhere in Asia." },
+      { name: "images/waterfall2-l", hires: "images/waterfall2", alt: "River with a tiny waterfall." },
+      { name: "images/cloud-l", hires: "images/cloud", alt: "Clouds in the sky, view from high altitude." },
+      { name: "images/desert-l", hires: "images/desert", alt: "A desert with cactus." },
+      { name: "images/river2-l", hires: "images/river2", alt: "A river inside a canyon." },
+      { name: "images/disney-l", hires: "images/disney", alt: "The Disney castle in Orlando" },
+      { name: "images/forest-l", hires: "images/forest", alt: "A road crossing a green forest" },
+      { name: "images/greece-l", hires: "images/greece", alt: "Greece architecture" },
+      { name: "images/city2-l", hires: "images/city2", alt: "A city street with an arch" },
+      { name: "images/lake-l", hires: "images/lake", alt: "Women coming out of a lake somewhere lost in the nature" },
+      { name: "images/mountain-l", hires: "images/mountain", alt: "Peak of a high mountain and a cloudy sky" },
+      { name: "images/new-york-l", hires: "images/new-york", alt: "A street in New York" },
+      { name: "images/pool-l", hires: "images/pool", alt: "Relaxing pool in a luxury hotel" },
+      { name: "images/restaurant-l", hires: "images/restaurant", alt: "Restaurant on the edge of a river somewhere in France" },
+      { name: "images/river-l", hires: "images/river", alt: "River with people kayaking" },
+      { name: "images/road-l", hires: "images/road", alt: "Long straight road somewhere in USA" },
+      { name: "images/sand-l", hires: "images/sand", alt: "Desert with rocky mountains on the background" },
+      { name: "images/sea-l", hires: "images/sea", alt: "Beautiful transparent sea water somewhere in the pacific" },
+      { name: "images/sfo-l", hires: "images/sfo", alt: "Golden gate in San Francisco" },
+      { name: "images/stars-l", hires: "images/stars", alt: "Wonderful astronomy shot of stars in the sky" },
+      { name: "images/tents-l", hires: "images/tents", alt: "Camping tents hanging on a cliff" },
+      { name: "images/waterfall-l", hires: "images/waterfall", alt: "Picture of a waterfall between big rocks" },
+      { name: "images/mountain2-l", hires: "images/mountain2", alt: "Beautiful picture of a mountain landscape" },
+      { name: "images/wave-l", hires: "images/wave", alt: "This is a picture from a wave in the ocean" },
+      { name: "images/aerial-l", hires: "images/aerial", alt: "This is an aerial picture of a city" },
+      { name: "images/building-l", hires: "images/building", alt: "This is a picture from inside a building" },
+      { name: "images/catamaran-l", hires: "images/catamaran", alt: "This is a picture of a catamaran with blue water" },
+      { name: "images/cats-l", hires: "images/cats", alt: "Thisa picture of two cats sleeping" },
+      { name: "images/egypt-l", hires: "images/egypt", alt: "This is a picture from somewhere in Egypt" },
+      { name: "images/feather-l", hires: "images/feather", alt: "This is a picture of colorful feathers" },
+      { name: "images/fruits-l", hires: "images/fruits", alt: "This is a picture of a water bottle and fruits" },
+      { name: "images/golden-gate-l", hires: "images/golden-gate", alt: "This is a picture of the Golden Gate" },
+      { name: "images/marocco-l", hires: "images/marocco", alt: "This is a picture of ancient building in Marocco" },
+      { name: "images/milky-way-l", hires: "images/milky-way", alt: "This is a picture from the Milky Way" },
+      { name: "images/palm-tree-l", hires: "images/palm-tree", alt: "This is a picture of palm trees with beautiful weather" },
+      { name: "images/rainbow-l", hires: "images/rainbow", alt: "This is a picture of a rainbow from a light" },
+      { name: "images/road2-l", hires: "images/road2", alt: "This is a picture from a road with a lot of trees" },
+      { name: "images/surf-l", hires: "images/surf", alt: "This is a picture of a surfer" },
+      { name: "images/volcano-l", hires: "images/volcano", alt: "This is an aerial picture of a volcano" }
     ];
 
     return html`
@@ -606,11 +602,11 @@ export class MainApplication extends LitElement {
             </sl-alert>
           </div>
           <div class="gallery">
-            ${images.map(images => html`
+            ${images.map((images, index) => html`
               <figure class="gallery-item">
-                <picture @click="${this._openPicture}">
+                <picture @click="${this._openCarousel}">
                   <source srcset="${images.name}.webp" type="image/webp">
-                  <img src="${images.name}.jpg" class="gallery-img" alt=${images.alt}>
+                  <img src="${images.name}.jpg" class="gallery-img" alt=${images.alt} index="${index}">
                 </picture>
               </figure>
             `)}
@@ -625,12 +621,19 @@ export class MainApplication extends LitElement {
             </div>
           </div>
 
-          <div class="fullview-container ${classMap(this._full_view_container_classes)}" @click="${this._closePicture}">
+          <div class="fullview-container ${classMap(this._full_view_container_classes)}">
             <div class="close" @click="${this._closePicture}"></div>
-            <div class="arrow-left" @click="${this._previousPicture}"></div>
-            <sl-spinner></sl-spinner>
-            <img id="full-img">
-            <div class="arrow-right" @click="${this._nextPicture}"></div>
+            <sl-carousel navigation loop mouse-dragging @sl-slide-change="${this._slideChange}">
+              ${images.map(images => html`
+                <sl-carousel-item>
+                  <picture class="carousel-item">
+                    <source srcset="${images.hires}.webp" type="image/webp">
+                    <img src="${images.hires}.jpg" class="carousel-img" alt=${images.alt} loading="lazy" loaded="false" @load="${this._pictureLoaded}">
+                  </picture>
+                </sl-carousel-item>
+              `)}
+              <sl-spinner></sl-spinner>
+            </sl-carousel>
           </div>
         </div>
     `;
