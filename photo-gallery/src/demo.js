@@ -40,16 +40,25 @@ class DetailImage extends LitElement {
       font-size: 1.5em;
       word-wrap: break-word;
       text-align: center;
-      height: 20%;
+      height: 10%;
       margin-top: 15px;
     }
 
     img {
-      min-height: 75%;
-      height: 90%;
+      display: none;
+    }
+
+    #canvas-wrapper {
+      min-height: 70%;
+      height: 70%;
       width: 90%;
-      object-fit: contain;
       margin-top: 40px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     sl-spinner {
@@ -57,6 +66,18 @@ class DetailImage extends LitElement {
       top: 50%;
       font-size: 3rem;
       --track-width: 8px;
+    }
+
+    .editing {
+      display: grid;
+      grid-template-columns: 2fr 2fr;
+      width: 100%;
+      height: 20%;
+      margin-bottom: 30px;
+    }
+
+    sl-range {
+      margin: 15px;
     }
   `;
 
@@ -66,13 +87,31 @@ class DetailImage extends LitElement {
   }
 
   _spinner;
+  _canvas;
+  _canvasWrapper;
+  _context;
   _image;
   _legend;
+  _brightness_range;
+  _contrast_range;
+  _hue_range;
+  _sepia_range;
+  _saturation_range;
+  _grayscale_range;
 
   firstUpdated() {
     this._spinner = this.shadowRoot.querySelector('sl-spinner');
     this._image = this.shadowRoot.querySelector('img');
     this._legend = this.shadowRoot.querySelector('#text');
+    this._brightness_range = this.shadowRoot.querySelector('#brightness-range');
+    this._contrast_range = this.shadowRoot.querySelector('#contrast-range');
+    this._hue_range = this.shadowRoot.querySelector('#hue-range');
+    this._sepia_range = this.shadowRoot.querySelector('#sepia-range');
+    this._saturation_range = this.shadowRoot.querySelector('#saturation-range');
+    this._grayscale_range = this.shadowRoot.querySelector('#grayscale-range');
+    this._canvas = this.shadowRoot.querySelector('#canvas');
+    this._canvasWrapper = this.shadowRoot.querySelector('#canvas-wrapper');
+    this._context = this._canvas.getContext('2d');
   }
 
   updated(changedProperties) {
@@ -82,16 +121,60 @@ class DetailImage extends LitElement {
         this._spinner.style.visibility = 'hidden';
         this.style.visibility = 'visible';
         this._legend.innerText = this.description;
+        this._applyFilters();
       }, { once: true });
       this._image.src = this.src;
+      this._resetRanges();
     }
+  }
+
+  _resetRanges() {
+    this._brightness_range.value = this._brightness_range.defaultValue;
+    this._contrast_range.value = this._contrast_range.defaultValue;
+    this._hue_range.value = this._hue_range.defaultValue;
+    this._sepia_range.value = this._sepia_range.defaultValue;
+    this._saturation_range.value = this._saturation_range.defaultValue;
+    this._grayscale_range.value = this._grayscale_range.defaultValue;
+  }
+
+  _applyFilters() {
+    const filterString =
+      "brightness(" + this._brightness_range.value + "%" +
+      ") contrast(" + this._contrast_range.value + "%" +
+      ") grayscale(" + this._grayscale_range.value + "%" +
+      ") saturate(" + this._saturation_range.value + "%" +
+      ") sepia(" + this._sepia_range.value + "%" +
+      ") hue-rotate(" + this._hue_range.value + "deg" + ")";
+
+    this._canvas.width = this._canvasWrapper.clientWidth * window.devicePixelRatio;
+    this._canvas.height = this._canvasWrapper.clientHeight * window.devicePixelRatio;
+    const horizontalRatio = this._canvas.width / this._image.width;
+    const verticalRatio = this._canvas.height / this._image.height;
+    const ratio = Math.min(horizontalRatio, verticalRatio);
+    const centerX = (this._canvas.width - this._image.width * ratio) / 2;
+    const centerY = (this._canvas.height - this._image.height * ratio) / 2;
+    this._context.filter = filterString;
+    this._context.drawImage(
+      this._image, 0, 0, this._image.width, this._image.height,
+      centerX, centerY, ratio * this._image.width, ratio * this._image.height);
   }
 
   render() {
     return html`
       <div id="wrapper">
         <img/>
+        <div id="canvas-wrapper">
+          <canvas id="canvas"></canvas>
+        </div>
         <div id="text"></div>
+        <div class="editing">
+          <sl-range label="Brightness" min="0" max="300" value="100" id="brightness-range" @sl-change="${this._applyFilters}"></sl-range>
+          <sl-range label="Contrast" min="0" max="200" value="100" id="contrast-range" @sl-change="${this._applyFilters}"></sl-range>
+          <sl-range label="Saturation" min="0" max="300" value="100" id="saturation-range" @sl-change="${this._applyFilters}"></sl-range>
+          <sl-range label="Sepia" min="0" max="200" value="0" id="sepia-range" @sl-change="${this._applyFilters}"></sl-range>
+          <sl-range label="Grayscale" min="0" max="100" value="0" id="grayscale-range" @sl-change="${this._applyFilters}"></sl-range>
+          <sl-range label="Hue" min="0" max="360" value="0" id="hue-range" @sl-change="${this._applyFilters}"></sl-range>
+        </div>
         <sl-spinner></sl-spinner>
       </div>
     `;
