@@ -2193,6 +2193,13 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       margin-top: 40px;
     }
 
+    @media (max-width: 1024px) {
+      #canvas-wrapper {
+        min-height: 40%;
+        height: 40%;
+      }
+    }
+
     canvas {
       width: 100%;
       height: 100%;
@@ -2361,7 +2368,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 
     sl-carousel {
       width: 100%;
-      height: 90%;
+      height: 100%;
     }
 
     sl-carousel-item {

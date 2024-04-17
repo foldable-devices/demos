@@ -55,6 +55,13 @@ class DetailImage extends LitElement {
       margin-top: 40px;
     }
 
+    @media (max-width: 1024px) {
+      #canvas-wrapper {
+        min-height: 40%;
+        height: 40%;
+      }
+    }
+
     canvas {
       width: 100%;
       height: 100%;
@@ -279,7 +286,7 @@ export class MainApplication extends LitElement {
 
     sl-carousel {
       width: 100%;
-      height: 90%;
+      height: 100%;
     }
 
     sl-carousel-item {
