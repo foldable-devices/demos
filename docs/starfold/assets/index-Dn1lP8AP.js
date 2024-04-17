@@ -1929,7 +1929,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     `}}u(Ss,"styles",K`
     :host {
       width: 25vw;
-      height: 30vh;
+      height: 40vh;
       position: absolute;
       top: calc(50vh - 15vh);
       left: calc(50vw - 12.5vw);
