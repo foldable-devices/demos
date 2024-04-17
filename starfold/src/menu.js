@@ -108,10 +108,10 @@ export class Menu extends LitElement {
     if (this._spanning) {
       const segment =  segments[0];
       if (segment.width > segment.height) {
-        rootStyle.top = 'calc(25vh - 12.5vh)';
+        rootStyle.top = '5vh';
         rootStyle.left = 'calc(50vw - 20vw)';
         rootStyle.width = '40vw';
-        rootStyle.height = segment.height / 2 + 'px';
+        rootStyle.height = segment.height / 1.5 + 'px';
       } else {
         rootStyle.top = 'calc(50vh - 12.5vh)';
         rootStyle.width = '25vw';

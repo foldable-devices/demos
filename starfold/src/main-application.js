@@ -223,7 +223,10 @@ export class MainApplication extends LitElement {
       foldablesFeat.onchange = () => this._handleSpanning();
     }
 
-    window.onorientationchange = (event) => this._handleOrientationChange(event);
+    screen.orientation.addEventListener('change', this._handleOrientationChange);
+    if (navigator.devicePosture != undefined) {
+      navigator.devicePosture.addEventListener('change', () => this._handleSpanning());
+    }
   }
 
   constructor() {
@@ -638,8 +641,10 @@ export class MainApplication extends LitElement {
     this._touchingUpController = this._touchingDownController =
     this._touchingYButton = false;
     this._clearPointerTimeout();
-    if (this._pointerId)
+    if (this._pointerId != undefined) {
       this._canvas.releasePointerCapture(this._pointerId);
+      this._pointerId = undefined;
+    }
   }
 
   _simulateLongPress = async (isTouchingLeftController, isTouchingRightController,
@@ -743,7 +748,6 @@ export class MainApplication extends LitElement {
 
   _handleSpanning() {
     const segments = window.visualViewport.segments;
-    console.log(window.visualViewport.segments)
     this._spanning = (segments && segments.length > 1 && segments[0].height < this._canvas.height);
     this._updateGameLayout();
     if (!this._spanning)
@@ -770,6 +774,11 @@ export class MainApplication extends LitElement {
     if (this._playAreaSize)
       oldPlayArea = { width: this._playAreaSize.width, height:  this._playAreaSize.height };
     const segments = window.visualViewport.segments;
+    // Reset the object to their original sizes
+    this._shipSize = 80;
+    this._meteorSize = 80;
+    this._missileWidth = 20;
+    this._missileHeight = 30;
     if (segments && segments.length > 1 && segments[0].height < this._canvas.height) {
       this._playAreaSize = {
         left: segments[0].left,
@@ -781,6 +790,12 @@ export class MainApplication extends LitElement {
         top: segments[1].top,
         width: segments[1].width,
         height: segments[1].height };
+      if (segments[0].height < 400) {
+        this._shipSize = 50;
+        this._meteorSize = 50;
+        this._missileWidth = 12;
+        this._missileHeight = 17;
+      }
       this._pauseButtonPos = {
         x: this._controllerArea.left + this._controllerArea.width / 2 - this._pauseButtonSize / 2,
         y: this._controllerArea.top + this._controllerArea.height / 2 - this._pauseButtonSize / 2};
