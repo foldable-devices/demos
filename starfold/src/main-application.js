@@ -225,7 +225,7 @@ export class MainApplication extends LitElement {
 
     screen.orientation.addEventListener('change', this._handleOrientationChange);
     if (navigator.devicePosture != undefined) {
-      navigator.devicePosture.addEventListener('change', () => this._handleSpanning());
+      navigator.devicePosture.addEventListener('change', () => setTimeout( () => this._handleSpanning(), 500));
     }
   }
 
@@ -838,6 +838,7 @@ export class MainApplication extends LitElement {
     }
     if (oldPlayArea) {
       // Update ship position
+      this._shipObject.size = this._shipSize;
       const currentX = this._shipObject.x / oldPlayArea.width;
       this._shipObject.x = this._playAreaSize.width * currentX;
       const currentY = this._shipObject.y / oldPlayArea.height;
@@ -846,6 +847,7 @@ export class MainApplication extends LitElement {
 
       // Update meteors positions
       for (const meteor of this._meteors) {
+        meteor.size = this._meteorSize;
         const currentX = meteor.x / oldPlayArea.width;
         meteor.x = this._playAreaSize.width * currentX;
         let currentY = meteor.y / oldPlayArea.height;

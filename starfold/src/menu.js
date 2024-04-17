@@ -29,6 +29,7 @@ export class Menu extends LitElement {
       background-size: 100%;
       background-position: top left;
       padding: 20px;
+      box-sizing: border-box;
     }
 
     #menu {
@@ -108,10 +109,15 @@ export class Menu extends LitElement {
     if (this._spanning) {
       const segment =  segments[0];
       if (segment.width > segment.height) {
-        rootStyle.top = '5vh';
         rootStyle.left = 'calc(50vw - 20vw)';
         rootStyle.width = '40vw';
-        rootStyle.height = segment.height / 1.5 + 'px';
+        if (segment.height > 400) {
+          rootStyle.top = '12.5vh';
+          rootStyle.height = segment.height / 2 + 'px';
+        } else {
+          rootStyle.top = '0';
+          rootStyle.height = segment.height + 'px';
+        }
       } else {
         rootStyle.top = 'calc(50vh - 12.5vh)';
         rootStyle.width = '25vw';
