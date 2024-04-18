@@ -51,6 +51,18 @@ Links :
 
 &nbsp;
 
+- FoldMail: Navigate [here](https://foldable-devices.github.io/demos/foldmail).
+
+<p style="text-align: center;">
+<img src="docs/images/fold-mail.jpg" alt="picture of a Samsung Galaxy Z Fold running the fold mail demo" style="width:40%;"/>
+
+<img src="docs/images/fold-mail-asus-2.jpg" alt="picture of a Asus Zenbook Fold running the fold mail demo" style="width:40%;"/>
+
+<img src="docs/images/fold-mail-asus-1.jpg" alt="picture of a Asus Zenbook Fold running the fold mail demo" style="width:40%;"/>
+</p>
+
+&nbsp;
+
 - StarFold: Navigate [here](https://foldable-devices.github.io/demos/starfold).
 
 <p style="text-align: center;">
@@ -60,6 +72,8 @@ Links :
 </p>
 
 &nbsp;
+
+- Simple: Navigate [here](https://foldable-devices.github.io/demos/simple) (useful to display segments and posture information).
 
 # How to build/develop the demos
 Enter a directory and run follow the README.md.
