@@ -2007,7 +2007,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         }
 
         .email-header {
-            height: 8%;
+            height: 10%;
             border-bottom: solid 2px #f3eeee;
             margin: 5px;
         }
@@ -2052,6 +2052,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           <list-item></list-item>
           <list-item></list-item>
         </div>
+        <div class="fold"></div>
         <div class="panel">
           <email-panel></email-panel>
         </div>
@@ -2115,5 +2116,47 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 
     .reload {
       margin-left: 5px;
+    }
+
+    .fold {
+      background-color: lightgray;
+    }
+
+    @media (horizontal-viewport-segments: 2) and (device-posture: folded) {
+      .list {
+        width: env(viewport-segment-width 0 0);
+      }
+
+      .content {
+        flex-direction: row;
+      }
+
+      .fold {
+        width: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+      }
+
+      .panel {
+        width: env(viewport-segment-width 1 0);
+      }
+    }
+
+    @media (vertical-viewport-segments: 2) and (device-posture: folded) {
+      .list {
+        width: 100%;
+        height: env(viewport-segment-height 0 0);
+      }
+
+      .content {
+        flex-direction: column;
+      }
+
+      .fold {
+        height: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
+      }
+
+      .panel {
+        width: 100%;
+        height: env(viewport-segment-height 0 1);
+      }
     }
   `);customElements.define("main-application",Hr);

@@ -32,7 +32,7 @@ export class EmailPanel extends LitElement {
         }
 
         .email-header {
-            height: 8%;
+            height: 10%;
             border-bottom: solid 2px #f3eeee;
             margin: 5px;
         }
