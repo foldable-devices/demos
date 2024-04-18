@@ -1985,8 +1985,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         </div>
     `}}g(Nr,"styles",En`
     :host {
-      width: 100%;
-      height: 100%;
+        width: 100%;
+        height: 100%;
     }
 
     *,
@@ -2032,14 +2032,14 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         height: 7%;
       }
 
-       .email-header {
-         height: 13%;
+      .email-header {
+        height: 13%;
       }
     }
 
     @media (vertical-viewport-segments: 2) and (device-posture: folded) and (max-width: 1024px) {
-       .email-header {
-         height: 20%;
+      .email-header {
+        height: 20%;
       }
 
       .button-bar {
