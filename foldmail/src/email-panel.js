@@ -10,8 +10,8 @@ const css = (strings, ...values) => {
 export class EmailPanel extends LitElement {
   static styles = css`
     :host {
-      width: 100%;
-      height: 100%;
+        width: 100%;
+        height: 100%;
     }
 
     *,
@@ -57,14 +57,14 @@ export class EmailPanel extends LitElement {
         height: 7%;
       }
 
-       .email-header {
-         height: 13%;
+      .email-header {
+        height: 13%;
       }
     }
 
     @media (vertical-viewport-segments: 2) and (device-posture: folded) and (max-width: 1024px) {
-       .email-header {
-         height: 20%;
+      .email-header {
+        height: 20%;
       }
 
       .button-bar {
