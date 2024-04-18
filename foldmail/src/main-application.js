@@ -33,12 +33,31 @@ export class MainApplication extends LitElement {
       overflow: hidden;
     }
 
+    .header {
+      background-color: var(--background-color);
+      height: 3%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+    }
+
     .content {
       width: 100%;
-      height: 100%;
+      height: 97%;
       background-color: var(--background-color);
       display: flex;
       flex-direction: row;
+    }
+
+    @media (max-width: 1024px) {
+      .header {
+        height: 5%;
+      }
+
+      .content {
+        height: 95%;
+      }
     }
 
     .list {
@@ -158,6 +177,11 @@ export class MainApplication extends LitElement {
   render() {
     return html`
       <foldable-device-configurator></foldable-device-configurator>
+      <div class="header">
+        <sl-icon-button name="envelope-heart"></sl-icon-button>
+        FoldMail
+        <sl-icon-button name="envelope-heart"></sl-icon-button>
+      </div>
       <div class="content">
         <div class="list">
           <list-item></list-item>
