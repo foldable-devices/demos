@@ -1,0 +1,16 @@
+name: Validate continuity reader
+on:
+  push:
+    branches: [contrib/foldable-web-2026]
+  pull_request:
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/continuity-reader.test.mjs

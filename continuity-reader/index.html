@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Continuity Reader — Foldable Demo</title>
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .shell[data-layout="single"] { grid-template-columns: minmax(0, 1fr); }
+  .shell[data-layout="side-by-side"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shell { min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 1fr); }
+  main, aside { padding: 1.2rem; min-width: 0; }
+  main { line-height: 1.6; }
+  aside { background: color-mix(in srgb, CanvasText 7%, Canvas); border-top: 1px solid color-mix(in srgb, CanvasText 20%, transparent); }
+  textarea { width: 100%; min-height: 10rem; font: inherit; resize: vertical; }
+  button { font: inherit; padding: .5rem .8rem; }
+  @media (min-width: 740px) {
+    .shell:not([data-layout]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    aside { border-top: none; border-inline-start: 1px solid color-mix(in srgb, CanvasText 20%, transparent); }
+  }
+  @media (horizontal-viewport-segments: 2) {
+    .shell:not([data-layout]) { grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0); column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)); }
+  }
+  @media (vertical-viewport-segments: 2) {
+    .shell:not([data-layout]) { grid-template-columns: 1fr; grid-template-rows: env(viewport-segment-height 0 0) env(viewport-segment-height 0 1); row-gap: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0)); }
+  }
+  textarea:focus-visible { outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <main id="article">
+    <h1>Continuity Reader</h1>
+    <p>A demonstration of adapting layout without remounting the editor or throwing away a draft.</p>
+    <p>Read on one display; unfold to place annotations beside the article. Try resizing the window while typing.</p>
+    <p>Device posture APIs are optional enhancements. A single-screen browser uses ordinary responsive CSS.</p>
+    <button id="focus-notes">Focus notes</button>
+    <button id="change-layout" type="button" aria-pressed="false">Use side-by-side layout</button>
+  </main>
+  <aside aria-labelledby="notes-heading">
+    <h2 id="notes-heading">Your notes</h2>
+    <label for="notes">Annotations (kept in this page while the layout changes)</label>
+    <textarea id="notes" spellcheck="true"></textarea>
+    <p id="status" role="status"></p>
+  </aside>
+</div>
+<script>
+  const notes = document.querySelector("#notes");
+  const status = document.querySelector("#status");
+  const shell = document.querySelector(".shell");
+  const switcher = document.querySelector("#change-layout");
+  document.querySelector("#focus-notes").addEventListener("click", () => notes.focus());
+  notes.addEventListener("input", () => { status.textContent = "Draft preserved during this session."; });
+  switcher.addEventListener("click", () => {
+    const sideBySide = switcher.getAttribute("aria-pressed") !== "true";
+    switcher.setAttribute("aria-pressed", String(sideBySide));
+    switcher.textContent = sideBySide ? "Use single-column layout" : "Use side-by-side layout";
+    shell.dataset.layout = sideBySide ? "side-by-side" : "single";
+    status.textContent = "Layout changed without replacing the editor.";
+  });
+</script>
+</body>
+</html>

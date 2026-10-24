@@ -75,5 +75,7 @@ Links :
 
 - Simple: Navigate [here](https://foldable-devices.github.io/demos/simple) (useful to display segments and posture information).
 
+- Continuity Reader: Navigate [here](https://foldable-devices.github.io/demos/continuity-reader) (responsive reading and annotation example that preserves in-progress input during CSS reflow).
+
 # How to build/develop the demos
 Enter a directory and run follow the README.md.
